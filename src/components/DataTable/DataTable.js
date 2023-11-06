@@ -59,39 +59,75 @@ import noImage from '../../assets/images/users/noimage.png';
 import ImageDialog from '../Dialogs/ImageDialog.js';
 import SupportDrawer from '../Drawers/SupportDrawer.js';
 
-const tableButtonSX = {
-  '&:hover': {
-    color: '#1769aa',
+const classes = {
+  tableButtonSX: {
+    '&:hover': {
+      color: '#1769aa',
+    },
   },
-};
-const updateButtonSX = {
-  width: 222,
-  backgroundColor: '#1d1c1a',
-  '&:hover': {
+  updateButtonSX: {
+    width: 222,
     backgroundColor: '#1d1c1a',
+    '&:hover': {
+      backgroundColor: '#1d1c1a',
+    },
   },
-};
-const closeButtonSX = {
-  backgroundColor: '#f50057',
-  '&:hover': {
+  closeButtonSX: {
     backgroundColor: '#f50057',
+    '&:hover': {
+      backgroundColor: '#f50057',
+    },
+  },
+  cellImageSX: {
+    position: 'relative',
+    width: '2.25rem',
+    height: '2.25rem',
+    minWidth: '2.255rem',
+    borderRadius: '0.0625rem',
+    display: '-webkit-box',
+    display: '-webkit-flex',
+    display: '-ms-flexbox',
+    display: 'flex',
+    overflow: 'hidden',
+    overflow: 'clip',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 };
-const cellImageSX = {
-  position: 'relative',
-  width: '2.25rem',
-  height: '2.25rem',
-  minWidth: '2.255rem',
-  borderRadius: '0.0625rem',
-  display: '-webkit-box',
-  display: '-webkit-flex',
-  display: '-ms-flexbox',
-  display: 'flex',
-  overflow: 'hidden',
-  overflow: 'clip',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
+
+// const tableButtonSX = {
+//   '&:hover': {
+//     color: '#1769aa',
+//   },
+// };
+// const updateButtonSX = {
+//   width: 222,
+//   backgroundColor: '#1d1c1a',
+//   '&:hover': {
+//     backgroundColor: '#1d1c1a',
+//   },
+// };
+// const closeButtonSX = {
+//   backgroundColor: '#f50057',
+//   '&:hover': {
+//     backgroundColor: '#f50057',
+//   },
+// };
+// const cellImageSX = {
+//   position: 'relative',
+//   width: '2.25rem',
+//   height: '2.25rem',
+//   minWidth: '2.255rem',
+//   borderRadius: '0.0625rem',
+//   display: '-webkit-box',
+//   display: '-webkit-flex',
+//   display: '-ms-flexbox',
+//   display: 'flex',
+//   overflow: 'hidden',
+//   overflow: 'clip',
+//   alignItems: 'center',
+//   justifyContent: 'center',
+// };
 
 export default function DataTable(props) {
   const { data, userData } = props;
@@ -450,7 +486,7 @@ export default function DataTable(props) {
         </DialogContent>
         <DialogActions>
           <Button
-            sx={closeButtonSX}
+            sx={classes.closeButtonSX}
             variant="contained"
             // color="error"
             onClick={handleClose}
@@ -513,7 +549,7 @@ export default function DataTable(props) {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button sx={closeButtonSX} onClick={handleClose} variant="contained">
+            <Button sx={classes.closeButtonSX} onClick={handleClose} variant="contained">
               Kapat
             </Button>
             <Button color="primary" onClick={() => onRemove(rowData._id)} variant="contained">
@@ -881,7 +917,7 @@ export default function DataTable(props) {
                     <Button
                       variant="contained"
                       disabled={Object.keys(errors)?.length > 0}
-                      sx={updateButtonSX}
+                      sx={classes.updateButtonSX}
                       type="submit"
                       onClick={() => onSubmit(values)}
                     >
@@ -1005,11 +1041,11 @@ export default function DataTable(props) {
           return (
             <>
               {params.row.cargoLabel !== null || params.row.cargoLabel?.asset._ref !== undefined ? (
-                <Box sx={cellImageSX}>
+                <Box sx={classes.cellImageSX}>
                   <Image src={urlFor(params.row.cargoLabel)?.url()} layout="fill" />
                 </Box>
               ) : (
-                <Box sx={cellImageSX}>
+                <Box sx={classes.cellImageSX}>
                   <Image src={noImage} layout="fill" />
                 </Box>
               )}
@@ -1087,7 +1123,7 @@ export default function DataTable(props) {
                       key={'mail'}
                       icon={
                         <ForwardToInboxIcon
-                          sx={tableButtonSX}
+                          sx={classes.tableButtonSX}
                           onClick={() => {
                             handleOpenMailDialog(params.row._id);
                           }}
@@ -1108,7 +1144,12 @@ export default function DataTable(props) {
                   <span>
                     <GridActionsCellItem
                       key={'support'}
-                      icon={<Info sx={tableButtonSX} onClick={() => setOpenSupportDrawer(true)} />}
+                      icon={
+                        <Info
+                          sx={classes.tableButtonSX}
+                          onClick={() => setOpenSupportDrawer(true)}
+                        />
+                      }
                       label="Support"
                     />
                   </span>
@@ -1128,7 +1169,7 @@ export default function DataTable(props) {
               <span>
                 <GridActionsCellItem
                   key={'update'}
-                  icon={<Save sx={tableButtonSX} onClick={() => onSave(params.row)} />}
+                  icon={<Save sx={classes.tableButtonSX} onClick={() => onSave(params.row)} />}
                   label="Save"
                 />
               </span>
@@ -1141,7 +1182,7 @@ export default function DataTable(props) {
                   key={'delete'}
                   icon={
                     <Delete
-                      sx={tableButtonSX}
+                      sx={classes.tableButtonSX}
                       onClick={() => {
                         handleOpenDeleteDialog(params.row._id);
                       }}
