@@ -11,8 +11,8 @@ import schemas from './sanity/schemas';
 
 export default defineConfig({
   basePath: '/studio',
-  projectId: 'veclq2f6', //process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: 'production', //process.env.NEXT_PUBLIC_SANITY_DATASET,
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
   title: 'SalesTeam API',
   token: process.env.NEXT_PUBLIC_SANITY_TOKEN,
   useCdn: process.env.NODE_ENV === 'production',

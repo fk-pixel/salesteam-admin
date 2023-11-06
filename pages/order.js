@@ -29,7 +29,7 @@ import {
   giftRegisterToAssets,
   imageRegisterToAssets,
   productRegisterToAssets,
-} from '../src/common/Utils/FormsUtil.js';
+} from '../src/utils/FormsUtil.js';
 
 export default function OrderForm() {
   const router = useRouter();
@@ -367,7 +367,6 @@ export default function OrderForm() {
                 sx={{
                   marginTop: '-15px',
                   boxShadow: '0 4px 20px 0 rgba(0, 0, 0,.14)',
-                  //background: linear-gradient(60deg, #ffa726, #fb8c00),
                   borderRadius: 1,
                   height: 60,
                   width: '100%',

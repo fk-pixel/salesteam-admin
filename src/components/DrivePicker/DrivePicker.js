@@ -4,16 +4,25 @@ import { makeStyles } from '@mui/styles';
 import useDrivePicker from 'react-google-drive-picker';
 
 import Icon from '../Icon/Icon';
+import { getRefreshToken } from '../../../controller/oatuhByDrive';
+// import { google } from 'googleapis';
 
-const useStyles = makeStyles({
+// google.oauth2()
+
+const classes = {
+  button: {
+    height: 40,
+    border: '1px solid #d32f2f',
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+  },
   icon: {
     width: 24,
     height: 24,
     display: 'flex',
     marginRight: 1,
   },
-});
-
+};
 export function getFile(resonseData) {
   gapi.client.drive.files
     .get({
@@ -39,15 +48,17 @@ export function getFile(resonseData) {
     });
 }
 
+// export const getRefreshToken = () => {};
+
+getRefreshToken();
+
 export default function DrivePicker({ productFile, setFieldValue }) {
   const [openPicker, data, authResponse] = useDrivePicker();
 
-  const classes = useStyles();
-
-  const refreshToken =
-    '1//04YQiPZPeXlk3CgYIARAAGAQSNgF-L9IrGC9NBX2Of8vWAEJlpunm7br1xuITdPoHHKw4apQ56IIVJyU_qwHEk7cmfDtEzYJ_zg';
-  const accessToken =
-    'ya29.a0AfB_byAsLTaos7D7hA4wnLlfwqjw8uTnI3ym1VpoADchGiR0bgFETlak82Pewm0d0CrKzvxZq4W1sIRof2m6AkDtxJD0HfhntI0dD7s2MPmS_tlOanJ9LRdb8R9nlXqAuufo5BLcN_l8QPHlTFeHXjdOe3j1wQw_Nu7laCgYKAaESARMSFQGOcNnCiDurlNOK03StnhesUJOIjw0171';
+  // const refreshToken =
+  //   '1//04YQiPZPeXlk3CgYIARAAGAQSNgF-L9IrGC9NBX2Of8vWAEJlpunm7br1xuITdPoHHKw4apQ56IIVJyU_qwHEk7cmfDtEzYJ_zg';
+  // const accessToken =
+  //   'ya29.a0AfB_byAsLTaos7D7hA4wnLlfwqjw8uTnI3ym1VpoADchGiR0bgFETlak82Pewm0d0CrKzvxZq4W1sIRof2m6AkDtxJD0HfhntI0dD7s2MPmS_tlOanJ9LRdb8R9nlXqAuufo5BLcN_l8QPHlTFeHXjdOe3j1wQw_Nu7laCgYKAaESARMSFQGOcNnCiDurlNOK03StnhesUJOIjw0171';
 
   const convertDriveImageObjectToFile = (driveObject) => {
     const file = new File([driveObject], driveObject.name, {
@@ -60,10 +71,10 @@ export default function DrivePicker({ productFile, setFieldValue }) {
 
   const handleOpenPicker = () => {
     openPicker({
-      clientId: '719178891505-pkrfmdbdmlcgsptrpn757uf3ci3po7gd.apps.googleusercontent.com', //process.env.CLIENT_ID,
-      developerKey: 'AIzaSyBZMlr8fDgR77bMA7OlLqqNKyUY48YoUZ8',
+      clientId: process.env.NEXT_PUBLIC_DRIVE_CLIENT_ID,
+      developerKey: process.env.NEXT_PUBLIC_DRIVE_API_KEY,
       token:
-        'ya29.a0AfB_byAsLTaos7D7hA4wnLlfwqjw8uTnI3ym1VpoADchGiR0bgFETlak82Pewm0d0CrKzvxZq4W1sIRof2m6AkDtxJD0HfhntI0dD7s2MPmS_tlOanJ9LRdb8R9nlXqAuufo5BLcN_l8QPHlTFeHXjdOe3j1wQw_Nu7laCgYKAaESARMSFQGOcNnCiDurlNOK03StnhesUJOIjw0171', //process.env.ACCESS_TOKEN,
+        'ya29.a0AfB_byCLoAyARNadBMXucVmHTZZUlojwoTuy7KRK9KUT2eXCdzATX4NBDIYtxLyH-JNllZS1dLhR4evxy1nF3yds2k3QH3R69bt1t9X_HYwuBPbFIhU7WZ4EqpYvtCfXiukvwrYfn2_5OpmMhjPgendZsDUpQe93O-qRaCgYKAfoSARMSFQGOcNnCVhsHo6Q15DyB-GmNzAqCwg0171', //process.env.DRIVE_ACCESS_TOKEN,
       viewId: 'DOCS',
       showUploadView: true,
       showUploadFolders: true,
@@ -113,21 +124,8 @@ export default function DrivePicker({ productFile, setFieldValue }) {
     webkitRelativePath: '',
   };
 
-  const newA = new File([a], a.name, { type: a.mimeType, size: a.sizeBytes });
-  console.log('file', getFile(file));
-  console.log('A', getFile(a));
-
   return (
-    <Button
-      sx={{
-        height: 40,
-        border: '1px solid #d32f2f',
-        borderTopLeftRadius: 0,
-        borderBottomLeftRadius: 0,
-      }}
-      size="medium"
-      onClick={() => handleOpenPicker()}
-    >
+    <Button sx={classes.button} size="medium" onClick={() => handleOpenPicker()}>
       <span className={classes.icon}>
         <Icon name={'googleDrive'} />
       </span>

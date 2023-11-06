@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { useDownloadExcel } from '../../common/Utils/ExcelUtil';
+import { useDownloadExcel } from '../../utils/ExcelUtil';
 import {
   Button,
   Dialog,
@@ -28,15 +28,6 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
     },
   });
 
-  //   const handleChange = (target) => {
-  //     setXLSXState((prev) => ({
-  //       ...prev,
-  //       [target.id]: target.value,
-  //     }));
-
-  //     // setXLSXState({ ...XLSXState, startDate: target });
-  //   };
-
   const columns = [
     'Siparis ID',
     'Store',
@@ -63,13 +54,7 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
   };
 
   return (
-    <Dialog
-      open={openXLSX}
-      onClose={handleClose}
-      //BackdropProps={{ style: { backgroundColor: 'transparent' } }}
-      //hideBackdrop
-      id={'createExcel'}
-    >
+    <Dialog open={openXLSX} onClose={handleClose} id={'createExcel'}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <DialogTitle>Excel Oluştur</DialogTitle>
         <DialogContent>

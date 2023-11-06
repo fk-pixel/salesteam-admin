@@ -50,7 +50,7 @@ import {
   giftRegisterToAssets,
   productRegisterToAssets,
   imageRegisterToAssets,
-} from '../../common/Utils/FormsUtil.js';
+} from '../../utils/FormsUtil.js';
 import { ProductComponent } from '../Forms/ProductComponent.js';
 import { GiftComponent } from '../Forms/GiftComponent.js';
 import XLSXDialog from '../Dialogs/XLSXDialog.js';
@@ -790,13 +790,7 @@ export default function DataTable(props) {
               validationSchema={validationSchema}
               validateOnChange={false}
             >
-              {({
-                values,
-                errors,
-                touched,
-                setValues,
-                setFieldValue /* handleChange, handleSubmit */,
-              }) => (
+              {({ values, errors, touched, setValues, setFieldValue }) => (
                 <Form>
                   <Box display={'block'}>
                     <Box
@@ -898,30 +892,6 @@ export default function DataTable(props) {
               )}
             </Formik>
           </Box>
-          {/* <Box
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 1,
-              backgroundColor: '#ffff', //'rgba(220, 220, 220, 0.9)',
-              height: 60,
-              position: 'sticky',
-              bottom: 3,
-              top: 0,
-            }}
-          >
-            <Button
-              variant="contained"
-              // disabled={!values?.productName || !values?.price}
-              //color="#1d1c1a"
-              sx={updateButtonSX}
-              type="submit"
-              style={{ position: 'absolute', zIndex: 10 }}
-            >
-              Güncelle
-            </Button>
-          </Box> */}
         </Drawer>
       </Box>
     );
@@ -1103,24 +1073,6 @@ export default function DataTable(props) {
         valueGetter: ({ value }) => new Date(value),
         editable: false,
       },
-      // {isAdmin && (
-      //   <>
-      //     <Tooltip title={'Mail gönder'}>
-      //       <GridActionsCellItem
-      //         icon={
-      //           <ForwardToInboxIcon
-      //             sx={tableButtonSX}
-      //             onClick={() => {
-      //               handleOpenMailDialog(params.row._id);
-      //             }}
-      //           />
-      //         }
-      //         label="Send"
-      //       />
-      //     </Tooltip>
-      //     <MailDialog /* key={params.row._id} */ />
-      //   </>
-      // )}
       {
         field: 'actions',
         type: 'actions',

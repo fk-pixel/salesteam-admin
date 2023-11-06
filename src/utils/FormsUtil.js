@@ -1,4 +1,4 @@
-import { client } from '../../../sanity/utils/client';
+import { client } from '../../sanity/utils/client';
 
 export const MAINTYPE_OPTIONS = [
   { value: 'panel', title: 'Panel' },

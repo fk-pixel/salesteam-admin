@@ -19,12 +19,12 @@ import { FastField, Field, FieldArray } from 'formik';
 import { TextField as FormikTextField, Autocomplete as FormikAutocomplete } from 'formik-mui';
 
 import noImage from '../../assets/images/users/noimage.png';
-import { MAINTYPE_OPTIONS, SHIPPING_OPTIONS, selectSubOptions } from '../../common/Utils/FormsUtil';
+import { MAINTYPE_OPTIONS, SHIPPING_OPTIONS, selectSubOptions } from '../../utils/FormsUtil';
 import _ from 'lodash';
 import { urlFor } from '../../../sanity/utils/client';
 import { buildURL } from '../../../sanity/lib/image';
 import DrivePicker from '../DrivePicker/DrivePicker';
-import createImageURLFromDrive from '../../common/Utils/ImageUtil';
+import createImageURLFromDrive from '../../utils/ImageUtil';
 
 // const FastTextField = ({ name, handleChange, value }) => {
 //   const [localValue, setLocalValue] = useState('');
