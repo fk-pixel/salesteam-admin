@@ -214,24 +214,15 @@ export function findStatusOption(value) {
   return selectedOption;
 }
 
-export function getDataWithAvatar(data) {
-  if (data !== undefined && data !== null) {
-    const newData = [];
+export const getDirtyValues = (values, initialObject) => {
+  const data = { ...values };
+  const keyValues = Object.keys(data);
 
-    for (const i of data) {
-      const firstLetter = i.createdBy?.username?.split(' ')[0][0];
+  const dirtyValues = keyValues.filter((keyValue) => data[keyValue] !== initialObject[keyValue]);
 
-      const secondLetter =
-        i.createdBy?.username?.split(' ')[1] !== undefined
-          ? i.createdBy?.username?.split(' ')[1][0]
-          : '';
+  keyValues.forEach((key) => {
+    if (!dirtyValues.includes(key)) delete data[key];
+  });
 
-      const shortcut = firstLetter + secondLetter;
-
-      newData.push({ ...i, avatar: shortcut, store: i.createdBy.store, isEditMode: false });
-    }
-    return newData;
-  }
-
-  return;
-}
+  return data;
+};

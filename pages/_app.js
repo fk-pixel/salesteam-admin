@@ -5,9 +5,9 @@ import { ToastContainer } from '../src/toast/nexttoast';
 import 'react-toastify/dist/ReactToastify.min.css';
 import Portal from '../src/common/Portal/portal';
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material';
 
-import theme from '../styles/Theme';
+import { Theme } from '../styles/Theme';
 
 function MyApp({ Component, pageProps }) {
   const Layout = Component.layout || (({ children }) => <>{children}</>);
@@ -28,7 +28,7 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <ThemeProvider theme={theme} />
+      <ThemeProvider theme={Theme} />
       <CssBaseline />
       <Layout>
         <ToastContainer position="bottom-right" newestOnTop />

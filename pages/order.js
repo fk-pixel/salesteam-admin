@@ -9,7 +9,6 @@ import {
   Stack,
   Badge,
   Card,
-  CardHeader,
   CardContent,
   CardActions,
   Typography,
@@ -56,24 +55,24 @@ export default function OrderForm() {
     createdBy: undefined,
   };
   // TODO: solve autocpmlete error problem : https://stackoverflow.com/questions/74757839/formik-material-ui-with-autocomplete-not-works-as-expected
-  const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/png'];
+  // const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/png'];
 
-  const registerSchema = yup.object().shape({
-    uriImage: yup
-      .mixed()
-      .nullable()
-      .required('A file is required')
-      .test(
-        'Fichier taille',
-        'upload file',
-        (value) => !value || (value && value.size <= 1024 * 1024),
-      )
-      .test(
-        'format',
-        'upload file',
-        (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type)),
-      ),
-  });
+  // const registerSchema = yup.object().shape({
+  //   uriImage: yup
+  //     .mixed()
+  //     .nullable()
+  //     .required('A file is required')
+  //     .test(
+  //       'Fichier taille',
+  //       'upload file',
+  //       (value) => !value || (value && value.size <= 1024 * 1024),
+  //     )
+  //     .test(
+  //       'format',
+  //       'upload file',
+  //       (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type)),
+  //     ),
+  // });
 
   const validationSchema = yup.object().shape({
     productNumber: yup.string().required('Lütfen ürün sayisini girin'),
@@ -325,7 +324,7 @@ export default function OrderForm() {
     field.onChange(e);
   }
 
-  function onChangeGifts(e, field, values, setValues, errors, setErrors) {
+  function onChangeGifts(e, field, values, setValues, errors) {
     const gifts = [...values.gifts];
 
     const giftNumber = e.target.value || 0;
@@ -404,7 +403,7 @@ export default function OrderForm() {
                   touched,
                   setValues,
                   setFieldValue,
-                  setFieldTouched /* handleChange, handleSubmit */,
+                  /* handleChange, handleSubmit */
                 }) => (
                   <Form>
                     <Stack spacing={3} direction={'row'} style={{ marginTop: 12 }}>

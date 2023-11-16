@@ -25,11 +25,11 @@ export const getRefreshToken = async (accessToken) => {
   //   body: JSON.stringify(data),
   // });
 
-  const json = await authRequest.json();
+  // const json = await authRequest.json();
 
-  console.log('json', json);
+  // console.log('json', json);
 
-  if (now.getMinutes() - expirationDate > 58) {
-    console.log('asd');
-  }
+  // if (now.getMinutes() - expirationDate > 58) {
+  //   console.log('asd');
+  // }
 };

@@ -1,63 +1,24 @@
 import * as React from 'react';
-import { v4 as uuidv4 } from 'uuid';
-
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
-import {
-  Avatar,
-  Drawer,
-  TextField,
-  CssBaseline,
-  Divider,
-  useMediaQuery,
-  Stack,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  Box,
-  Button,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Avatar, Divider, Stack, Box, Button, Tooltip, Typography } from '@mui/material';
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
-import Save from '@mui/icons-material/Save';
 import Delete from '@mui/icons-material/Delete';
 import Image from 'next/image';
-import { ArrowBack, Print, QrCode, Info } from '@mui/icons-material';
+import { Print, Info } from '@mui/icons-material';
 import { useReactToPrint } from 'react-to-print';
-import { toast } from 'react-toastify';
 import { faFileEdit, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Form, Formik } from 'formik';
-import * as yup from 'yup';
 import _ from 'lodash';
 
 import AutocompleteEditCell from '../Autocomplete/AutocompleteEditCell.js';
-import { sendContactForm } from '../../../controller/api.js';
-import {
-  deleteOrder,
-  updateOrder,
-  updateProductsAndGifts,
-} from '../../../sanity/utils/order-utils.js';
-import {
-  PANELTYPE_OPTIONS,
-  MAINTYPE_OPTIONS,
-  ROLLTYPE_OPTIONS,
-  SHIPPING_OPTIONS,
-  STATUS_OPTIONS,
-  getDataWithAvatar,
-  giftRegisterToAssets,
-  productRegisterToAssets,
-  imageRegisterToAssets,
-} from '../../utils/FormsUtil.js';
-import { ProductComponent } from '../Forms/ProductComponent.js';
-import { GiftComponent } from '../Forms/GiftComponent.js';
+import { STATUS_OPTIONS } from '../../utils/FormsUtil.js';
 import XLSXDialog from '../Dialogs/XLSXDialog.js';
 import { urlFor } from '../../../sanity/utils/client';
 import noImage from '../../assets/images/users/noimage.png';
-import ImageDialog from '../Dialogs/ImageDialog.js';
 import SupportDrawer from '../Drawers/SupportDrawer.js';
+import { MailAction, SaveAction, DeleteAction } from './DataTableActions.js';
+import { getConvertedData, getDataWithAvatar } from '../../utils/DashboardUtil.js';
+import { EditItemsDrawer } from '../Drawers/EditItemsDrawer.js';
 
 const classes = {
   tableButtonSX: {
@@ -72,12 +33,6 @@ const classes = {
       backgroundColor: '#1d1c1a',
     },
   },
-  closeButtonSX: {
-    backgroundColor: '#f50057',
-    '&:hover': {
-      backgroundColor: '#f50057',
-    },
-  },
   cellImageSX: {
     position: 'relative',
     width: '2.25rem',
@@ -85,81 +40,20 @@ const classes = {
     minWidth: '2.255rem',
     borderRadius: '0.0625rem',
     display: '-webkit-box',
-    display: '-webkit-flex',
-    display: '-ms-flexbox',
-    display: 'flex',
     overflow: 'hidden',
-    overflow: 'clip',
     alignItems: 'center',
     justifyContent: 'center',
   },
 };
 
-// const tableButtonSX = {
-//   '&:hover': {
-//     color: '#1769aa',
-//   },
-// };
-// const updateButtonSX = {
-//   width: 222,
-//   backgroundColor: '#1d1c1a',
-//   '&:hover': {
-//     backgroundColor: '#1d1c1a',
-//   },
-// };
-// const closeButtonSX = {
-//   backgroundColor: '#f50057',
-//   '&:hover': {
-//     backgroundColor: '#f50057',
-//   },
-// };
-// const cellImageSX = {
-//   position: 'relative',
-//   width: '2.25rem',
-//   height: '2.25rem',
-//   minWidth: '2.255rem',
-//   borderRadius: '0.0625rem',
-//   display: '-webkit-box',
-//   display: '-webkit-flex',
-//   display: '-ms-flexbox',
-//   display: 'flex',
-//   overflow: 'hidden',
-//   overflow: 'clip',
-//   alignItems: 'center',
-//   justifyContent: 'center',
-// };
-
 export default function DataTable(props) {
   const { data, userData } = props;
-
-  const isNonMobile = useMediaQuery('(min-width:600px)');
 
   const newData = getDataWithAvatar(data);
 
   const isAdmin = userData?.role === 'admin' || userData?.role === 'superAdmin';
 
-  const convertedData = newData?.flatMap((x) => ({
-    ...x,
-    products: x.products?.map((y) => ({
-      ...y,
-      productSize: y.productWidth + '*' + y.productHeight,
-      productMainType: MAINTYPE_OPTIONS.find((o) => o.value === y.productMainType),
-      productSubType: PANELTYPE_OPTIONS.concat(ROLLTYPE_OPTIONS).find(
-        (o) => o.value === y.productSubType,
-      ),
-      productCargoType: SHIPPING_OPTIONS.find((o) => o.value === y.productCargoType),
-    })),
-    gifts: x.gifts?.map((y) => ({
-      ...y,
-      giftSize: y.giftWidth + '*' + y.giftHeight,
-      giftMainType: MAINTYPE_OPTIONS.find((o) => o.value === y.giftMainType),
-      giftSubType: PANELTYPE_OPTIONS.concat(ROLLTYPE_OPTIONS).find(
-        (o) => o.value === y.giftSubType,
-      ),
-      giftCargoType: SHIPPING_OPTIONS.find((o) => o.value === y.giftCargoType),
-    })),
-    status: STATUS_OPTIONS.find((o) => o.value === x.status)?.title,
-  }));
+  const convertedData = getConvertedData(newData);
 
   let componentRef = React.useRef();
 
@@ -167,771 +61,32 @@ export default function DataTable(props) {
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [openSupportDrawer, setOpenSupportDrawer] = React.useState(false);
   const [openMail, setOpenMail] = React.useState(false);
-  const [openImage, setOpenImage] = React.useState(false);
   const [openXLSX, setOpenXLSX] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-  const handleOpenMailDialog = (rowID) => {
+
+  const handleOpenMailDialog = () => {
     setOpenMail(true);
-    setSelectedRowID(rowID);
   };
 
   const handleOpenXLSXDialog = () => {
     setOpenXLSX(true);
   };
 
-  const handleOpenImageDialog = (rowID) => {
-    setOpenImage(true);
-    setSelectedRowID(rowID);
-  };
-
   const handleClose = () => {
     setOpenMail(false);
     setOpenXLSX(false);
     setOpenDelete(false);
-    setOpenImage(false);
-    setSelectedRowID(() => undefined);
+    setOpenDrawer(false);
   };
 
-  const handleOpenDeleteDialog = (rowID) => {
+  const handleOpenDeleteDialog = () => {
     setOpenDelete(true);
-    setSelectedRowID(rowID);
   };
 
   const onChangeSupport = () => {
     setOpenSupportDrawer(!openSupportDrawer);
   };
-
-  const onSave = async (row) => {
-    const editedData = {
-      cost: row.cost,
-      packagingCost: row.packagingCost,
-      shippingCost: row.shippingCost,
-      description: row.description,
-      status: STATUS_OPTIONS.find((o) => o.title === row.status)?.value,
-      price: row.price,
-    };
-
-    await updateOrder(row._id, editedData)
-      .then(() => {
-        toast(<div>Siparis basariyla güncellendi</div>, {
-          type: 'success',
-        });
-      })
-      .catch((error) => {
-        toast(`Güncelleme isleminiz eksik veya gecersizdir. Sorun: ${error.message}`, {
-          type: 'error',
-        });
-      });
-  };
-
-  const onRemove = async (orderID) => {
-    await deleteOrder(orderID)
-      .then(async () => {
-        toast(`Siparis ${orderID} basariyla silindi`, {
-          type: 'success',
-        });
-        handleClose(orderID);
-      })
-      .catch((error) => {
-        toast(`Kayit isleminiz eksik veya gecersizdir. Sorun: ${error.message}`, {
-          type: 'error',
-        });
-      });
-  };
-
-  function MailDialog() {
-    // const fileInputMail = React.useRef(null);
-
-    const [mailState, setMailState] = React.useState({
-      id: uuidv4(),
-      sender: 'salesteam.ilk@gmail.com',
-      recipient: '',
-      context: '',
-      message: '',
-      //showAutoContext: false,
-      //autoContext: '',
-      //mailFile: null,
-      //defineNumberOfSales: false,
-      //pieceOfProduct: 0,
-      //pieceOfGift: 0,
-    });
-
-    // const handleChangeMailFile = (event) => {
-    //   setMailState({
-    //     ...mailState,
-    //     mailFile: URL.createObjectURL(event.target.files[0]),
-    //   });
-    // };
-
-    // function onUploadMail(e) {
-    //   e.preventDefault();
-    //   fileInputMail.current.click();
-    // }
-
-    const handleChange = ({ target }) => {
-      setMailState((prev) => ({
-        ...prev,
-        [target.name]: target.value,
-      }));
-    };
-
-    const rowData = convertedData.find((x) => x._id === selectedRowID);
-    const mailData = { ...rowData, ...mailState };
-
-    const sendEmail = async () => {
-      await sendContactForm(mailData);
-      handleClose();
-      // e.preventDefault();
-
-      // try {
-      //   const req = await sendContactForm(mailData);
-      //   if (req.status === 250) {
-      //     toast('Email basariyla gönderildi', {
-      //       type: 'success',
-      //     });
-      //     handleClose();
-      //   }
-      // } catch (e) {
-      //   toast(`Kayit isleminiz eksik veya gecersizdir. Sorun: ${e}`, {
-      //     type: 'error',
-      //   });
-      //   handleClose();
-      // }
-
-      // try {
-      //   const req = await fetch('api/contactWithSeller', {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify(mailData),
-      //   });
-      //   if (req.ok) {
-      //     toast('Email basariyla gönderildi', {
-      //       type: 'success',
-      //     });
-      //     handleClose();
-      //   }
-      // } catch (e) {
-      //   toast(`Kayit isleminiz eksik veya gecersizdir. Sorun: ${e}`, {
-      //     type: 'error',
-      //   });
-      //   handleClose();
-      // }
-
-      // await fetch('/api/contactWithSeller', {
-      //   method: 'POST',
-      //   body: JSON.stringify(mailData),
-      // })
-      //   .then(() => {
-      //     toast('Email basariyla gönderildi', {
-      //       type: 'success',
-      //     });
-      //     handleClose();
-      //   })
-      //   .catch(() => {
-      //     toast(`Kayit isleminiz eksik veya gecersizdir. Lütfen tekrar deneyin`, {
-      //       type: 'error',
-      //     });
-      //   });
-    };
-
-    return (
-      <Dialog open={openMail} onClose={handleClose} hideBackdrop id={selectedRowID}>
-        <DialogTitle>Mail Gönder</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <strong>'{rowData?._id} '</strong> siparisi icin üreticiyle temasa gecin.
-          </DialogContentText>
-          <form>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="sender"
-              name="sender"
-              label="Email Gönderen"
-              value={mailState.sender}
-              type="email"
-              fullWidth
-              variant="standard"
-              style={{ marginTop: 24 }}
-              disabled
-              onChange={handleChange}
-            />
-            {/* <Autocomplete
-              id="sender"
-              name="sender"
-              options={[
-                { value: userData.email, title: userData.email },
-                { value: defaultSender, title: defaultSender },
-              ]}
-              getOptionLabel={(o) => o.title || ''}
-              fullWidth
-              freeSolo={false}
-              disableClearable={true}
-              onChange={handleChange}
-              renderInput={(params) => (
-                <TextField
-                  style={{ width: 300 }}
-                  {...params}
-                  // onChange={handleChange}
-                  label="Email Gönderen"
-                  placeholder=""
-                />
-              )}
-            /> */}
-            <TextField
-              autoFocus
-              margin="dense"
-              id="recipient"
-              name="recipient"
-              label="Alici"
-              type="email"
-              fullWidth
-              variant="standard"
-              onChange={handleChange}
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="context"
-              name="context"
-              label="Konu"
-              type="text"
-              fullWidth
-              variant="standard"
-              onChange={handleChange}
-            />
-            {/* <Box style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between' }}>
-              <FormControlLabel
-                control={<Checkbox id={'showAutoContext'} />}
-                label={`Otomoatik icerik iste`}
-                onChange={(e) =>
-                  setMailState({
-                    ...mailState,
-                    showAutoContext: e.target.checked,
-                  })
-                }
-              />
-              <Autocomplete
-                id="autoContext"
-                name="autoContext"
-                options={AUTOCONTEXT_OPTIONS}
-                disabled={mailState.showAutoContext === false}
-                getOptionLabel={(o) => o.title || ''}
-                freeSolo={false}
-                disableClearable={true}
-                onChange={handleChange}
-                // onChange={(e) =>
-                //   setMailState({
-                //     ...mailState,
-                //     autoContext: e.target.value.label,
-                //   })
-                // }
-                renderInput={(params) => (
-                  <TextField
-                    style={{ width: 300 }}
-                    {...params}
-                    // onChange={handleChange}
-                    label="Otomatik Icerik"
-                    placeholder=""
-                  />
-                )}
-              />
-            </Box>
-            <Box style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between' }}>
-              <FormControlLabel
-                control={<Checkbox id={'defineNumberOfSales'} />}
-                label={`Ürün ve Hediye sayilarini girin`}
-                onChange={(e) =>
-                  setMailState({
-                    ...mailState,
-                    defineNumberOfSales: e.target.checked,
-                  })
-                }
-              />
-              {mailState.defineNumberOfSales &&
-                rowData?.products.map((x) => (
-                  <ul>
-                    <li>{x.productName}</li>
-                    <TextField
-                      autoFocus
-                      margin="dense"
-                      id="piece"
-                      name="piece"
-                      label="Adet"
-                      type="number"
-                      fullWidth
-                      onChange={handleChange}
-                    />
-                  </ul>
-                ))}
-            </Box> */}
-            <TextField
-              autoFocus
-              margin="dense"
-              id="message"
-              name="message"
-              label="Mesaj"
-              type="text"
-              fullWidth
-              variant="outlined"
-              multiline
-              rows={12}
-              onChange={handleChange}
-            />
-          </form>
-          {mailState.mailFile !== null && <pre>{mailState.mailFile}</pre>}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            sx={classes.closeButtonSX}
-            variant="contained"
-            // color="error"
-            onClick={handleClose}
-          >
-            Kapat
-          </Button>
-          {/* <>
-            <input
-              id={`mailFile`}
-              ref={fileInputMail}
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleChangeMailFile(e)}
-              style={{ display: 'none' }}
-            />
-            <Button startIcon={<UploadFile />} onClick={(e) => onUploadMail(e)} type="file">
-              Ekle
-            </Button>
-          </> */}
-          <Button
-            type="submit"
-            onClick={sendEmail}
-            disabled={!mailState.recipient}
-            color="primary"
-            variant="contained"
-          >
-            Gönder
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
-
-  function DeleteDialog() {
-    const rowData = convertedData.find((x) => x._id === selectedRowID);
-
-    return (
-      <>
-        <CssBaseline />
-        <Dialog
-          id={selectedRowID}
-          open={openDelete}
-          onClose={handleClose}
-          hideBackdrop
-          PaperProps={{
-            sx: {
-              // boxShadow: 'none',
-              // backgroundColor: 'rgba(255, 255, 255, .2)',
-            },
-            // style: {
-            //   backgroundColor: 'transparent',
-            // },
-          }}
-        >
-          <DialogTitle>Siparisi Sil</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              <strong style={{ color: 'red' }}>{rowData?._id}</strong> siparisi silmek
-              istediginizden emin misiniz?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button sx={classes.closeButtonSX} onClick={handleClose} variant="contained">
-              Kapat
-            </Button>
-            <Button color="primary" onClick={() => onRemove(rowData._id)} variant="contained">
-              Sil
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    );
-  }
-
-  function EditItemsDrawer() {
-    const rowData = convertedData.find((x) => x._id === rowSelectionModel[0]);
-
-    const initialValues = rowData;
-
-    const validationSchema = yup.object().shape({
-      // productNumber: yup.string().required('Lütfen ürün sayisini girin'),
-      products: yup.array().of(
-        yup.object().shape({
-          productName: yup.string().required('Lütfen ürün adini girin'),
-          productFile: yup
-            .mixed()
-            .required('Lütfen ürün resmini yükleyin')
-            .test('fileFormat', 'image sadece', (value) => {
-              // console.log(value);
-              return value && ['image'].includes(value._type);
-            }),
-          // productFile: yup.string().required('Lütfen ürün resmini yükleyin'),
-          productWidth: yup
-            .string()
-            .required('Lütfen ürün en ölcüsünü girin')
-            .matches(/^[0-9]+$/, 'Sadece numara girin')
-            .min(2, 'En az 2 haneli olmalidir')
-            .max(3, 'En fazla 3 haneli olmalidir'),
-          productHeight: yup
-            .string()
-            .required('Lütfen ürün boy ölcüsünü girin')
-            .matches(/^[0-9]+$/, 'Sadece numara girin')
-            .min(2, 'En az 2 haneli olmalidir')
-            .max(3, 'En fazla 3 haneli olmalidir'),
-          productPiece: yup
-            .string()
-            .required('Lütfen ürün adedini girin')
-            .matches(/^[0-9]+$/, 'Sadece numara girin')
-            .min(1, 'En az 1 haneli olmalidir')
-            .max(3, 'En fazla 3 haneli olmalidir'),
-        }),
-      ),
-      gifts: yup.array().of(
-        yup.object().shape({
-          giftName: yup.string().required('Lütfen hediye adini girin'),
-          giftFile: yup.string().required('Lütfen hediye resmini yükleyin'),
-          giftWidth: yup
-            .string()
-            .required('Lütfen hediye en ölcüsünü girin')
-            .matches(/^[0-9]+$/, 'Sadece numara girin')
-            .min(2, 'En az 2 haneli olmalidir')
-            .max(4, 'En fazla 4 haneli olmalidir'),
-          giftHeight: yup
-            .string()
-            .required('Lütfen hediye boy ölcüsünü girin')
-            .matches(/^[0-9]+$/, 'Sadece numara girin')
-            .min(2, 'En az 2 haneli olmalidir')
-            .max(4, 'En fazla 4 haneli olmalidir'),
-          giftPiece: yup
-            .string()
-            .required('Lütfen hediye adedini girin')
-            .matches(/^[0-9]+$/, 'Sadece numara girin')
-            .min(1, 'En az 1 haneli olmalidir')
-            .max(3, 'En fazla 3 haneli olmalidir'),
-        }),
-      ),
-    });
-
-    function onChangeProducts(e, field, values, setValues) {
-      const products = [...values.products];
-
-      // const Values = values.map((x) => Object.keys(x).filter((y) => y !== 'cargoLabel'));
-      const {
-        _id,
-        _createdAt,
-        avatar,
-        cost,
-        createdBy,
-        description,
-        gifts,
-        isEdiMode,
-        packagingCost,
-        price,
-        shippingCost,
-        status,
-        store,
-      } = values;
-
-      setValues({
-        _id,
-        _createdAt,
-        avatar,
-        cost,
-        createdBy,
-        description,
-        gifts,
-        isEdiMode,
-        packagingCost,
-        price,
-        shippingCost,
-        status,
-        store,
-        products,
-      });
-
-      // field.onChange(e);
-    }
-
-    function onChangeGifts(e, field, values, setValues) {
-      const gifts = [...values.gifts];
-
-      const {
-        _id,
-        _createdAt,
-        avatar,
-        cost,
-        createdBy,
-        description,
-        products,
-        isEdiMode,
-        packagingCost,
-        price,
-        shippingCost,
-        status,
-        store,
-      } = values;
-
-      setValues({
-        _id,
-        _createdAt,
-        avatar,
-        cost,
-        createdBy,
-        description,
-        products,
-        isEdiMode,
-        packagingCost,
-        price,
-        shippingCost,
-        status,
-        store,
-        products,
-      });
-
-      field.onChange(e);
-    }
-
-    function onChangeCargoLabel(e, field, values, setValues) {
-      const cargoLabel = e.currentTarget.files[0];
-      // console.log('cargoLabel', cargoLabel);
-
-      setValues({ ...values, cargoLabel });
-
-      field.onChange(e);
-
-      // console.log('valuesDATA', values);
-    }
-
-    const onChangeOpenDrawer = () => {
-      setOpenDrawer(!openDrawer);
-    };
-
-    const onSubmit = async (values) => {
-      const productsWithAssets = values.products?.map(async (product) => {
-        if (product.productFile?.asset._ref === undefined) {
-          const asset = await productRegisterToAssets(product);
-          const file = {
-            _type: 'image',
-            asset: {
-              _type: 'reference',
-              _ref: asset._id,
-            },
-          };
-
-          return {
-            ...product,
-            productFile: await Promise.resolve(file).then(
-              (result) => (product.productFile = result),
-            ),
-          };
-        } else {
-          return {
-            ...product,
-          };
-        }
-      });
-
-      const giftsWithAssets = values.gifts?.map(async (gift) => {
-        if (gift.giftFile?.asset._ref === undefined) {
-          const asset = await giftRegisterToAssets(gift);
-          const file = {
-            _type: 'image',
-            asset: {
-              _type: 'reference',
-              _ref: asset._id,
-            },
-          };
-
-          return {
-            ...gift,
-            giftFile: await Promise.resolve(file).then((result) => (gift.giftFile = result)),
-          };
-        } else {
-          return {
-            ...gift,
-          };
-        }
-      });
-
-      const cargoLabelWithAsset = async () => {
-        if (values.cargoLabel?.asset._ref === undefined) {
-          const asset = await imageRegisterToAssets(values.cargoLabel);
-
-          const file = {
-            _type: 'image',
-            asset: {
-              _type: 'reference',
-              _ref: asset._id,
-            },
-          };
-
-          return {
-            cargoLabel: await Promise.resolve(file).then((result) => (cargoLabel = result)),
-          };
-        } else {
-          return cargoLabel;
-        }
-      };
-
-      const products = await Promise.all(productsWithAssets).then((res) => (values.products = res));
-
-      const gifts = await Promise.all(giftsWithAssets).then((res) => (values.gifts = res));
-
-      const cargoLabel = await cargoLabelWithAsset();
-
-      const editedData = {
-        products,
-        gifts,
-        cargoLabel,
-      };
-
-      await updateProductsAndGifts(values._id, editedData)
-        .then(() => {
-          toast(<div>Siparis basariyla güncellendi</div>, {
-            type: 'success',
-          });
-        })
-        .catch((error) => {
-          toast(`Güncelleme isleminiz eksik veya gecersizdir. Sorun: ${error.message}`, {
-            type: 'error',
-          });
-        });
-    };
-
-    return (
-      <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
-        <Drawer
-          key={rowData?._id}
-          sx={{ '& .MuiDrawer-paper': { width: '475px', justifyContent: 'space-between' } }}
-          anchor={'right'}
-          open={openDrawer}
-          onClose={() => setOpenDrawer(false)}
-        >
-          <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              validateOnChange={false}
-            >
-              {({ values, errors, touched, setValues, setFieldValue }) => (
-                <Form>
-                  <Box display={'block'}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        width: 475,
-                        zIndex: 1,
-                        overflow: 'auto',
-                      }}
-                    >
-                      <Button
-                        sx={{
-                          marginLeft: isNonMobile ? '' : 13,
-                          paddingLeft: isNonMobile ? 1 : 0,
-                          position: 'fixed',
-                        }}
-                      >
-                        <ArrowBack onClick={onChangeOpenDrawer} />
-                      </Button>
-                      <Tooltip
-                        title={
-                          values.cargoLabel === null
-                            ? 'Kargo etiketi ekleyin'
-                            : 'Kargo etkieti degistirin'
-                        }
-                      >
-                        <Button
-                          sx={{
-                            position: 'fixed',
-                            marginLeft: 46,
-                            color: values.cargoLabel?.asset === undefined ? '#d32f2f' : '#1976d2',
-                          }}
-                          // disabled={values.cargoLabel?.asset === undefined}
-                        >
-                          <QrCode onClick={() => setOpenImage(true)} />
-                        </Button>
-                      </Tooltip>
-                    </Box>
-                    <ProductComponent
-                      key={'products'}
-                      errors={errors}
-                      onChangeProducts={onChangeProducts}
-                      setValues={setValues}
-                      touched={touched}
-                      values={values}
-                      setFieldValue={setFieldValue}
-                      isNonMobile={isNonMobile}
-                      isDrawer={true}
-                      // onChangeOpenDrawer={onChangeOpenDrawer}
-                    />
-                    <GiftComponent
-                      key={'gifts'}
-                      errors={errors}
-                      onChangeGifts={onChangeGifts}
-                      setValues={setValues}
-                      touched={touched}
-                      values={values}
-                      setFieldValue={setFieldValue}
-                      isNonMobile={isNonMobile}
-                      isDrawer={true}
-                      // onChangeOpenDrawer={onChangeOpenDrawer}
-                    />
-                    <ImageDialog
-                      values={values}
-                      setValues={setValues}
-                      openImage={openImage}
-                      handleClose={handleClose}
-                      setFieldValue={setFieldValue}
-                      onChangeCargoLabel={onChangeCargoLabel}
-                    />
-                  </Box>
-                  <Box
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      zIndex: 1,
-                      backgroundColor: '#ffff', //'rgba(220, 220, 220, 0.9)',
-                      height: 60,
-                      position: 'sticky',
-                      bottom: 0,
-                      top: 0,
-                      alignSelf: 'flex-end',
-                      marginLeft: isNonMobile ? '' : 78,
-                    }}
-                  >
-                    <Button
-                      variant="contained"
-                      disabled={Object.keys(errors)?.length > 0}
-                      sx={classes.updateButtonSX}
-                      type="submit"
-                      onClick={() => onSubmit(values)}
-                    >
-                      Güncelle
-                    </Button>
-                  </Box>
-                </Form>
-              )}
-            </Formik>
-          </Box>
-        </Drawer>
-      </Box>
-    );
-  }
 
   const columns = React.useMemo(
     () => [
@@ -1053,7 +208,13 @@ export default function DataTable(props) {
           );
         },
       },
-      { field: 'cost', headerName: 'Maliyet', width: 100, type: 'number', editable: isAdmin },
+      {
+        field: 'cost',
+        headerName: 'Maliyet',
+        width: 100,
+        type: 'number',
+        editable: isAdmin,
+      },
       {
         field: 'packagingCost',
         headerName: 'Paket Maliyeti',
@@ -1112,7 +273,7 @@ export default function DataTable(props) {
       {
         field: 'actions',
         type: 'actions',
-        width: 100,
+        width: 130,
         getActions: (params) => [
           <>
             {isAdmin && (
@@ -1133,7 +294,13 @@ export default function DataTable(props) {
                     />
                   </span>
                 </Tooltip>
-                <MailDialog key={params.row._id} />
+                <MailAction
+                  key={params.row._id}
+                  convertedData={convertedData}
+                  selectedRowID={selectedRowID}
+                  openMail={openMail}
+                  handleClose={handleClose}
+                />
               </>
             )}
           </>,
@@ -1165,15 +332,7 @@ export default function DataTable(props) {
             )}
           </>,
           <>
-            <Tooltip title={'Siparisi güncelle'}>
-              <span>
-                <GridActionsCellItem
-                  key={'update'}
-                  icon={<Save sx={classes.tableButtonSX} onClick={() => onSave(params.row)} />}
-                  label="Save"
-                />
-              </span>
-            </Tooltip>
+            <SaveAction {...{ params, selectedRowID, convertedData }} />
           </>,
           <>
             <Tooltip title={'Siparisi sil'}>
@@ -1192,12 +351,24 @@ export default function DataTable(props) {
                 />
               </span>
             </Tooltip>
-            <DeleteDialog />
+            <DeleteAction
+              selectedRowID={selectedRowID}
+              openDelete={openDelete}
+              handleClose={handleClose}
+            />
           </>,
         ],
       },
     ],
-    [handleOpenMailDialog, handleOpenDeleteDialog, handleClose],
+    [
+      isAdmin,
+      convertedData,
+      selectedRowID,
+      openMail,
+      openSupportDrawer,
+      onChangeSupport,
+      openDelete,
+    ],
   );
 
   const handlePrint = useReactToPrint({
@@ -1242,7 +413,7 @@ export default function DataTable(props) {
                 ref={componentRef}
               >
                 {printableOrder.map((x) => (
-                  <div style={{ margin: '12px 60px 12px 60px' }}>
+                  <div key={'print-section'} style={{ margin: '12px 60px 12px 60px' }}>
                     <Box display={'block'} /* style={{ margin: 'auto' }} */>
                       <Image
                         src={x.cargoLabel?.asset._ref ? urlFor(x.cargoLabel)?.url() : noImage}
@@ -1264,7 +435,6 @@ export default function DataTable(props) {
                                   y.productMainType?.title +
                                   ' | '
                                 );
-
                                 //getSeperator(i, x.products.length)
                               }
                             },
@@ -1306,8 +476,7 @@ export default function DataTable(props) {
                 </Button>
               </span>
             </Tooltip>
-
-            <EditItemsDrawer />
+            <EditItemsDrawer {...{ convertedData, rowSelectionModel, openDrawer, handleClose }} />
           </Stack>
         ) : (
           <></>
@@ -1326,14 +495,9 @@ export default function DataTable(props) {
           rowsPerPageOptions={[25]}
           checkboxSelection={isAdmin}
           rowHeight={75}
-          // isRowSelectable={(params) => params.row.cargoLabel !== null}
+          onRowClick={(params) => setSelectedRowID(params.id)}
         />
       </Box>
     </div>
   );
-}
-
-export function getSeperator(i, length) {
-  const lastItem = length - 1;
-  return i !== lastItem ? ' | ' : unefined;
 }
