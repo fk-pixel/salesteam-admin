@@ -1,24 +1,20 @@
-import * as React from 'react';
-import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
-import { Avatar, Divider, Stack, Box, Button, Tooltip, Typography } from '@mui/material';
-import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
-import Delete from '@mui/icons-material/Delete';
-import Image from 'next/image';
-import { Print, Info } from '@mui/icons-material';
-import { useReactToPrint } from 'react-to-print';
 import { faFileEdit, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import _ from 'lodash';
+import { Print } from '@mui/icons-material';
+import { Avatar, Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import Image from 'next/image';
+import * as React from 'react';
+import { useReactToPrint } from 'react-to-print';
 
-import AutocompleteEditCell from '../Autocomplete/AutocompleteEditCell.js';
-import { STATUS_OPTIONS } from '../../utils/FormsUtil.js';
-import XLSXDialog from '../Dialogs/XLSXDialog.js';
 import { urlFor } from '../../../sanity/utils/client';
 import noImage from '../../assets/images/users/noimage.png';
-import SupportDrawer from '../Drawers/SupportDrawer.js';
-import { MailAction, SaveAction, DeleteAction } from './DataTableActions.js';
 import { getConvertedData, getDataWithAvatar } from '../../utils/DashboardUtil.js';
+import { STATUS_OPTIONS } from '../../utils/FormsUtil.js';
+import AutocompleteEditCell from '../Autocomplete/AutocompleteEditCell.js';
+import XLSXDialog from '../Dialogs/XLSXDialog.js';
 import { EditItemsDrawer } from '../Drawers/EditItemsDrawer.js';
+import { DeleteAction, MailAction, SaveAction, SupportAction } from './DataTableActions.js';
 
 const classes = {
   tableButtonSX: {
@@ -59,33 +55,16 @@ export default function DataTable(props) {
 
   const [selectedRowID, setSelectedRowID] = React.useState();
   const [openDrawer, setOpenDrawer] = React.useState(false);
-  const [openSupportDrawer, setOpenSupportDrawer] = React.useState(false);
-  const [openMail, setOpenMail] = React.useState(false);
   const [openXLSX, setOpenXLSX] = React.useState(false);
-  const [openDelete, setOpenDelete] = React.useState(false);
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-
-  const handleOpenMailDialog = () => {
-    setOpenMail(true);
-  };
 
   const handleOpenXLSXDialog = () => {
     setOpenXLSX(true);
   };
 
   const handleClose = () => {
-    setOpenMail(false);
     setOpenXLSX(false);
-    setOpenDelete(false);
     setOpenDrawer(false);
-  };
-
-  const handleOpenDeleteDialog = () => {
-    setOpenDelete(true);
-  };
-
-  const onChangeSupport = () => {
-    setOpenSupportDrawer(!openSupportDrawer);
   };
 
   const columns = React.useMemo(
@@ -275,100 +254,14 @@ export default function DataTable(props) {
         type: 'actions',
         width: 130,
         getActions: (params) => [
-          <>
-            {isAdmin && (
-              <>
-                <Tooltip title={'Mail gönder'}>
-                  <span>
-                    <GridActionsCellItem
-                      key={'mail'}
-                      icon={
-                        <ForwardToInboxIcon
-                          sx={classes.tableButtonSX}
-                          onClick={() => {
-                            handleOpenMailDialog(params.row._id);
-                          }}
-                        />
-                      }
-                      label="Send"
-                    />
-                  </span>
-                </Tooltip>
-                <MailAction
-                  key={params.row._id}
-                  convertedData={convertedData}
-                  selectedRowID={selectedRowID}
-                  openMail={openMail}
-                  handleClose={handleClose}
-                />
-              </>
-            )}
-          </>,
-          <>
-            {!isAdmin && (
-              <>
-                <Tooltip title={'Admin destek hatti'}>
-                  <span>
-                    <GridActionsCellItem
-                      key={'support'}
-                      icon={
-                        <Info
-                          sx={classes.tableButtonSX}
-                          onClick={() => setOpenSupportDrawer(true)}
-                        />
-                      }
-                      label="Support"
-                    />
-                  </span>
-                </Tooltip>
-                <SupportDrawer
-                  key={params.row._id}
-                  rowID={params.row._id}
-                  data={convertedData}
-                  openSupportDrawer={openSupportDrawer}
-                  onChangeSupport={onChangeSupport}
-                />
-              </>
-            )}
-          </>,
-          <>
-            <SaveAction {...{ params, selectedRowID, convertedData }} />
-          </>,
-          <>
-            <Tooltip title={'Siparisi sil'}>
-              <span>
-                <GridActionsCellItem
-                  key={'delete'}
-                  icon={
-                    <Delete
-                      sx={classes.tableButtonSX}
-                      onClick={() => {
-                        handleOpenDeleteDialog(params.row._id);
-                      }}
-                    />
-                  }
-                  label="Delete"
-                />
-              </span>
-            </Tooltip>
-            <DeleteAction
-              selectedRowID={selectedRowID}
-              openDelete={openDelete}
-              handleClose={handleClose}
-            />
-          </>,
+          <>{isAdmin && <MailAction {...{ params, convertedData }} />}</>,
+          <>{!isAdmin && <SupportAction {...{ params, convertedData }} />}</>,
+          <>{isAdmin && <SaveAction {...{ params, selectedRowID, convertedData }} />}</>,
+          <>{isAdmin && <DeleteAction {...{ params }} />}</>,
         ],
       },
     ],
-    [
-      isAdmin,
-      convertedData,
-      selectedRowID,
-      openMail,
-      openSupportDrawer,
-      onChangeSupport,
-      openDelete,
-    ],
+    [isAdmin, convertedData, selectedRowID],
   );
 
   const handlePrint = useReactToPrint({
@@ -390,7 +283,7 @@ export default function DataTable(props) {
                   key={'mainActions[0]'}
                   variant="outlined"
                   color="primary"
-                  size="large"
+                  sx={{ fontSize: 19 }}
                   onClick={() => handleOpenXLSXDialog()}
                 >
                   <FontAwesomeIcon icon={faFileExcel} />
@@ -414,7 +307,7 @@ export default function DataTable(props) {
               >
                 {printableOrder.map((x) => (
                   <div key={'print-section'} style={{ margin: '12px 60px 12px 60px' }}>
-                    <Box display={'block'} /* style={{ margin: 'auto' }} */>
+                    <Box display={'block'}>
                       <Image
                         src={x.cargoLabel?.asset._ref ? urlFor(x.cargoLabel)?.url() : noImage}
                         width="225"
@@ -435,7 +328,6 @@ export default function DataTable(props) {
                                   y.productMainType?.title +
                                   ' | '
                                 );
-                                //getSeperator(i, x.products.length)
                               }
                             },
                             //   ||

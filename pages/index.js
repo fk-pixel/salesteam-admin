@@ -1,14 +1,21 @@
 import React from 'react';
-import { StrictMode } from 'react';
-import Router from 'next/router';
-import { createRoot } from 'react-dom/client';
-import MyApp from './_app';
+
+import { useRouter } from 'next/router';
 
 export default function Index() {
+  //Router.push('/auth/login');
+  const router = useRouter();
   React.useEffect(() => {
-    Router.push('/auth/login');
+    router.push('/auth/login');
   });
-  return <div />;
+
+  // return (
+  //   <span
+  //     onClick={function () {
+  //       router.push('/auth/login');
+  //     }}
+  //   ></span>
+  // );
   // const rootElement = document.getElementById('root');
 
   // const root = createRoot(rootElement);
