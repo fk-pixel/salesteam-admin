@@ -1,7 +1,5 @@
-import React from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { Delete, ForwardToInbox, Info, Send } from '@mui/icons-material';
 import Save from '@mui/icons-material/Save';
-import { format } from 'date-fns';
 import {
   Box,
   Button,
@@ -13,20 +11,21 @@ import {
   DialogTitle,
   Drawer,
   Fab,
-  Stack,
   TextField as MuiTextField,
+  Stack,
   Tooltip,
-  useMediaQuery,
 } from '@mui/material';
+import { GridActionsCellItem } from '@mui/x-data-grid';
+import { format } from 'date-fns';
+import { Field, Form, Formik } from 'formik';
+import { Autocomplete as FormikAutocomplete, TextField as FormikTextField } from 'formik-mui';
+import _ from 'lodash';
+import React from 'react';
 import { toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
+import { sendContactForm } from '../../../controller/api';
 import { deleteOrder, updateOrder } from '../../../sanity/utils/order-utils';
 import { STATUS_OPTIONS } from '../../utils/FormsUtil';
-import { sendContactForm } from '../../../controller/api';
-import _ from 'lodash';
-import { GridActionsCellItem } from '@mui/x-data-grid';
-import { Delete, ForwardToInbox, Info, Send } from '@mui/icons-material';
-import { Field, Form, Formik } from 'formik';
-import { TextField as FormikTextField, Autocomplete as FormikAutocomplete } from 'formik-mui';
 
 const classes = {
   closeButtonSX: {
@@ -147,7 +146,7 @@ export function MailAction({ params, convertedData }) {
         <DialogTitle>Mail Gönder</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <strong>'{rowData?._id} '</strong> siparisi icin üreticiyle temasa gecin.
+            <strong>&apos;{rowData?._id}&apos;</strong> siparisi icin üreticiyle temasa gecin.
           </DialogContentText>
           <form>
             <MuiTextField
@@ -348,10 +347,10 @@ export function SaveAction({ params, selectedRowID, convertedData }) {
 }
 
 export function SupportAction({ params, convertedData }) {
-  const isNonMobile = useMediaQuery('(min-width:600px)');
+  //const isNonMobile = useMediaQuery('(min-width:600px)');
 
-  const [selectedPets, setSelectedPets] = React.useState([]);
-  const [petInputValue, setPetInputValue] = React.useState('');
+  // const [selectedPets, setSelectedPets] = React.useState([]);
+  // const [petInputValue, setPetInputValue] = React.useState('');
   const [openSupportDrawer, setOpenSupportDrawer] = React.useState(false);
 
   const rowData = convertedData.find((x) => x._id === params.row._id);
@@ -679,9 +678,9 @@ export function SupportAction({ params, convertedData }) {
             >
               {({
                 values,
-                errors,
-                touched,
-                setValues,
+                // errors,
+                // touched,
+                // setValues,
                 setFieldValue,
                 handleSubmit /* handleChange */,
               }) => (
@@ -728,7 +727,10 @@ export function SupportAction({ params, convertedData }) {
                         fullWidth
                         multiple
                         onChange={(e, v) =>
-                          setFieldValue('noteToAdmin', v ? [...rest, v] : { value: '', title: '' })
+                          setFieldValue(
+                            'noteToAdmin',
+                            v ? [...{ values }, v] : { value: '', title: '' },
+                          )
                         }
                         // onChange={(event, newPet) => {
                         //   setSelectedPets(newPet);
