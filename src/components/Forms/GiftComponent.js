@@ -26,7 +26,7 @@ import { buildURL } from '../../../sanity/lib/image';
 export function GiftComponent({
   values,
   errors,
-  touched,
+  //touched,
   isNonMobile,
   setFieldValue,
   isDrawer,
@@ -54,8 +54,8 @@ export function GiftComponent({
         <FieldArray key={'gifts'} name="gifts">
           {() =>
             values.gifts?.map((gift, i) => {
-              const giftErrors = (errors.gifts?.length && errors.gifts[i]) || {};
-              const giftTouched = (touched.gifts?.length && touched.gifts[i]) || {};
+              //const giftErrors = (errors.gifts?.length && errors.gifts[i]) || {};
+              //const giftTouched = (touched.gifts?.length && touched.gifts[i]) || {};
               return (
                 <>
                   {/* {isDrawer && !isNonMobile && (
@@ -381,7 +381,9 @@ export function GiftComponent({
                         component={FormikAutocomplete}
                         options={selectSubOptions(gift.giftMainType?.title)}
                         disabled={
-                          gift.giftMainType?.title === '' || gift.giftMainType?.title === 'Cam'
+                          !gift.giftMainType ||
+                          gift.giftMainType?.title === '' ||
+                          gift.giftMainType?.title === 'Cam'
                         }
                         getOptionLabel={(option) => option.title}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -400,7 +402,11 @@ export function GiftComponent({
                         name={`gifts.${i}.giftCargoType`}
                         component={FormikAutocomplete}
                         options={SHIPPING_OPTIONS}
-                        disabled={gift.giftMainType?.title === 'Cam'}
+                        disabled={
+                          !gift.giftMainType ||
+                          gift.giftMainType?.title === '' ||
+                          gift.giftMainType?.title === 'Cam'
+                        }
                         getOptionLabel={(option) => option.title}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
                         fullWidth

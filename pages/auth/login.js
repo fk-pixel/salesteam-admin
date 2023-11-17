@@ -34,7 +34,7 @@ export default function LogIn({ users }) {
       .required('Gecerli parolanizi giriniz'),
   });
 
-  const onSubmit = async (values, errors) => {
+  const onSubmit = async (values) => {
     const user = users !== null ? users.find((x) => x.email === values.email) : {};
 
     const matchedUser =

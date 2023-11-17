@@ -52,12 +52,12 @@ import createImageURLFromDrive from '../../utils/ImageUtil';
 export function ProductComponent({
   values,
   errors,
-  touched,
+  //touched,
   isNonMobile,
   setFieldValue,
-  productErrors,
+  //productErrors,
   isDrawer,
-  onChangeOpenDrawer,
+  //onChangeOpenDrawer,
 }) {
   const [openProductFile, setOpenProductFile] = React.useState([]);
 
@@ -68,8 +68,8 @@ export function ProductComponent({
     }
   }, [values.products]);
 
-  console.log('values', values);
-  console.log('errors', errors);
+  //console.log('values', values);
+  //console.log('errors', errors);
 
   return (
     <>
@@ -457,6 +457,7 @@ export function ProductComponent({
                         //     setFieldValue(`products.${i}.productSubType`, '');
                         // }}
                         disabled={
+                          !product.productMainType ||
                           product.productMainType?.title === '' ||
                           product.productMainType?.title === 'Cam'
                         }
@@ -480,7 +481,11 @@ export function ProductComponent({
                         // onChange={(e) => {
                         //   setFieldValue(`products.${i}.productCargoType`, e.target.value?.id);
                         // }}
-                        disabled={product.productMainType?.title === 'Cam'}
+                        disabled={
+                          !product.productMainType ||
+                          product.productMainType?.title === '' ||
+                          product.productMainType?.title === 'Cam'
+                        }
                         getOptionLabel={(option) => option.title}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
                         fullWidth
