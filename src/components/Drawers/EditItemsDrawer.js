@@ -9,11 +9,20 @@ import {
   productRegisterToAssets,
 } from '../../utils/FormsUtil';
 import { updateProductsAndGifts } from '../../../sanity/utils/order-utils';
-import { Box, Button, Drawer, Tooltip, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Button,
+  Drawer,
+  Container,
+  Tooltip,
+  useMediaQuery,
+  AppBar,
+  Toolbar,
+} from '@mui/material';
 import { ArrowBack, QrCode } from '@mui/icons-material';
-import ImageDialog from 'components/Dialogs/ImageDialog';
-import { GiftComponent } from 'components/Forms/GiftComponent';
-import { ProductComponent } from 'components/Forms/ProductComponent';
+import ImageDialog from '../Dialogs/ImageDialog';
+import { GiftComponent } from '../Forms/GiftComponent';
+import { ProductComponent } from '../Forms/ProductComponent';
 
 const classes = {
   updateButtonSX: {
@@ -186,7 +195,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
 
   const onSubmit = async (values) => {
     const productsWithAssets = values.products?.map(async (product) => {
-      if (product.productFile?.asset._ref === undefined) {
+      if (product.productFile?.asset?._ref === undefined) {
         const asset = await productRegisterToAssets(product);
         const file = {
           _type: 'image',
@@ -242,11 +251,10 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
         };
 
         return {
-          cargoLabel: await Promise.resolve(file).then((result) => (cargoLabel = result)),
+          cargoLabel: await Promise.resolve(file).then((result) => result),
         };
-      } else {
-        return cargoLabel;
       }
+      return;
     };
 
     const products = await Promise.all(productsWithAssets).then((res) => (values.products = res));
@@ -291,21 +299,26 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
           >
             {({ values, errors, touched, setValues, setFieldValue }) => (
               <Form>
-                <Box display={'block'}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      width: 475,
-                      zIndex: 1,
-                      overflow: 'auto',
-                    }}
-                  >
+                <AppBar
+                  position="sticky"
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    //width: 475,
+                    zIndex: 100,
+                    height: 60,
+                    backgroundColor: 'black',
+                    //overflow: 'auto',
+                  }}
+                >
+                  <Toolbar>
                     <Button
                       sx={{
                         marginLeft: isNonMobile ? '' : 13,
                         paddingLeft: isNonMobile ? 1 : 0,
                         position: 'fixed',
+                        zIndex: 101,
+                        color: 'white',
                       }}
                     >
                       <ArrowBack onClick={handleClose} />
@@ -320,6 +333,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
                       <Button
                         sx={{
                           position: 'fixed',
+                          zIndex: 101,
                           marginLeft: 46,
                           color: values.cargoLabel?.asset === undefined ? '#d32f2f' : '#1976d2',
                         }}
@@ -328,7 +342,10 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
                         <QrCode onClick={() => setOpenImage(true)} />
                       </Button>
                     </Tooltip>
-                  </Box>
+                  </Toolbar>
+                </AppBar>
+
+                <Container sx={{ height: '100%', minHeight: '1144px', marginTop: 0 }}>
                   <ProductComponent
                     key={'products'}
                     errors={errors}
@@ -354,6 +371,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
                     // onChangeOpenDrawer={onChangeOpenDrawer}
                   />
                   <ImageDialog
+                    key={'cargoLabelImage'}
                     values={values}
                     setValues={setValues}
                     openImage={openImage}
@@ -361,7 +379,8 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
                     setFieldValue={setFieldValue}
                     onChangeCargoLabel={onChangeCargoLabel}
                   />
-                </Box>
+                </Container>
+
                 <Box
                   style={{
                     display: 'flex',

@@ -129,10 +129,30 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary" variant="contained">
+          <Button
+            onClick={handleClose}
+            style={{
+              backgroundColor: '#f50057',
+              '&:hover': {
+                backgroundColor: '#f50057',
+              },
+              color: '#fff',
+            }}
+            variant="contained"
+          >
             Kapat
           </Button>
-          <Button onClick={createXLSX} color="primary" variant="contained">
+          <Button
+            onClick={createXLSX}
+            style={{
+              backgroundColor: '#1976d2',
+              '&:hover': {
+                backgroundColor: '#1976d2',
+              },
+              color: '#fff',
+            }}
+            variant="contained"
+          >
             Oluştur
           </Button>
         </DialogActions>

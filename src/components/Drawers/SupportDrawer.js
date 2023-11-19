@@ -1,20 +1,18 @@
-import React from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { ArrowBack, QrCode, Send } from '@mui/icons-material';
-import { format } from 'date-fns';
+import { Send } from '@mui/icons-material';
 import {
-  TextField as MuiTextField,
   //   Autocomplete,
   Box,
   Button,
-  Drawer,
-  Tooltip,
-  useMediaQuery,
-  Stack,
   Chip,
+  Drawer,
+  TextField as MuiTextField,
+  Stack,
+  useMediaQuery,
 } from '@mui/material';
+import { format } from 'date-fns';
 import { Field, Form, Formik } from 'formik';
-import { TextField as FormikTextField, Autocomplete as FormikAutocomplete } from 'formik-mui';
+import { Autocomplete as FormikAutocomplete, TextField as FormikTextField } from 'formik-mui';
+import React from 'react';
 
 const updateButtonSX = {
   width: 122,

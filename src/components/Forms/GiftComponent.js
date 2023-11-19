@@ -69,11 +69,11 @@ export function GiftComponent({
                       borderTopRightRadius: 18,
                       borderBottomRightRadius: 18,
                       width: isDrawer ? 78 : 104,
-                      backgroundColor: '#fff',
+                      backgroundColor: 'orange', //'#ffbc34', //'#fff',
                       marginBottom: 2,
                       marginTop: i === 0 ? 6 : isNonMobile ? 0 : 3,
-                      border: '1.5px solid #1d1c1a',
-                      color: '#1d1c1a',
+                      //border: '1.5px solid #1d1c1a',
+                      color: '#ffff', //'#1d1c1a',
                       // border: '1.5px solid #027148',
                       // color: '#027148',
                     }}
@@ -208,6 +208,8 @@ export function GiftComponent({
                                   '&:hover': {
                                     backgroundColor: '#f50057',
                                   },
+                                  borderTopRightRadius: 0,
+                                  borderBottomRightRadius: 0,
                                 }}
                                 onClick={() =>
                                   setOpenGiftFile(
@@ -228,7 +230,12 @@ export function GiftComponent({
                                 style={{ display: 'none' }}
                               />
                               <label htmlFor={`gifts.${i}.giftFile`}>
-                                <Button variant="contained" color="inherit" component={'span'}>
+                                <Button
+                                  sx={{ borderRadius: 0 }}
+                                  variant="contained"
+                                  color="inherit"
+                                  component={'span'}
+                                >
                                   Resmi Degistir
                                 </Button>
                               </label>
@@ -241,6 +248,7 @@ export function GiftComponent({
                                   variant="contained"
                                   disabled={gift?.giftFile?.asset === undefined}
                                   color="primary"
+                                  sx={{ borderTopLeftRadius: 0, borderBottomRightRadius: 0 }}
                                 >
                                   Resmi Indir
                                 </Button>
@@ -426,18 +434,6 @@ export function GiftComponent({
                       <Box
                         sx={{
                           marginBottom: 48,
-                          marginTop: 32,
-                          height: 1,
-                          width: '100%',
-                          backgroundColor: 'lightgray',
-                        }}
-                      />
-                    )}
-
-                    {i === values.gifts.length - 1 && isDrawer && (
-                      <Box
-                        sx={{
-                          marginBottom: 12,
                           marginTop: 32,
                           height: 1,
                           width: '100%',

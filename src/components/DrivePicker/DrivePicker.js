@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import useDrivePicker from 'react-google-drive-picker';
 
-import Icon from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 import { getRefreshToken } from '../../../controller/oatuhByDrive';
 // import { google } from 'googleapis';
 
@@ -13,6 +13,9 @@ const classes = {
   button: {
     height: 40,
     border: '1px solid #d32f2f',
+    borderTopColor: '#11a861',
+    borderRightColor: '#ffcf63',
+    borderBottomColor: '#3777e3',
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
   },
@@ -23,6 +26,7 @@ const classes = {
     marginRight: 1,
   },
 };
+
 export function getFile(resonseData) {
   gapi.client.drive.files
     .get({
@@ -126,9 +130,9 @@ export default function DrivePicker({ productFile, setFieldValue }) {
 
   return (
     <Button sx={classes.button} size="medium" onClick={() => handleOpenPicker()}>
-      <span className={classes.icon}>
-        <Icon name={'googleDrive'} />
-      </span>
+      {/* <span className={classes.icon}> */}
+      <Icon name={'gd1'} />
+      {/* </span> */}
     </Button>
   );
 }

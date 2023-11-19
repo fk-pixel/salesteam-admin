@@ -10,6 +10,7 @@ import {
   Button,
   Collapse,
   Tooltip,
+  Divider,
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -227,7 +228,7 @@ export function ProductComponent({
                         <div>
                           <Image
                             src={
-                              product.productFile.asset._ref
+                              product.productFile.asset?._ref
                                 ? urlFor(product.productFile)?.url()
                                 : product.productFile !== null || product.productFile !== undefined
                                 ? URL.createObjectURL(product.productFile)
@@ -274,6 +275,8 @@ export function ProductComponent({
                                   '&:hover': {
                                     backgroundColor: '#f50057',
                                   },
+                                  borderTopRightRadius: 0,
+                                  borderBottomRightRadius: 0,
                                 }}
                                 onClick={() =>
                                   setOpenProductFile(
@@ -297,7 +300,12 @@ export function ProductComponent({
                                 style={{ display: 'none' }}
                               />
                               <label htmlFor={`products.${i}.productFile`}>
-                                <Button variant="contained" color="inherit" component={'span'}>
+                                <Button
+                                  sx={{ borderRadius: 0 }}
+                                  variant="contained"
+                                  color="inherit"
+                                  component={'span'}
+                                >
                                   Resmi Degistir
                                 </Button>
                               </label>
@@ -310,6 +318,7 @@ export function ProductComponent({
                                   variant="contained"
                                   disabled={product?.productFile?.asset === undefined}
                                   color="primary"
+                                  sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
                                 >
                                   Resmi Indir
                                 </Button>
@@ -513,17 +522,7 @@ export function ProductComponent({
                       />
                     )}
 
-                    {i === values.products.length - 1 && isDrawer && (
-                      <Box
-                        sx={{
-                          marginBottom: isNonMobile ? 12 : 0,
-                          marginTop: isNonMobile ? 32 : 3,
-                          height: 1,
-                          width: '100%',
-                          backgroundColor: 'lightgray',
-                        }}
-                      />
-                    )}
+                    {i === values.products.length - 1 && i !== 0 && isDrawer && <Divider />}
                   </Box>
                 </>
               );

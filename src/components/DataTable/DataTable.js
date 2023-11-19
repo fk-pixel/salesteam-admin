@@ -15,6 +15,7 @@ import AutocompleteEditCell from '../Autocomplete/AutocompleteEditCell.js';
 import XLSXDialog from '../Dialogs/XLSXDialog.js';
 import { EditItemsDrawer } from '../Drawers/EditItemsDrawer.js';
 import { DeleteAction, MailAction, SaveAction, SupportAction } from './DataTableActions.js';
+import { Icon } from '../Icon/Icon.js';
 
 const classes = {
   tableButtonSX: {
@@ -179,9 +180,9 @@ export default function DataTable(props) {
                   <Image src={urlFor(params.row.cargoLabel)?.url()} layout="fill" />
                 </Box>
               ) : (
-                <Box sx={classes.cellImageSX}>
-                  <Image src={noImage} layout="fill" />
-                </Box>
+                <span style={{ width: 36, color: 'grey' }}>
+                  <Icon name={'empty'} />
+                </span>
               )}
             </>
           );
@@ -283,10 +284,11 @@ export default function DataTable(props) {
                   key={'mainActions[0]'}
                   variant="outlined"
                   color="primary"
-                  sx={{ fontSize: 19 }}
+                  size="large"
+                  sx={{ maxHeight: 32, minHeight: 32 }}
                   onClick={() => handleOpenXLSXDialog()}
                 >
-                  <FontAwesomeIcon icon={faFileExcel} />
+                  <FontAwesomeIcon icon={faFileExcel} size="lg" />
                 </Button>
               </span>
             </Tooltip>
@@ -309,7 +311,7 @@ export default function DataTable(props) {
                   <div key={'print-section'} style={{ margin: '12px 60px 12px 60px' }}>
                     <Box display={'block'}>
                       <Image
-                        src={x.cargoLabel?.asset._ref ? urlFor(x.cargoLabel)?.url() : noImage}
+                        src={x.cargoLabel?.asset?._ref ? urlFor(x.cargoLabel)?.url() : noImage}
                         width="225"
                         height="250"
                       />

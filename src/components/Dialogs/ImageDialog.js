@@ -2,40 +2,40 @@ import { Dialog, DialogActions, DialogContent, Button } from '@mui/material';
 import Image from 'next/image';
 
 import { buildURL } from '../../../sanity/lib/image';
-import noImage from '../..//assets/images/users/noimage.png';
 import { urlFor } from '../../../sanity/utils/client';
 import { Field } from 'formik';
 import React from 'react';
+import { Icon } from '../Icon/Icon';
 
 export default function ImageDialog({
   values,
   setValues,
-  setFieldValue,
+  //setFieldValue,
   onChangeCargoLabel,
   openImage,
   handleClose,
 }) {
   //   const rowData = data.find((x) => x._id === rowID);
-
-  //   console.log('rowData', rowData);
-  const [cargoLabel, setCargoLabel] = React.useState();
-  // console.log('c', cargoLabel);
-  // console.log('values', values);
+  //const [openImageDialog, setOpenImageDialog] = React.useState(false);
 
   return (
     <Dialog key={'imageDialog'} open={openImage} onClose={handleClose} fullScreen={true}>
       <DialogContent>
-        <Image
-          src={
-            values.cargoLabel === null || values.cargoLabel === undefined
-              ? noImage
-              : values.cargoLabel?.asset?._ref
-              ? urlFor(values.cargoLabel)?.url()
-              : URL.createObjectURL(values.cargoLabel)
-          }
-          layout="fill"
-          objectFit="none"
-        />
+        {values.cargoLabel === null || values.cargoLabel === undefined ? (
+          <span style={{ width: 36, color: 'grey' }}>
+            <Icon name={'empty'} />
+          </span>
+        ) : (
+          <Image
+            src={
+              values.cargoLabel?.asset?._ref
+                ? urlFor(values.cargoLabel)?.url()
+                : URL.createObjectURL(values.cargoLabel)
+            }
+            layout="fill"
+            objectFit="none"
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button
@@ -45,6 +45,8 @@ export default function ImageDialog({
             '&:hover': {
               backgroundColor: '#f50057',
             },
+            borderTopRightRadius: 0,
+            borderBottomRightRadius: 0,
           }}
           onClick={handleClose}
         >
@@ -68,7 +70,12 @@ export default function ImageDialog({
                 style={{ display: 'none' }}
               />
               <label htmlFor={`${values.cargoLabel}`}>
-                <Button variant="contained" color="inherit" component={'span'}>
+                <Button
+                  sx={{ borderRadius: 0 }}
+                  variant="contained"
+                  color="inherit"
+                  component={'span'}
+                >
                   Resmi Degistir
                 </Button>
               </label>
@@ -81,6 +88,7 @@ export default function ImageDialog({
             onClick={(e) => {
               e.stopPropagation();
             }}
+            sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
             variant="contained"
             disabled={values.cargoLabel?.asset._ref === undefined}
             color="primary"
