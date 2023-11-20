@@ -20,8 +20,8 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router.js';
 
-import { GiftComponent } from '../src/components/Forms/GiftComponent.js';
-import { ProductComponent } from '../src/components/Forms/ProductComponent.js';
+import { GiftComponent } from '../src/components/Forms/GiftForm.js';
+import { ProductComponent } from '../src/components/Forms/ProductForm.js';
 import { usePortalContext } from '../src/common/Portal/portal.js';
 import FullLayout from '../src/layouts/FullLayout';
 import {
@@ -293,7 +293,7 @@ export default function OrderForm() {
   // }, []);
 
   function onChangeProducts(e, field, values, setValues, errors) {
-    const products = [...values?.products];
+    const products = [...values.products];
 
     const productNumber = e.target.value || 0;
     const previousNumber = parseInt(field.value || '0');

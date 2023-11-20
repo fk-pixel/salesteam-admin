@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { useDownloadExcel } from '../../utils/ExcelUtil';
+import { createDownloadExcel } from '../../utils/ExcelUtil';
 import {
   Button,
   Dialog,
@@ -49,7 +49,10 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
   const fileName = 'siparis_tablo';
 
   const createXLSX = () => {
-    useDownloadExcel(data, columns, sheetName, fileName, [XLSXState.startDate, XLSXState.endDate]);
+    createDownloadExcel(data, columns, sheetName, fileName, [
+      XLSXState.startDate,
+      XLSXState.endDate,
+    ]);
     handleClose();
   };
 
@@ -98,34 +101,6 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
                 }}
               />
             </Stack>
-
-            {/* <Box style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between' }}>
-                <FormControlLabel
-                  control={<Checkbox id={'showColumns'} />}
-                  label={`Sütunlari gizle:`}
-                  options={[
-                    { id: 'product', label: 'Product' },
-                    { id: 'productSize', label: 'Product Size' },
-                    { id: 'productMainType', label: 'Product Main Type' },
-                    { id: 'productSubType', label: 'Product Sub Type' },
-                    { id: 'productCargoType', label: 'Product Cargo Type' },
-                    { id: 'description', label: 'Description' },
-                  ]}
-                  onChange={(e) =>
-                    setXLSXState({
-                      ...XLSXState,
-                      hideColumn: {
-                        product: e.target.checked,
-                        productSize: e.target.checked,
-                        productMainType: e.target.checked,
-                        productSubType: e.target.checked,
-                        productCargoType: e.target.checked,
-                        description: e.target.checked,
-                      },
-                    })
-                  }
-                />
-              </Box> */}
           </form>
         </DialogContent>
         <DialogActions>

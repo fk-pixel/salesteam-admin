@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx-js-style';
 
 import { format } from 'date-fns';
 
-export function useDownloadExcel(data, keysColumnName, sheetName, fileName, interval) {
+export function createDownloadExcel(data, keysColumnName, sheetName, fileName, interval) {
   if (!data) {
     throw new Error('No data to download');
   }

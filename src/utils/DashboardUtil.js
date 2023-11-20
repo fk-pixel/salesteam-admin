@@ -59,3 +59,12 @@ export function getSeperator(i, length) {
   const lastItem = length - 1;
   return i !== lastItem ? ' | ' : undefined;
 }
+
+export function makeOptionFromSanity(data) {
+  const options = data?.map((x) => ({
+    value: x._id,
+    title: `${x.username}-${x.email} (${x.store})`,
+  }));
+
+  return options;
+}

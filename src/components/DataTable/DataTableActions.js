@@ -1,6 +1,7 @@
 import { Delete, ForwardToInbox, Info, Send } from '@mui/icons-material';
 import Save from '@mui/icons-material/Save';
 import {
+  Autocomplete,
   Box,
   Button,
   Chip,
@@ -13,12 +14,13 @@ import {
   Fab,
   TextField as MuiTextField,
   Stack,
+  TextField,
   Tooltip,
 } from '@mui/material';
 import { GridActionsCellItem } from '@mui/x-data-grid';
 import { format } from 'date-fns';
 import { Field, Form, Formik } from 'formik';
-import { Autocomplete as FormikAutocomplete, TextField as FormikTextField } from 'formik-mui';
+// import { Autocomplete as FormikAutocomplete, TextField as FormikTextField } from 'formik-mui';
 import _ from 'lodash';
 import React from 'react';
 import { toast } from 'react-toastify';
@@ -26,6 +28,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { sendContactForm } from '../../../controller/api';
 import { deleteOrder, updateOrder } from '../../../sanity/utils/order-utils';
 import { STATUS_OPTIONS } from '../../utils/FormsUtil';
+import { fetchAdmins } from '../../../sanity/utils/notification-utils';
+import { makeOptionFromSanity } from '../../utils/DashboardUtil';
 
 const classes = {
   closeButtonSX: {
@@ -346,24 +350,42 @@ export function SaveAction({ params, selectedRowID, convertedData }) {
   );
 }
 
-export function SupportAction({ params, convertedData }) {
+export function SupportAction({ params, convertedData, isAdmin }) {
   //const isNonMobile = useMediaQuery('(min-width:600px)');
 
   // const [selectedPets, setSelectedPets] = React.useState([]);
   // const [petInputValue, setPetInputValue] = React.useState('');
   const [openSupportDrawer, setOpenSupportDrawer] = React.useState(false);
+  const [adminss, setAdminss] = React.useState();
 
   const rowData = convertedData.find((x) => x._id === params.row._id);
 
-  // const initialValues = {
-  //   id: uuidv4(),
-  //   createdAt: new Date(),
-  //   flag: { value: '', title: '' },
-  //   context: '',
-  //   note: '',
-  //   noteToAdmin: [],
-  //   noteByCreated: '',
-  // };
+  React.useEffect(() => {
+    if (!isAdmin) {
+      const adminUsers = async () => {
+        const data = await fetchAdmins();
+        if (data !== undefined) {
+          console.log('adminspp', data);
+          setAdminss(data);
+        }
+      };
+
+      adminUsers();
+    }
+  }, [isAdmin]);
+
+  console.log('admins', adminss);
+  console.log('adminsss', makeOptionFromSanity(adminss));
+
+  const initialValues = {
+    id: uuidv4(),
+    createdAt: new Date(),
+    flag: { value: '', title: '' },
+    context: '',
+    note: '',
+    noteToAdmin: [],
+    noteByCreated: '',
+  };
 
   const [supportMesage, setSupportMessage] = React.useState([]);
 
@@ -375,7 +397,7 @@ export function SupportAction({ params, convertedData }) {
     }
   };
 
-  const initialValues = rowData.notifications;
+  //const initialValues = rowData.notifications;
 
   console.log('supportMesage', rowData.notifications);
   //   const validationSchema = yup.object().shape({
@@ -641,7 +663,7 @@ export function SupportAction({ params, convertedData }) {
           onClose={() => setOpenSupportDrawer(false)}
         >
           <Box sx={{ padding: 2, overflow: 'scroll' }}>
-            {initialValues?.map((x, i) => (
+            {rowData.notifications?.map((x, i) => (
               <Box
                 key={i}
                 sx={{
@@ -689,14 +711,14 @@ export function SupportAction({ params, convertedData }) {
                     <Stack direction={'row'}>
                       <Field
                         name={`flag`}
-                        component={FormikAutocomplete}
+                        component={Autocomplete}
                         options={[
                           { value: 'important', title: '🟥' },
                           { value: 'warning', title: '🟨' },
                           { value: 'info', title: '🟦' },
                           { value: 'success', title: '🟩' },
                         ]}
-                        getOptionLabel={(option) => option.title}
+                        getOptionLabel={(o) => o.title}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
                         fullWidth
                         renderInput={(params) => (
@@ -713,53 +735,67 @@ export function SupportAction({ params, convertedData }) {
                           />
                         )}
                       />
-                      <Field
-                        name={`noteToAdmin`}
-                        component={FormikAutocomplete}
-                        options={[
-                          { value: 'admin1', title: 'admin1' },
-                          { value: 'admin2', title: 'admin2' },
-                          { value: 'admin3', title: 'admin3' },
-                          { value: 'admin4', title: 'admin4' },
-                        ]}
-                        getOptionLabel={(option) => option.title}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                        fullWidth
-                        multiple
-                        onChange={(e, v) =>
-                          setFieldValue(
-                            'noteToAdmin',
-                            v ? [...{ values }, v] : { value: '', title: '' },
-                          )
-                        }
-                        // onChange={(event, newPet) => {
-                        //   setSelectedPets(newPet);
-                        // }}
-                        // inputValue={petInputValue}
-                        // onInputChange={(event, newPetInputValue) => {
-                        //   setPetInputValue(newPetInputValue);
-                        // }}
-                        //onInputChange={(e, v) => setFieldValue('noteToAdmin', v)}
-                        renderInput={(params) => (
-                          <MuiTextField
-                            {...params}
-                            name={`noteToAdmin`}
-                            //   error={Boolean(
-                            //     values.products?.[i]?.productMainType?.value === undefined ||
-                            //       values.products?.[i]?.productMainType?.value === '',
-                            //   )}
-                            onChange={({ target }) => setFieldValue('noteToAdmin', target.value)}
-                            label="Admin Destek"
-                            variant="outlined"
-                            //   size="small"
-                          />
-                        )}
-                      />
                     </Stack>
+                    <Field
+                      name={`noteToAdmin`}
+                      component={Autocomplete}
+                      options={makeOptionFromSanity(adminss)}
+                      getOptionLabel={(o) => o.title}
+                      //isOptionEqualToValue={(option, value) => option.id === value.id}
+                      fullWidth
+                      renderOptions={(props, o) => (
+                        <li {...props} key={o._id}>
+                          {o.title}
+                        </li>
+                      )}
+                      filterSelectedOptions
+                      // filterOptions={(f) => f}
+                      filterOptions={(options) =>
+                        options.filter((o) => {
+                          console.log('res', o);
+                          console.log('values.noteToAdmin', values.noteToAdmin);
+                          values.noteToAdmin.length > 0
+                            ? !values.noteToAdmin.includes(o)
+                            : undefined;
+                        })
+                      }
+                      multiple
+                      disableClearable
+                      onChange={(e, v) =>
+                        setFieldValue(
+                          'noteToAdmin',
+                          //v !== null ? [...values.noteToAdmin, v] : [{ value: '', title: '' }],
+                          v,
+                        )
+                      }
+                      // onChange={(event, newPet) => {
+                      //   setSelectedPets(newPet);
+                      // }}
+                      // inputValue={petInputValue}
+                      // onInputChange={(event, newPetInputValue) => {
+                      //   setPetInputValue(newPetInputValue);
+                      // }}
+                      //onInputChange={(e, v) => setFieldValue('noteToAdmin', v)}
+                      renderInput={(params) => (
+                        <MuiTextField
+                          {...params}
+                          //name={`noteToAdmin`}
+                          //   error={Boolean(
+                          //     values.products?.[i]?.productMainType?.value === undefined ||
+                          //       values.products?.[i]?.productMainType?.value === '',
+                          //   )}
+                          //onChange={({ target }) => setFieldValue('noteToAdmin', target.value)}
+                          label="Admin Destek"
+                          variant="outlined"
+                          //margin="dense"
+                          //   size="small"
+                        />
+                      )}
+                    />
                     <Stack direction={'column'}>
                       <Field
                         fullWidth
-                        component={FormikTextField}
+                        component={TextField}
                         type="text"
                         id={`context`}
                         name={`context`}
@@ -770,7 +806,7 @@ export function SupportAction({ params, convertedData }) {
                       />
                       <Field
                         fullWidth
-                        component={FormikTextField}
+                        component={TextField}
                         type="text"
                         id={`note`}
                         name={`note`}

@@ -16,7 +16,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Delete } from '@mui/icons-material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import { FastField, Field, FieldArray } from 'formik';
+import { Field, FieldArray } from 'formik';
 import { TextField as FormikTextField, Autocomplete as FormikAutocomplete } from 'formik-mui';
 
 import noImage from '../../assets/images/users/noimage.png';
@@ -513,8 +513,8 @@ export function ProductComponent({
                     {i === values.products.length - 1 && isNonMobile === false && (
                       <Box
                         sx={{
-                          marginBottom: 0, // isNonMobile ? 48 : 12,
-                          marginTop: 0, //32,
+                          marginBottom: 0,
+                          marginTop: 0,
                           height: 1,
                           width: '100%',
                           backgroundColor: 'lightgray',

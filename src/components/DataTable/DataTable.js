@@ -256,7 +256,7 @@ export default function DataTable(props) {
         width: 130,
         getActions: (params) => [
           <>{isAdmin && <MailAction {...{ params, convertedData }} />}</>,
-          <>{!isAdmin && <SupportAction {...{ params, convertedData }} />}</>,
+          <>{!isAdmin && <SupportAction {...{ params, convertedData, isAdmin }} />}</>,
           <>{isAdmin && <SaveAction {...{ params, selectedRowID, convertedData }} />}</>,
           <>{isAdmin && <DeleteAction {...{ params }} />}</>,
         ],

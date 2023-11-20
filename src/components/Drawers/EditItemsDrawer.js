@@ -21,8 +21,8 @@ import {
 } from '@mui/material';
 import { ArrowBack, QrCode } from '@mui/icons-material';
 import ImageDialog from '../Dialogs/ImageDialog';
-import { GiftComponent } from '../Forms/GiftComponent';
-import { ProductComponent } from '../Forms/ProductComponent';
+import { GiftComponent } from '../Forms/GiftForm';
+import { ProductComponent } from '../Forms/ProductForm';
 
 const classes = {
   updateButtonSX: {

@@ -44,7 +44,7 @@ export const AUTOCONTEXT_OPTIONS = [
 export const registerToAssets = async (values) => {
   const imagesOfProducts = [];
   const imagesOfGifts = [];
-  const imageOfCargoLabel = {};
+  let imageOfCargoLabel;
 
   // if (values.products.length > 0) {
   values.products?.map(async (product) => {
@@ -105,7 +105,7 @@ export const registerToAssets = async (values) => {
 };
 
 export const imageRegisterToAssets = async (file) => {
-  const imageFile = {};
+  let imageFile;
 
   await client.assets
     .upload('image', file, {
@@ -123,7 +123,7 @@ export const imageRegisterToAssets = async (file) => {
 };
 
 export const productRegisterToAssets = async (product) => {
-  const productAsset = {};
+  let productAsset;
 
   // if (product.productFile?.asset === undefined) {
   await client.assets
@@ -145,7 +145,7 @@ export const productRegisterToAssets = async (product) => {
 };
 
 export const giftRegisterToAssets = async (gift) => {
-  const giftAsset = {};
+  let giftAsset;
 
   await client.assets
     .upload('image', gift.giftFile, {

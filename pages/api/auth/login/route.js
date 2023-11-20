@@ -1,7 +1,10 @@
+'use server';
+
 import { serialize } from 'cookie';
 import { sign } from 'jsonwebtoken';
-import { NextResponse } from 'next/server';
 import { client } from '../../../../sanity/utils/client';
+// eslint-disable-next-line @next/next/no-server-import-in-page
+import { NextResponse } from 'next/server';
 
 const MAX_AGE = 60 * 60 * 24 * 30;
 
@@ -30,7 +33,7 @@ export async function POST(req) {
 
   const secret = process.env.JWT_SECRET || '';
 
-  const token = sign({ username }, secret, { expiresIn: MAX_AGE });
+  const token = sign({ user }, secret, { expiresIn: MAX_AGE });
 
   const serialized = serialize('OutsiteJWT', token, {
     httpOnly: true,

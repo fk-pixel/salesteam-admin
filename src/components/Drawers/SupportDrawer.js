@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { Field, Form, Formik } from 'formik';
 import { Autocomplete as FormikAutocomplete, TextField as FormikTextField } from 'formik-mui';
 import React from 'react';
+import { fetchAdmins } from '../../../sanity/utils/notification-utils';
 
 const updateButtonSX = {
   width: 122,
@@ -32,6 +33,11 @@ export default function SupportDrawer({ rowID, data, openSupportDrawer, onChange
   const [petInputValue, setPetInputValue] = React.useState('');
 
   const rowData = data.find((x) => x._id === rowID);
+
+  const adminUsers = async () => {
+    await fetchAdmins();
+  };
+  console.log('admins', adminUsers());
 
   // const initialValues = {
   //   id: uuidv4(),

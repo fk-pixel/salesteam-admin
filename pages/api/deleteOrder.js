@@ -13,5 +13,5 @@ export default async function deleteOrder(req, res) {
     return res.status(500).json({ message: `Siparis silinemedi`, error });
   }
 
-  return res.status(200).json({ message: `${product} basarili bir sekilde silindi.` });
+  return res.status(200).json({ message: `${_id} basarili bir sekilde silindi.` });
 }

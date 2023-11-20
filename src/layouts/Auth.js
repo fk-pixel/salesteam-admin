@@ -28,7 +28,6 @@ export default function Auth({ children }) {
               height: '100%',
               position: 'absolute',
               top: '0',
-              backgroundRepeat: 'no-repeat',
             }}
           ></div>
           {children}

@@ -1,5 +1,7 @@
 import Head from 'next/head';
+// eslint-disable-next-line import/no-unresolved
 import { NextStudio } from 'next-sanity/studio';
+// eslint-disable-next-line import/no-unresolved
 import { metadata } from 'next-sanity/studio/metadata';
 import config from '../../config/sanity';
 

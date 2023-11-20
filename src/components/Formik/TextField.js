@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { fieldToTextField, TextFieldProps } from 'formik-mui';
+import { fieldToTextField } from 'formik-mui';
 
 import MuiTextField from '@mui/material/TextField';
 

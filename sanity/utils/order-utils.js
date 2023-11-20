@@ -128,34 +128,34 @@ export async function updateOrder(id, data) {
     });
 }
 
-export async function uploadImage(id, imageData, imageField) {
-  return client.assets
-    .upload('image', createReadStream(imageData), { filename: basename(imageData) })
-    .then((res) => {
-      if (id !== undefined) {
-        return client
-          .patch(id)
-          .set({
-            imageField: {
-              _type: 'image',
-              asset: {
-                _type: 'reference',
-                _ref: res._id,
-              },
-            },
-          })
-          .commit();
-      } else {
-        return client.set({ imageField }).commit();
-      }
-    })
-    .then(() => {
-      console.log(`Uploaded '${imageField}'`);
-    })
-    .catch((err) => {
-      console.error('Oh no, the upload failed: ', err.message);
-    });
-}
+// export async function uploadImage(id, imageData, imageField) {
+//   return client.assets
+//     .upload('image', createReadStream(imageData), { filename: basename(imageData) })
+//     .then((res) => {
+//       if (id !== undefined) {
+//         return client
+//           .patch(id)
+//           .set({
+//             imageField: {
+//               _type: 'image',
+//               asset: {
+//                 _type: 'reference',
+//                 _ref: res._id,
+//               },
+//             },
+//           })
+//           .commit();
+//       } else {
+//         return client.set({ imageField }).commit();
+//       }
+//     })
+//     .then(() => {
+//       console.log(`Uploaded '${imageField}'`);
+//     })
+//     .catch((err) => {
+//       console.error('Oh no, the upload failed: ', err.message);
+//     });
+// }
 
 export const getOrdersByUser = async (userr) => {
   const ordersByUser =
