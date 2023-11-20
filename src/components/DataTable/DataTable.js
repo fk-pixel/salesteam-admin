@@ -18,19 +18,12 @@ import { DeleteAction, MailAction, SaveAction, SupportAction } from './DataTable
 import { Icon } from '../Icon/Icon.js';
 
 const classes = {
-  tableButtonSX: {
+  tableButton: {
     '&:hover': {
       color: '#1769aa',
     },
   },
-  updateButtonSX: {
-    width: 222,
-    backgroundColor: '#1d1c1a',
-    '&:hover': {
-      backgroundColor: '#1d1c1a',
-    },
-  },
-  cellImageSX: {
+  cellImage: {
     position: 'relative',
     width: '2.25rem',
     height: '2.25rem',
@@ -40,6 +33,16 @@ const classes = {
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  mainActionButton: {
+    maxHeight: 32,
+    minHeight: 32,
+    color: 'grey',
+    backgroundColor: '#383c44',
+    '&:hover': {
+      backgroundColor: '#383c44',
+      color: 'lightgrey',
+    },
   },
 };
 
@@ -176,7 +179,7 @@ export default function DataTable(props) {
           return (
             <>
               {params.row.cargoLabel !== null || params.row.cargoLabel?.asset._ref !== undefined ? (
-                <Box sx={classes.cellImageSX}>
+                <Box sx={classes.cellImage}>
                   <Image src={urlFor(params.row.cargoLabel)?.url()} layout="fill" />
                 </Box>
               ) : (
@@ -277,15 +280,19 @@ export default function DataTable(props) {
     <div style={{ height: 850, width: '100%' }}>
       <Box height={820}>
         {isAdmin ? (
-          <Stack sx={{ marginBottom: 1 }} direction={'row'} spacing={1}>
+          <Stack sx={{ marginBottom: 1 }} direction={'row'} spacing={0}>
             <Tooltip title={'Tablodan Excel olustur'}>
               <span>
                 <Button
                   key={'mainActions[0]'}
-                  variant="outlined"
-                  color="primary"
                   size="large"
-                  sx={{ maxHeight: 32, minHeight: 32 }}
+                  sx={{
+                    borderTopLeftRadius: 8,
+                    borderBottomLeftRadius: 8,
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0,
+                    ...classes.mainActionButton,
+                  }}
                   onClick={() => handleOpenXLSXDialog()}
                 >
                   <FontAwesomeIcon icon={faFileExcel} size="lg" />
@@ -346,9 +353,13 @@ export default function DataTable(props) {
                 <span>
                   <Button
                     key={'mainActions[1]'}
-                    variant="outlined"
-                    color="primary"
                     disabled={rowSelectionModel.length < 1}
+                    sx={{
+                      borderRadius: 0,
+                      borderRight: '0.5px solid grey',
+                      borderLeft: '0.5px solid grey',
+                      ...classes.mainActionButton,
+                    }}
                   >
                     <Print onClick={handlePrint} fontSize="small" />
                   </Button>
@@ -360,11 +371,16 @@ export default function DataTable(props) {
               <span>
                 <Button
                   key={'mainActions[2]'}
-                  variant="outlined"
-                  color="primary"
                   size="large"
                   disabled={rowSelectionModel.length !== 1}
                   onClick={() => setOpenDrawer(true)}
+                  sx={{
+                    borderTopRightRadius: 8,
+                    borderBottomRightRadius: 8,
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0,
+                    ...classes.mainActionButton,
+                  }}
                 >
                   <FontAwesomeIcon icon={faFileEdit} />
                 </Button>
