@@ -31,11 +31,6 @@ export default function AutocompleteForm(props) {
 
   //   const apiRef = useGridApiContext();
 
-  const changeHandler = (name) => (evt, newValue, action, option) => {
-    // Also as you are updating/adding to state a callback should be used in setFields
-    setFields((prevState) => ({ ...prevState, [name]: newValue }));
-  };
-
   // const handleChange = React.useCallback((event, newValue) => {
   //   // event.stopPropagation();
   //   setValue({

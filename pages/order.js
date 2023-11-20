@@ -397,21 +397,10 @@ export default function OrderForm() {
                 validationSchema={validationSchema}
                 validateOnChange={false}
               >
-                {({
-                  values,
-                  errors,
-                  touched,
-                  setValues,
-                  setFieldValue,
-                  /* handleChange, handleSubmit */
-                }) => (
+                {({ values, errors, touched, setValues, setFieldValue }) => (
                   <Form>
                     <Stack spacing={3} direction={'row'} style={{ marginTop: 12 }}>
-                      <Field
-                        name="productNumber"
-                        id={'productNumber'}
-                        //error={Boolean(errors.productNumber)}
-                      >
+                      <Field name="productNumber" id={'productNumber'}>
                         {({ field }) => (
                           <>
                             <p style={{ marginBottom: 0, color: 'GrayText' }}> Ürün Adedi</p>
@@ -483,7 +472,6 @@ export default function OrderForm() {
                           key={'products'}
                           errors={errors}
                           onChangeProducts={onChangeProducts}
-                          //onChangeProducts={onchangeX}
                           setValues={setValues}
                           touched={touched}
                           values={values}
@@ -498,7 +486,6 @@ export default function OrderForm() {
                           key={'gifts'}
                           errors={errors}
                           onChangeGifts={onChangeGifts}
-                          //onChangeGifts={onchangeY}
                           setValues={setValues}
                           touched={touched}
                           values={values}
@@ -534,24 +521,24 @@ export default function OrderForm() {
                       />
                     </Stack>
                     <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Badge fullwidth color="secondary" badgeContent={Object.keys(errors)?.length}>
-                        <Button
-                          variant="contained"
-                          //disabled={Object.keys(errors)?.length > 0}
-                          color="primary"
-                          type="submit"
-                          // sx={{
-                          //   backgroundColor: '#1d1c1a',
-                          //   '&:hover': {
-                          //     color: '#1d1c1a',
-                          //     backgroundColor: '#ffff',
-                          //   },
-                          // }}
-                          // className={classes.submitButton}
-                        >
-                          Kaydet
-                        </Button>
-                      </Badge>
+                      {/* <Badge fullwidth color="secondary" badgeContent={Object.keys(errors)?.length}> */}
+                      <Button
+                        variant="contained"
+                        //disabled={Object.keys(errors)?.length > 0}
+                        color="primary"
+                        type="submit"
+                        // sx={{
+                        //   backgroundColor: '#1d1c1a',
+                        //   '&:hover': {
+                        //     color: '#1d1c1a',
+                        //     backgroundColor: '#ffff',
+                        //   },
+                        // }}
+                        // className={classes.submitButton}
+                      >
+                        Kaydet
+                      </Button>
+                      {/* </Badge> */}
                       {/* <pre>{Object.keys(errors)?.length === 0}</pre> */}
                       <input
                         id={`cargoLabel`}

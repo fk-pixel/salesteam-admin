@@ -1,28 +1,19 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-// @material-ui/core components
 import { makeStyles } from '@mui/styles';
-import FormControl from '@material-ui/core/FormControl';
 import { TextField } from '@mui/material';
-import Input from '@material-ui/core/Input';
-// @material-ui/icons
 import Clear from '@material-ui/icons/Clear';
 import Check from '@material-ui/icons/Check';
-// core components
-// import styles from "assets/jss/nextjs-material-dashboard/components/customInputStyle.js";
 
 export default function TextForm(props) {
   const {
-    formControlProps,
     label,
     id,
     name,
     placeholder,
     value,
     variant,
-    InputLabelProps,
-    InputProps,
     error,
     success,
     onChange,
@@ -72,19 +63,6 @@ export default function TextForm(props) {
   const useStyles = makeStyles(styles);
 
   const classes = useStyles();
-
-  const labelClasses = classNames({
-    [' ' + classes.labelRootError]: error,
-    [' ' + classes.labelRootSuccess]: success && !error,
-  });
-  const underlineClasses = classNames({
-    [classes.underlineError]: error,
-    [classes.underlineSuccess]: success && !error,
-    [classes.underline]: true,
-  });
-  const marginTop = classNames({
-    [classes.marginTop]: label === undefined,
-  });
 
   return (
     // <FormControl {...formControlProps} className={" "}>

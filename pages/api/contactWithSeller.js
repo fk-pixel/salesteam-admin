@@ -1,7 +1,4 @@
-import { render } from '@react-email/render';
-import Layout from '../../src/templates/email/Layout';
 import nodemailer from 'nodemailer';
-import { urlFor } from '../../sanity/utils/client';
 
 const email = process.env.EMAIL;
 const pass = process.env.EMAIL_PASS;

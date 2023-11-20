@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import useDrivePicker from 'react-google-drive-picker';
 
 import { Icon } from '../Icon/Icon';
@@ -27,37 +26,37 @@ const classes = {
   },
 };
 
-export function getFile(resonseData) {
-  gapi.client.drive.files
-    .get({
-      fileId: resonseData.docs[0].id,
-      alt: 'media',
-    })
-    .then((response) => {
-      console.log('fetch response', response.status);
+// export function getFile(resonseData) {
+//   gapi.client.drive.files
+//     .get({
+//       fileId: resonseData.docs[0].id,
+//       alt: 'media',
+//     })
+//     .then((response) => {
+//       console.log('fetch response', response.status);
 
-      let binary = response.body;
+//       let binary = response.body;
 
-      let l = binary.length;
+//       let l = binary.length;
 
-      let array = new Uint8Array(l);
+//       let array = new Uint8Array(l);
 
-      for (var i = 0; i < l; i++) {
-        (array[i] = binary), charCodeAt(i);
-      }
+//       for (var i = 0; i < l; i++) {
+//         (array[i] = binary), charCodeAt(i);
+//       }
 
-      let blob = new Blob([array], { type: 'application/octet-stream' });
+//       let blob = new Blob([array], { type: 'application/octet-stream' });
 
-      return blob;
-    });
-}
+//       return blob;
+//     });
+// }
 
 // export const getRefreshToken = () => {};
 
 getRefreshToken();
 
 export default function DrivePicker({ productFile, setFieldValue }) {
-  const [openPicker, data, authResponse] = useDrivePicker();
+  const [openPicker /* data, authResponse */] = useDrivePicker();
 
   // const refreshToken =
   //   '1//04YQiPZPeXlk3CgYIARAAGAQSNgF-L9IrGC9NBX2Of8vWAEJlpunm7br1xuITdPoHHKw4apQ56IIVJyU_qwHEk7cmfDtEzYJ_zg';
@@ -130,9 +129,7 @@ export default function DrivePicker({ productFile, setFieldValue }) {
 
   return (
     <Button sx={classes.button} size="medium" onClick={() => handleOpenPicker()}>
-      {/* <span className={classes.icon}> */}
       <Icon name={'gd1'} />
-      {/* </span> */}
     </Button>
   );
 }

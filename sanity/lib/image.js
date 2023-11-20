@@ -1,8 +1,7 @@
 import createImageUrlBuilder from '@sanity/image-url';
 
 import { dataset, projectId } from '../env';
-import { buildFileUrl, buildImageUrl, parseAssetId } from '@sanity/asset-utils';
-import { client } from '../utils/client';
+import { buildImageUrl, parseAssetId } from '@sanity/asset-utils';
 
 const imageBuilder = createImageUrlBuilder({
   projectId: projectId || '',

@@ -70,10 +70,8 @@ export default function LogIn({ users }) {
   const handleTogglePassword = () => setShowPassword((showPassword) => !showPassword);
 
   return (
-    // <ThemeProvider theme={theme}>
     <>
       <Container
-        // height={'100%'}
         sx={{
           backgroundColor: '#fff',
           position: isNonMobile ? 'relative' : 'fixed',
@@ -88,7 +86,6 @@ export default function LogIn({ users }) {
         component="main"
         maxWidth="xs"
       >
-        {/* <CssBaseline /> */}
         <Box
           sx={{
             marginBottom: isNonMobile ? 3 : 0,
@@ -110,7 +107,7 @@ export default function LogIn({ users }) {
           </Typography>
         </Box>
         <Formik onSubmit={onSubmit} initialValues={loginState} validationSchema={validationSchema}>
-          {({ values, errors, touched, handleChange, handleSubmit }) => (
+          {({ errors, handleChange, handleSubmit }) => (
             <form onSubmit={handleSubmit}>
               <TextField
                 required
@@ -120,8 +117,8 @@ export default function LogIn({ users }) {
                 name="email"
                 autoComplete="username"
                 style={{ marginBottom: 48 }}
-                error={/* !!touched.email && */ !!errors.email}
-                helperText={/* touched.email && */ errors.email}
+                error={!!errors.email}
+                helperText={errors.email}
                 onChange={handleChange}
               />
               <TextField
@@ -132,8 +129,8 @@ export default function LogIn({ users }) {
                 name="password"
                 autoComplete="new-password"
                 type={showPassword ? 'text' : 'password'}
-                error={/* !!touched.password && */ !!errors.password}
-                helperText={/* touched.password && */ errors.password}
+                error={!!errors.password}
+                helperText={errors.password}
                 onChange={handleChange}
                 InputProps={{
                   endAdornment: (
@@ -153,45 +150,16 @@ export default function LogIn({ users }) {
                 // onLoad={subit calisikrn isloading true ise burada dönen sprint icon göster}
                 // disabled={errors.length > 0}
                 variant="contained"
-                // style={{ marginTop: isNonMobile ? 48 : 96 }}
                 color="primary"
                 sx={{ marginTop: isNonMobile ? 12 : 18 }}
               >
                 Giriş Yap
               </Button>
-              {/* <Grid container>
-                <Grid item xs style={{ marginTop: isNonMobile ? 12 : 24 }}>
-                  <Link
-                    href="#"
-                    variant="body2"
-                    sx={{
-                      color: 'black',
-                      fontSize: isNonMobile ? 12 : 8,
-                    }}
-                  >
-                    Şifremi unuttum
-                  </Link>
-                </Grid>
-                <Grid item style={{ marginTop: isNonMobile ? 12 : 24 }}>
-                  <Link
-                    href="/auth/register"
-                    // style={{
-                    //   fontSize: isNonMobile ? 12 : 8,
-                    // }}
-                    sx={{
-                      color: 'black',
-                    }}
-                  >
-                    Yeni bir hesap oluştur
-                  </Link>
-                </Grid>
-              </Grid> */}
             </form>
           )}
         </Formik>
       </Container>
     </>
-    // </ThemeProvider>
   );
 }
 

@@ -1,7 +1,11 @@
 import React from 'react';
 import { Field } from 'formik';
 
-const UploadField = ({ field, form: { touched, errors }, name, label, isError, ...props }) => {
+const UploadField = ({
+  /* field, form: { touched, errors }, name, */ label,
+  isError,
+  ...props
+}) => {
   return (
     <>
       <Field

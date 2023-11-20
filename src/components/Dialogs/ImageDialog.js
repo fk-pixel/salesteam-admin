@@ -10,14 +10,10 @@ import { Icon } from '../Icon/Icon';
 export default function ImageDialog({
   values,
   setValues,
-  //setFieldValue,
   onChangeCargoLabel,
   openImage,
   handleClose,
 }) {
-  //   const rowData = data.find((x) => x._id === rowID);
-  //const [openImageDialog, setOpenImageDialog] = React.useState(false);
-
   return (
     <Dialog key={'imageDialog'} open={openImage} onClose={handleClose} fullScreen={true}>
       <DialogContent>

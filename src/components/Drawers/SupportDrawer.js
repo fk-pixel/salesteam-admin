@@ -7,13 +7,12 @@ import {
   Drawer,
   TextField as MuiTextField,
   Stack,
-  useMediaQuery,
 } from '@mui/material';
 import { format } from 'date-fns';
 import { Field, Form, Formik } from 'formik';
 import { Autocomplete as FormikAutocomplete, TextField as FormikTextField } from 'formik-mui';
 import React from 'react';
-import { fetchAdmins } from '../../../sanity/utils/notification-utils';
+//import { fetchAdmins } from '../../../sanity/utils/notification-utils';
 
 const updateButtonSX = {
   width: 122,
@@ -27,17 +26,16 @@ const updateButtonSX = {
 };
 
 export default function SupportDrawer({ rowID, data, openSupportDrawer, onChangeSupport }) {
-  const isNonMobile = useMediaQuery('(min-width:600px)');
-
-  const [selectedPets, setSelectedPets] = React.useState([]);
-  const [petInputValue, setPetInputValue] = React.useState('');
+  // const isNonMobile = useMediaQuery('(min-width:600px)');
+  // const [selectedPets, setSelectedPets] = React.useState([]);
+  // const [petInputValue, setPetInputValue] = React.useState('');
 
   const rowData = data.find((x) => x._id === rowID);
 
-  const adminUsers = async () => {
-    await fetchAdmins();
-  };
-  console.log('admins', adminUsers());
+  // const adminUsers = async () => {
+  //   await fetchAdmins();
+  // };
+  //console.log('admins', adminUsers());
 
   // const initialValues = {
   //   id: uuidv4(),
@@ -61,7 +59,8 @@ export default function SupportDrawer({ rowID, data, openSupportDrawer, onChange
 
   const initialValues = rowData.notifications;
 
-  console.log('supportMesage', rowData.notifications);
+  //console.log('supportMesage', rowData.notifications);
+
   //   const validationSchema = yup.object().shape({
   //     // productNumber: yup.string().required('Lütfen ürün sayisini girin'),
   //     products: yup.array().of(
@@ -351,10 +350,10 @@ export default function SupportDrawer({ rowID, data, openSupportDrawer, onChange
             //validateOnChange={false}
           >
             {({
-              values,
-              errors,
-              touched,
-              setValues,
+              // values,
+              // errors,
+              // touched,
+              // setValues,
               setFieldValue,
               handleSubmit /* handleChange */,
             }) => (
@@ -400,9 +399,7 @@ export default function SupportDrawer({ rowID, data, openSupportDrawer, onChange
                       isOptionEqualToValue={(option, value) => option.id === value.id}
                       fullWidth
                       multiple
-                      onChange={(e, v) =>
-                        setFieldValue('noteToAdmin', v ? [...rest, v] : { value: '', title: '' })
-                      }
+                      onChange={(e, v) => setFieldValue('noteToAdmin', v)}
                       // onChange={(event, newPet) => {
                       //   setSelectedPets(newPet);
                       // }}
