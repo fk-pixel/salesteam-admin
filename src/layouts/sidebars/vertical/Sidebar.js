@@ -2,7 +2,7 @@ import { Button, Nav, NavItem } from 'reactstrap';
 import Logo from '../../logo/Logo';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Divider, useMediaQuery } from '@mui/material';
+import { Divider } from '@mui/material';
 
 const navigation = [
   {

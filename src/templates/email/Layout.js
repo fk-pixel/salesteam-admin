@@ -92,14 +92,14 @@
 // }
 
 import React from 'react';
-import { Email, Section, Column, Typography, Image, Divider } from '@leopardslab/react-email';
-import { urlFor } from '../../../sanity/utils/client';
+import { Email, Section, Column, Typography } from '@leopardslab/react-email';
+//import { urlFor } from '../../../sanity/utils/client';
 
-export default function Layout(props) {
-  const { products, message, gifts, createdBy } = props;
-  const logo = {
-    margin: '0 auto',
-  };
+export default function Layout() {
+  // const { products, message, gifts, createdBy } = props;
+  // const logo = {
+  //   margin: '0 auto',
+  // };
 
   return (
     <Email>
