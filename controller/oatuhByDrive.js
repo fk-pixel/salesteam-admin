@@ -1,4 +1,4 @@
-export const getRefreshToken = async (accessToken) => {
+export const getRefresh = async (accessToken) => {
   const now = new Date();
 
   const expiration = 1000 * 60 * 60;
