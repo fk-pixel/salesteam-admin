@@ -1,4 +1,9 @@
-const { client } = require('./sanity/utils/client');
+const sanityClient = require('@sanity/client');
+const client = sanityClient({
+  dataset: process.env.NEXT_PUBLIC_SANITY_PROJECT_DATASET,
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  useCdn: process.env.NODE_ENV === 'production',
+});
 
 const plugin = (opts = {}) => {
   // eslint-disable-next-line no-undef
