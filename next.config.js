@@ -1,12 +1,3 @@
-const { createClient } = require('@sanity/client');
-const client = createClient({
-  dataset: process.env.NEXT_PUBLIC_SANITY_PROJECT_DATASET,
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  useCdn: process.env.NODE_ENV === 'production',
-});
-
-//const { client } = require('./sanity/utils/client');
-
 const plugin = (opts = {}) => {
   // eslint-disable-next-line no-undef
   checkOpts(opts);
@@ -23,23 +14,23 @@ const plugin = (opts = {}) => {
 plugin.postcss = true;
 
 // get redirects from Sanity for Vercel
-async function fetchSanityRedirects() {
-  const redirectData = await client.fetch(`
-    *[_type == "redirect"]{
-      "source": "/" + from,
-      "destination": "/" + to,
-      "permanent": isPermanent
-    }
-  `);
+// async function fetchSanityRedirects() {
+//   const redirectData = await client.fetch(`
+//     *[_type == "redirect"]{
+//       "source": "/" + from,
+//       "destination": "/" + to,
+//       "permanent": isPermanent
+//     }
+//   `);
 
-  return redirectData;
-}
+//   return redirectData;
+// }
 
 module.exports = {
-  async redirects() {
-    const sanityRedirects = await fetchSanityRedirects();
-    return sanityRedirects;
-  },
+  // async redirects() {
+  //   const sanityRedirects = await fetchSanityRedirects();
+  //   return sanityRedirects;
+  // },
   reactStrictMode: true,
   swcMinify: true,
   compiler: {
