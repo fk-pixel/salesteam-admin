@@ -307,7 +307,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
                     //width: 475,
                     zIndex: 100,
                     height: 60,
-                    backgroundColor: 'black',
+                    backgroundColor: '#383c44',
                     //overflow: 'auto',
                   }}
                 >
