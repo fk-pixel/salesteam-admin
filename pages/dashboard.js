@@ -104,7 +104,7 @@ export default function Dashboard() {
     }
   }`;
 
-  React.useMemo(() => {
+  React.useEffect(() => {
     if (User.role === 'user') {
       client.fetch(userQuery).then(setOrders);
       const subscription = client.listen(userQuery, {}, { visibility: 'query' }).subscribe(() => {
