@@ -356,8 +356,8 @@ export default function DataTable(props) {
                     disabled={rowSelectionModel.length < 1}
                     sx={{
                       borderRadius: 0,
-                      borderRight: '0.5px solid grey',
-                      borderLeft: '0.5px solid grey',
+                      borderRight: '0.5px solid white',
+                      borderLeft: '0.5px solid white',
                       ...classes.mainActionButton,
                     }}
                   >
