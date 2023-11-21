@@ -295,7 +295,7 @@ export default function DataTable(props) {
                   }}
                   onClick={() => handleOpenXLSXDialog()}
                 >
-                  <FontAwesomeIcon icon={faFileExcel} size="lg" />
+                  <FontAwesomeIcon icon={faFileExcel} size="lg" style={{ maxWidth: 15 }} />
                 </Button>
               </span>
             </Tooltip>
@@ -382,7 +382,7 @@ export default function DataTable(props) {
                     ...classes.mainActionButton,
                   }}
                 >
-                  <FontAwesomeIcon icon={faFileEdit} />
+                  <FontAwesomeIcon icon={faFileEdit} style={{ maxWidth: 18 }} />
                 </Button>
               </span>
             </Tooltip>
