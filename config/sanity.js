@@ -5,7 +5,7 @@ import { visionTool } from '@sanity/vision';
 
 const config = defineConfig({
   projectId: 'veclq2f6', //process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+  dataset: 'production',
   title: 'SalesTeam API',
   apiVersion: '2023-06-26',
   token: process.env.NEXT_PUBLIC_SANITY_TOKEN,
