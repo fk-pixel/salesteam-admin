@@ -38,10 +38,10 @@ const classes = {
     maxHeight: 32,
     minHeight: 32,
     color: 'grey',
-    backgroundColor: '#383c44',
+    backgroundColor: 'lightgrey', //'#383c44',
     '&:hover': {
-      backgroundColor: '#383c44',
-      color: 'lightgrey',
+      backgroundColor: 'lightgrey', //'#383c44',
+      color: '#1976d2',
     },
   },
 };
@@ -280,7 +280,7 @@ export default function DataTable(props) {
     <div style={{ height: 850, width: '100%' }}>
       <Box height={820}>
         {isAdmin ? (
-          <Stack sx={{ marginBottom: 1 }} direction={'row'} spacing={0}>
+          <Stack sx={{ marginTop: -1, marginBottom: 1 }} direction={'row'} spacing={0}>
             <Tooltip title={'Tablodan Excel olustur'}>
               <span>
                 <Button
