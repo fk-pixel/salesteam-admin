@@ -47,8 +47,8 @@ export function GiftComponent({
         direction={'column'}
         sx={{
           marginTop: isDrawer ? (isNonMobile ? 1 : 0) : 3,
-          marginLeft: isDrawer ? (isNonMobile ? 3 : 14) : 0,
-          width: isDrawer ? (isNonMobile ? '85%' : '70%') : '100%',
+          marginLeft: isDrawer ? (isNonMobile ? 1 : 14) : 0,
+          width: isDrawer ? (isNonMobile ? '95%' : '70%') : '100%',
         }}
       >
         <FieldArray key={'gifts'} name="gifts">

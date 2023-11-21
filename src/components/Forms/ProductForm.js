@@ -77,9 +77,9 @@ export function ProductComponent({
       <Stack
         direction={'column'}
         sx={{
-          marginTop: isDrawer ? 1 : 3,
-          marginLeft: isDrawer ? (isNonMobile ? 3 : 14) : 0,
-          width: isDrawer ? (isNonMobile ? '85%' : '70%') : '100%',
+          marginTop: isDrawer ? 0 : 3,
+          marginLeft: isDrawer ? (isNonMobile ? 1 : 14) : 0,
+          width: isDrawer ? (isNonMobile ? '95%' : '70%') : '100%',
         }}
       >
         <FieldArray key={'products'} name="products">
