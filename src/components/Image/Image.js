@@ -1,9 +1,10 @@
+import { Image as NextImg } from 'next/image';
 import { urlFor } from '../../../sanity/utils/client';
 
 const Image = (imageSrc) => {
   return (
     <div>
-      <img src={urlFor(imageSrc).url()} />
+      <NextImg src={urlFor(imageSrc).url()} />
     </div>
   );
 };

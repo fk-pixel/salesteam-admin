@@ -96,36 +96,36 @@ export default function DrivePicker({ productFile, setFieldValue }) {
     });
   };
 
-  const a = {
-    description: '',
-    embedUrl:
-      'https://drive.google.com/file/d/1v6feuTlRUJ319oiQ27G2pmmJq-SsJUTo/preview?usp=drive_web',
-    iconUrl: 'https://drive-thirdparty.googleusercontent.com/16/type/image/png',
-    id: '1v6feuTlRUJ319oiQ27G2pmmJq-SsJUTo',
-    isShared: true,
-    lastEditedUtc: 1698961799621, //
-    mimeType: 'image/png', //
-    name: 'sat.png', //
-    parentId: '0AOlfiPw-oBrxUk9PVA',
-    rotation: 0,
-    rotationDegree: 0,
-    serviceId: 'docs',
-    sizeBytes: 10602, //
-    type: 'photo',
-    url: 'https://drive.google.com/file/d/1v6feuTlRUJ319oiQ27G2pmmJq-SsJUTo/view?usp=drive_web',
-  };
+  // const a = {
+  //   description: '',
+  //   embedUrl:
+  //     'https://drive.google.com/file/d/1v6feuTlRUJ319oiQ27G2pmmJq-SsJUTo/preview?usp=drive_web',
+  //   iconUrl: 'https://drive-thirdparty.googleusercontent.com/16/type/image/png',
+  //   id: '1v6feuTlRUJ319oiQ27G2pmmJq-SsJUTo',
+  //   isShared: true,
+  //   lastEditedUtc: 1698961799621, //
+  //   mimeType: 'image/png', //
+  //   name: 'sat.png', //
+  //   parentId: '0AOlfiPw-oBrxUk9PVA',
+  //   rotation: 0,
+  //   rotationDegree: 0,
+  //   serviceId: 'docs',
+  //   sizeBytes: 10602, //
+  //   type: 'photo',
+  //   url: 'https://drive.google.com/file/d/1v6feuTlRUJ319oiQ27G2pmmJq-SsJUTo/view?usp=drive_web',
+  // };
 
-  const fs = new FileReader();
+  // const fs = new FileReader();
   //console.log('fs', fs.readAsArrayBuffer(a));
 
-  const file = {
-    lastModified: 1694256691150,
-    lastModifiedDate: 'Sat Sep 09 2023 12:51:31 GMT+0200 (Mitteleuropäische Sommerzeit)',
-    name: 'sat.png',
-    size: 10602,
-    type: 'image/png',
-    webkitRelativePath: '',
-  };
+  // const file = {
+  //   lastModified: 1694256691150,
+  //   lastModifiedDate: 'Sat Sep 09 2023 12:51:31 GMT+0200 (Mitteleuropäische Sommerzeit)',
+  //   name: 'sat.png',
+  //   size: 10602,
+  //   type: 'image/png',
+  //   webkitRelativePath: '',
+  // };
 
   return (
     <Button sx={classes.button} size="medium" onClick={() => handleOpenPicker()}>

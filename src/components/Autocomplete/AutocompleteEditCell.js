@@ -36,7 +36,7 @@ export default function AutocompleteEditInputCell(props) {
         value: newValue?.title !== undefined ? newValue.title : newValue,
       });
     },
-    [params.value],
+    [apiRef, params.field, params.id],
   );
 
   const handleInputChange = (e, data) => {

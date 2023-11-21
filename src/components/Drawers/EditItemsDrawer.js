@@ -141,7 +141,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
   }
 
   function onChangeGifts(e, field, values, setValues) {
-    const gifts = [...values.gifts];
+    //const gifts = [...values.gifts];
 
     const {
       _id,
