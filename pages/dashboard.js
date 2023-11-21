@@ -8,12 +8,12 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { Update } from '@material-ui/icons';
 
 import { usePortalContext } from '../src/common/Portal/portal';
 import FullLayout from '../src/layouts/FullLayout';
 import DataTable from '../src/components/DataTable/DataTable';
 import { client } from '../sanity/utils/client';
+import { Update } from '@mui/icons-material';
 
 export default function Dashboard() {
   const isNonMobile = useMediaQuery('(min-width:600px)');
@@ -107,11 +107,9 @@ export default function Dashboard() {
   React.useMemo(() => {
     if (User.role === 'user') {
       client.fetch(userQuery).then(setOrders);
-      const subscription = client
-        .listen(userQuery, {}, { visibility: 'query' })
-        .subscribe((update) => {
-          client.fetch(userQuery).then(setOrders);
-        });
+      const subscription = client.listen(userQuery, {}, { visibility: 'query' }).subscribe(() => {
+        client.fetch(userQuery).then(setOrders);
+      });
 
       return () => {
         subscription.unsubscribe();
@@ -120,17 +118,15 @@ export default function Dashboard() {
 
     if (User.role === 'admin' || User.role === 'superAdmin') {
       client.fetch(adminQuery).then(setOrders);
-      const subscription = client
-        .listen(adminQuery, {}, { visibility: 'query' })
-        .subscribe((update) => {
-          client.fetch(adminQuery).then(setOrders);
-        });
+      const subscription = client.listen(adminQuery, {}, { visibility: 'query' }).subscribe(() => {
+        client.fetch(adminQuery).then(setOrders);
+      });
 
       return () => {
         subscription.unsubscribe();
       };
     }
-  }, [User]);
+  }, [User.role, adminQuery, userQuery]);
 
   const productSalesInfo =
     orders?.length > 0

@@ -8,10 +8,11 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from '@material-ui/core';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
-import { Stack } from '@mui/material';
+  Stack,
+} from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 export default function XLSXDialog({ data, openXLSX, handleClose }) {
   const [XLSXState, setXLSXState] = React.useState({
@@ -57,16 +58,16 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
   };
 
   return (
-    <Dialog open={openXLSX} onClose={handleClose} id={'createExcel'}>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Dialog open={openXLSX} onClose={handleClose} id={'createExcel'}>
         <DialogTitle>Excel Oluştur</DialogTitle>
         <DialogContent>
-          <DialogContentText>
+          <DialogContentText sx={{ marginBottom: 6 }}>
             xlsx dosyasını oluşturmak için bir tarih aralığı seçin
           </DialogContentText>
           <form>
             <Stack direction={'row'} spacing={3} sx={{ marginBottom: 6 }}>
-              <KeyboardDatePicker
+              <DatePicker
                 id={'startDate'}
                 name="startDate"
                 format="dd/MM/yyyy"
@@ -78,12 +79,11 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
                     startDate: val,
                   })
                 }
-                style={{ marginTop: 36 }}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
               />
-              <KeyboardDatePicker
+              <DatePicker
                 id={'endDate'}
                 name="endDate"
                 format="dd/MM/yyyy"
@@ -95,7 +95,6 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
                     endDate: val,
                   })
                 }
-                style={{ marginTop: 36 }}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
@@ -131,7 +130,7 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
             Oluştur
           </Button>
         </DialogActions>
-      </MuiPickersUtilsProvider>
-    </Dialog>
+      </Dialog>
+    </LocalizationProvider>
   );
 }
