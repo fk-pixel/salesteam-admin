@@ -12,7 +12,7 @@ const config = defineConfig({
   basePath: '/studio',
   plugins: [deskTool(), visionTool()],
   schema: { types: schemas },
-  useCdn: true, //process.env.NODE_ENV === 'production',
+  useCdn: false, //true, //process.env.NODE_ENV === 'production',
 });
 
 export default config;
