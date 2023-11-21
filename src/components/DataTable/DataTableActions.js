@@ -364,7 +364,7 @@ export function SupportAction({ params, convertedData, isAdmin }) {
       const adminUsers = async () => {
         const data = await fetchAdmins();
         if (data !== undefined) {
-          console.log('adminspp', data);
+          //console.log('adminspp', data);
           setAdminss(data);
         }
       };
@@ -373,8 +373,8 @@ export function SupportAction({ params, convertedData, isAdmin }) {
     }
   }, [isAdmin]);
 
-  console.log('admins', adminss);
-  console.log('adminsss', makeOptionFromSanity(adminss));
+  //console.log('admins', adminss);
+  //console.log('adminsss', makeOptionFromSanity(adminss));
 
   const initialValues = {
     id: uuidv4(),
@@ -398,7 +398,7 @@ export function SupportAction({ params, convertedData, isAdmin }) {
 
   //const initialValues = rowData.notifications;
 
-  console.log('supportMesage', rowData.notifications);
+  //console.log('supportMesage', rowData.notifications);
   //   const validationSchema = yup.object().shape({
   //     // productNumber: yup.string().required('Lütfen ürün sayisini girin'),
   //     products: yup.array().of(
@@ -751,8 +751,8 @@ export function SupportAction({ params, convertedData, isAdmin }) {
                       // filterOptions={(f) => f}
                       filterOptions={(options) =>
                         options.filter((o) => {
-                          console.log('res', o);
-                          console.log('values.noteToAdmin', values.noteToAdmin);
+                          //console.log('res', o);
+                          //console.log('values.noteToAdmin', values.noteToAdmin);
                           values.noteToAdmin.length > 0
                             ? !values.noteToAdmin.includes(o)
                             : undefined;
