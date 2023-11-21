@@ -1,10 +1,9 @@
 import React from 'react';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@mui/styles';
 import { TextField } from '@mui/material';
-import Clear from '@material-ui/icons/Clear';
-import Check from '@material-ui/icons/Check';
+import { Clear } from '@mui/icons-material';
+import { Check } from 'react-feather';
 
 export default function TextForm(props) {
   const {
