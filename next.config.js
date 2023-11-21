@@ -1,4 +1,7 @@
+const { client } = require('./sanity/utils/client');
+
 const plugin = (opts = {}) => {
+  // eslint-disable-next-line no-undef
   checkOpts(opts);
   return {
     postcssPlugin: 'postcss-dark-theme-class',
@@ -12,7 +15,24 @@ const plugin = (opts = {}) => {
 
 plugin.postcss = true;
 
+// get redirects from Sanity for Vercel
+async function fetchSanityRedirects() {
+  const redirectData = await client.fetch(`
+    *[_type == "redirect"]{
+      "source": "/" + from,
+      "destination": "/" + to,
+      "permanent": isPermanent
+    }
+  `);
+
+  return redirectData;
+}
+
 module.exports = {
+  async redirects() {
+    const sanityRedirects = await fetchSanityRedirects();
+    return sanityRedirects;
+  },
   reactStrictMode: true,
   swcMinify: true,
   compiler: {
