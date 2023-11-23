@@ -71,7 +71,7 @@ const Sidebar = ({ showMobilemenu }) => {
       </div>
       <div className="pt-4 mt-2">
         <Divider />
-        <Nav vertical className="sidebarNav">
+        <Nav vertical className="sidebarNav" style={{ overflowY: 'auto' }}>
           {navigation.map((navi, index) => (
             <NavItem key={index} className="sidenav-bg">
               <Link href={navi.href}>

@@ -28,6 +28,7 @@ import {
   imageRegisterToAssets,
   productRegisterToAssets,
 } from '../src/utils/FormsUtil.js';
+import _ from 'lodash';
 
 export default function OrderForm() {
   const router = useRouter();
@@ -79,11 +80,18 @@ export default function OrderForm() {
       yup.object().shape({
         productName: yup.string().required('Lütfen ürün adini girin'),
         // productFile: yup.string().required('Lütfen ürün resmini yükleyin'),
-        productFile: yup.mixed().nullable(),
+        //productFile: yup.mixed().nullable(),
         // .test('fileSize', 'File is too large', (value) => value.size <= FILE_SIZE)
         // .test('fileType', 'Your Error Message', (value) =>
         //   SUPPORTED_FORMATS.includes(value.type),
         // ),
+        // productFile: yup
+        //   .mixed()
+        //   .required('Lütfen ürün resmini yükleyin')
+        //   .test('fileFormat', 'image sadece', (value) => {
+        //     // @ts-ignore
+        //     return value && ['image'].includes(value._type);
+        //   }),
         productWidth: yup
           .string()
           .required('Lütfen ürün en ölcüsünü girin')
@@ -102,22 +110,17 @@ export default function OrderForm() {
           .matches(/^[0-9]+$/, 'Sadece numara girin')
           .min(1, 'En az 1 haneli olmalidir')
           .max(3, 'En fazla 3 haneli olmalidir'),
-        // productMainType: yup.string().required('Lütfen ürün ana tipini girin'), //.nullable(),
-        // productMainType: yup.object().shape({
-        //   title: yup.string().required('Lütfen ürün ana tipini girin'),
-        //   value: yup.string().required('Lütfen ürün ana tipini girin'),
-        // }),
-        // when(['productMainType.title'], {
-        //   is: '' | null,
-        //   then: yup.string().required('Lütfen ürün ana tipini girin'),
-        //   otherwise: yup.string().notRequired(),
-        // }),
+        productMainType: yup.object().shape({
+          value: yup.string().required('Lütfen ürün ana tipini girin'),
+          title: yup.string().required('Lütfen ürün ana tipini girin'),
+        }),
       }),
     ),
     gifts: yup.array().of(
       yup.object().shape({
         giftName: yup.string().required('Lütfen hediye adini girin'),
-        giftFile: yup.string().required('Lütfen hediye resmini yükleyin'),
+        //giftFile: yup.mixed().nullable(),
+        // giftFile: yup.string().required('Lütfen hediye resmini yükleyin'),
         giftWidth: yup
           .string()
           .required('Lütfen hediye en ölcüsünü girin')
@@ -136,12 +139,10 @@ export default function OrderForm() {
           .matches(/^[0-9]+$/, 'Sadece numara girin')
           .min(1, 'En az 1 haneli olmalidir')
           .max(3, 'En fazla 3 haneli olmalidir'),
-        // giftMainType: yup.string().required('Lütfen hediye ana tipini girin'),
-        // .default('')
-        // .when('giftMainType', {
-        //   is: () => giftMainType.title === '',
-        //   then: yup.string().required('Lütfen hediye ana tipini girin'),
-        // }),
+        giftMainType: yup.object().shape({
+          value: yup.string().required('Lütfen hediye ana tipini girin'),
+          title: yup.string().required('Lütfen hediye ana tipini girin'),
+        }),
       }),
     ),
   });
@@ -523,7 +524,9 @@ export default function OrderForm() {
                       {/* <Badge fullwidth color="secondary" badgeContent={Object.keys(errors)?.length}> */}
                       <Button
                         variant="contained"
-                        //disabled={Object.keys(errors)?.length > 0}
+                        disabled={
+                          Object.keys(errors)?.length > 0 || _.isEqual(initialValues, values)
+                        }
                         color="primary"
                         type="submit"
                         // sx={{

@@ -8,7 +8,7 @@
   }
 }
 
-@include media-breakpoint-down(lg) {
+@include media-breakpoint-down(md) {
   .sidebarArea {
     position: fixed;
     height: 100%;

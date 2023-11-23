@@ -23,6 +23,7 @@ import { ArrowBack, QrCode } from '@mui/icons-material';
 import ImageDialog from '../Dialogs/ImageDialog';
 import { GiftComponent } from '../Forms/GiftForm';
 import { ProductComponent } from '../Forms/ProductForm';
+import _ from 'lodash';
 
 const classes = {
   updateButtonSX: {
@@ -47,13 +48,13 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
     products: yup.array().of(
       yup.object().shape({
         productName: yup.string().required('Lütfen ürün adini girin'),
-        productFile: yup
-          .mixed()
-          .required('Lütfen ürün resmini yükleyin')
-          .test('fileFormat', 'image sadece', (value) => {
-            // @ts-ignore
-            return value && ['image'].includes(value._type);
-          }),
+        // productFile: yup
+        //   .mixed()
+        //   .required('Lütfen ürün resmini yükleyin')
+        //   .test('fileFormat', 'image sadece', (value) => {
+        //     // @ts-ignore
+        //     return value && ['image'].includes(value._type);
+        //   }),
         productWidth: yup
           .string()
           .required('Lütfen ürün en ölcüsünü girin')
@@ -72,12 +73,16 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
           .matches(/^[0-9]+$/, 'Sadece numara girin')
           .min(1, 'En az 1 haneli olmalidir')
           .max(3, 'En fazla 3 haneli olmalidir'),
+        productMainType: yup.object().shape({
+          value: yup.string().required('Lütfen ürün ana tipini girin'),
+          title: yup.string().required('Lütfen ürün ana tipini girin'),
+        }),
       }),
     ),
     gifts: yup.array().of(
       yup.object().shape({
         giftName: yup.string().required('Lütfen hediye adini girin'),
-        giftFile: yup.string().required('Lütfen hediye resmini yükleyin'),
+        //giftFile: yup.string().required('Lütfen hediye resmini yükleyin'),
         giftWidth: yup
           .string()
           .required('Lütfen hediye en ölcüsünü girin')
@@ -96,6 +101,10 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
           .matches(/^[0-9]+$/, 'Sadece numara girin')
           .min(1, 'En az 1 haneli olmalidir')
           .max(3, 'En fazla 3 haneli olmalidir'),
+        giftMainType: yup.object().shape({
+          value: yup.string().required('Lütfen hediye ana tipini girin'),
+          title: yup.string().required('Lütfen hediye ana tipini girin'),
+        }),
       }),
     ),
   });
@@ -299,6 +308,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
           >
             {({ values, errors, touched, setValues, setFieldValue }) => (
               <Form>
+                <pre>{JSON.stringify(errors)}</pre>
                 <AppBar
                   position="sticky"
                   sx={{
@@ -307,7 +317,8 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
                     //width: 475,
                     zIndex: 100,
                     height: 60,
-                    backgroundColor: '#383c44',
+                    boxShadow: '1px 1px grey',
+                    backgroundColor: 'black', //'#383c44',
                     //overflow: 'auto',
                   }}
                 >
@@ -398,7 +409,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
                 >
                   <Button
                     variant="contained"
-                    disabled={Object.keys(errors)?.length > 0}
+                    disabled={Object.keys(errors)?.length > 0 || _.isEqual(values, initialValues)}
                     sx={classes.updateButtonSX}
                     type="submit"
                     onClick={() => onSubmit(values)}

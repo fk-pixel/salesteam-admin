@@ -78,8 +78,8 @@ export function ProductComponent({
         direction={'column'}
         sx={{
           marginTop: isDrawer ? 0 : 3,
-          marginLeft: isDrawer ? (isNonMobile ? 1 : 14) : 0,
-          width: isDrawer ? (isNonMobile ? '95%' : '70%') : '100%',
+          marginLeft: isDrawer ? (isNonMobile ? 1 : 11) : 0,
+          width: isDrawer ? (isNonMobile ? '95%' : '77%') : '100%',
         }}
       >
         <FieldArray key={'products'} name="products">
