@@ -186,21 +186,23 @@ export default function OrderForm() {
 
     const gifts = await Promise.all(giftsWithAssets).then((results) => (values.gifts = results));
 
-    const cargoLabelWithAsset = await imageRegisterToAssets(values.cargoLabel);
+    const cargoLabelWithAsset =
+      values.cargoLabel !== undefined ? await imageRegisterToAssets(values?.cargoLabel) : undefined;
 
-    const cargoLabel = await Promise.resolve(cargoLabelWithAsset).then((result) => {
-      if (result._id) {
-        return {
-          _type: 'image',
-          asset: {
-            _type: 'reference',
-            _ref: result._id,
-          },
-        };
-      } else {
-        return undefined;
-      }
-    });
+    const cargoLabel =
+      cargoLabelWithAsset !== undefined
+        ? await Promise.resolve(cargoLabelWithAsset).then((result) => {
+            if (result._id) {
+              return {
+                _type: 'image',
+                asset: {
+                  _type: 'reference',
+                  _ref: result._id,
+                },
+              };
+            }
+          })
+        : undefined;
 
     const orderData = {
       ...values,

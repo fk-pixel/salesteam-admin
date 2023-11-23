@@ -308,7 +308,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
           >
             {({ values, errors, touched, setValues, setFieldValue }) => (
               <Form>
-                <pre>{JSON.stringify(errors)}</pre>
+                {/* <pre>{JSON.stringify(errors)}</pre> */}
                 <AppBar
                   position="sticky"
                   sx={{

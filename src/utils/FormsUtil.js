@@ -128,10 +128,11 @@ export const productRegisterToAssets = async (product) => {
   // if (product.productFile?.asset === undefined) {
   await client.assets
     .upload('image', product.productFile, {
-      contentType:
-        product.productFile.serviceId === 'docs'
-          ? product.productFile?.mimeType
-          : product.productFile?.type,
+      // contentType:
+      //   product.productFile.serviceId === 'docs'
+      //     ? product.productFile?.mimeType
+      //     : product.productFile?.type,
+      contentType: product.productFile?.type,
       fileName: product.productFile?.name,
     })
     .then((res) => {

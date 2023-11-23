@@ -184,7 +184,7 @@ export default function DataTable(props) {
                 </Box>
               ) : (
                 <span style={{ width: 36, color: 'grey' }}>
-                  <Icon name={'empty'} />
+                  <Icon name={'noPhoto2'} />
                 </span>
               )}
             </>
