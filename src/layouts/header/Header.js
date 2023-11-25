@@ -53,7 +53,7 @@ const Header = ({ showMobmenu }) => {
 
       <div className="hstack gap-2">
         <Button color="primary" size="sm" className="d-sm-block d-md-none" onClick={handletoggle}>
-          {isOpen ? <i className="bi bi-x"></i> : <i className="bi bi-three-dots-vertical"></i>}
+          {isOpen ? <></> : <i className="bi bi-three-dots-vertical"></i>}
         </Button>
       </div>
 

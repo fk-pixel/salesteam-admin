@@ -2,7 +2,8 @@ import { Button, Nav, NavItem } from 'reactstrap';
 import Logo from '../../logo/Logo';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Divider } from '@mui/material';
+import { Divider, useMediaQuery } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
 
 const navigation = [
   {
@@ -10,46 +11,11 @@ const navigation = [
     href: '/dashboard',
     icon: 'bi bi-speedometer2',
   },
-  // {
-  //   title: "Alert",
-  //   href: "/ui/alerts",
-  //   icon: "bi bi-bell",
-  // },
-  // {
-  //   title: "Badges",
-  //   href: "/ui/badges",
-  //   icon: "bi bi-patch-check",
-  // },
-  // {
-  //   title: "Buttons",
-  //   href: "/ui/buttons",
-  //   icon: "bi bi-hdd-stack",
-  // },
-  // {
-  //   title: "Cards",
-  //   href: "/ui/cards",
-  //   icon: "bi bi-card-text",
-  // },
-  // {
-  //   title: "Grid",
-  //   href: "/ui/grid",
-  //   icon: "bi bi-columns",
-  // },
-  // {
-  //   title: "Table",
-  //   href: "/ui/tables",
-  //   icon: "bi bi-layout-split",
-  // },
   {
     title: 'Form',
     href: '/order',
     icon: 'bi bi-textarea-resize',
   },
-  // {
-  //   title: 'Breadcrumbs',
-  //   href: '/ui/breadcrumbs',
-  //   icon: 'bi bi-link',
-  // },
   {
     title: 'Profil',
     href: '/profile',
@@ -58,16 +24,26 @@ const navigation = [
 ];
 
 const Sidebar = ({ showMobilemenu }) => {
-  // const isNonLarge = useMediaQuery('(max-width:1200px)');
+  // const isNonLarge = useMediaQuery('(max-width:991px)');
+  // const isMobile = useMediaQuery('(max-width:600px)');
 
   let router = useRouter();
+
   const location = router.pathname;
 
   return (
+    // <div className="p-3" style={isNonLarge ? mediumStyle : isMobile ? mobileStyle : undefined}>
     <div className="p-3">
       <div className="d-flex align-items-center">
         <Logo />
-        <Button close size="sm" className="ms-auto d-lg-none" onClick={showMobilemenu}></Button>
+        <Button
+          size="sm"
+          className="ms-auto d-lg-none"
+          style={{ marginTop: -124, marginRight: -10 }}
+          onClick={showMobilemenu}
+        >
+          <ArrowBack />
+        </Button>
       </div>
       <div className="pt-4 mt-2">
         <Divider />
