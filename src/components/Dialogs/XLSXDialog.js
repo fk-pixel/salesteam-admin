@@ -30,32 +30,35 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
   });
 
   const columns = [
-    'Siparis ID',
-    'Store',
-    'Ürün Adi',
-    'Ölcü',
-    'Ürün Ana Tipi',
-    'Ürün Alt Tipi',
-    'Ürün Kargo Tipi',
-    'Maliyet',
-    'Paketleme Maliyeti',
-    'Kargo Maliyeti',
-    'Satis Fiyati',
-    'Tarih',
-    'Ay',
+    'Siparis ID', //order_id
+    'Magaza', //store
+    'Ürün Adi', //name
+    'Ölcü', //size
+    'Adet',
+    'Ürün Ana Tipi', //maintype
+    'Ürün Alt Tipi', //subtype
+    'Ürün Kargo Tipi', //cargotype
+    'Maliyet', //cost
+    'Paketleme Maliyeti', //packagingcost
+    'Kargo Maliyeti', //shippingcost
+    'Satis Fiyati', //price
+    'Tarih', //date
+    'Ay', //month
   ];
 
   const sheetName = 'Siparis Tablosu';
 
   const fileName = 'siparis_tablo';
 
-  const createXLSX = () => {
+  const createFile = () => {
     createDownloadExcel(data, columns, sheetName, fileName, [
       XLSXState.startDate,
       XLSXState.endDate,
     ]);
     handleClose();
   };
+
+  console.log('XLSXState', XLSXState);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -117,7 +120,7 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
             Kapat
           </Button>
           <Button
-            onClick={createXLSX}
+            onClick={createFile}
             style={{
               backgroundColor: '#1976d2',
               '&:hover': {

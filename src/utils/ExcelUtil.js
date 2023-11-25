@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import * as XLSX from 'xlsx-js-style';
-
 import { format } from 'date-fns';
 
 export function createDownloadExcel(data, keysColumnName, sheetName, fileName, interval) {
@@ -23,6 +22,7 @@ export function createDownloadExcel(data, keysColumnName, sheetName, fileName, i
           order_id: x._id,
           name: p.productName,
           size: p.productSize,
+          piece: p.productPiece,
           mainType: p.productMainType?.title,
           subType: p.productSubType?.title,
           cargoType: p.productCargoType?.title,
@@ -37,6 +37,7 @@ export function createDownloadExcel(data, keysColumnName, sheetName, fileName, i
           order_id: x._id,
           name: '(H) ' + g.giftName,
           size: g.giftSize,
+          piece: g.giftPiece,
           mainType: g.giftMainType?.title,
           subType: g.giftSubType?.title,
           cargoType: g.giftCargoType?.title,
@@ -68,6 +69,7 @@ export function createDownloadExcel(data, keysColumnName, sheetName, fileName, i
     store: x.createdBy?.store,
     name: x.name,
     size: x.size,
+    piece: x.piece,
     mainType: x.mainType,
     subType: x.subType,
     cargoType: x.cargoType,
