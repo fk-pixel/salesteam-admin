@@ -69,9 +69,6 @@ export function ProductComponent({
     }
   }, [values.products]);
 
-  //console.log('values', values);
-  //console.log('errors', errors);
-
   return (
     <>
       <Stack
@@ -160,7 +157,6 @@ export function ProductComponent({
                             type="file"
                             accept="image/*"
                             onChange={(e) => {
-                              console.log(e);
                               setFieldValue(`products.${i}.productFile`, e.currentTarget.files[0]);
                             }}
                             style={{ display: 'none' }}

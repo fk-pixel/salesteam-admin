@@ -54,7 +54,6 @@ export default function Dashboard() {
     status,
     createdBy-> {_id, username, email, store},
     notifications[] {
-      _id,
       _createdAt,
       context,
       note,
@@ -95,7 +94,6 @@ export default function Dashboard() {
     status,
     createdBy-> {_id, username, email, store},
     notifications[] {
-      _id,
       _createdAt,
       context,
       note,

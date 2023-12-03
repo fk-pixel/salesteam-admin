@@ -103,6 +103,7 @@ export async function updateProductsAndGifts(id, data) {
         giftSubType: gift.giftSubType?.value,
         giftCargoType: gift.giftCargoType?.value,
       })),
+      //cargoLabel: data.cargoLabel,
     })
     .commit()
     .then((res) => {
@@ -118,6 +119,28 @@ export async function updateOrder(id, data) {
   return client
     .patch(id)
     .set(data)
+    .commit()
+    .then((res) => {
+      console.log('Hurray, the order is updated! New document:');
+      console.log(res);
+    })
+    .catch((err) => {
+      console.error('Oh no, the update failed: ', err.message);
+    });
+}
+
+export async function updateNotifications(id, data) {
+  return client
+    .patch(id)
+    .set({
+      notifications: data?.map((notification, index) => ({
+        _key: `notification-${index}`,
+        _createdAt: notification._createdAt,
+        flag: notification.flag,
+        context: notification.context,
+        note: notification.note,
+      })),
+    })
     .commit()
     .then((res) => {
       console.log('Hurray, the order is updated! New document:');

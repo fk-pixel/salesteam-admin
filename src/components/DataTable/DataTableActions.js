@@ -1,10 +1,7 @@
-import { Delete, ForwardToInbox, Info, Send } from '@mui/icons-material';
-import Save from '@mui/icons-material/Save';
+import { Delete, ForwardToInbox, Info, Save, Send } from '@mui/icons-material';
 import {
-  Autocomplete,
   Box,
   Button,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,21 +11,21 @@ import {
   Fab,
   TextField as MuiTextField,
   Stack,
-  TextField,
+  Typography,
   Tooltip,
 } from '@mui/material';
 import { GridActionsCellItem } from '@mui/x-data-grid';
-import { format } from 'date-fns';
-import { Field, Form, Formik } from 'formik';
-import _ from 'lodash';
 import React from 'react';
+import { Field, Form, Formik } from 'formik';
+import { Autocomplete as MAutocomplete, TextField as MTextField } from 'formik-mui';
+import _ from 'lodash';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
+import { format } from 'date-fns';
+
 import { sendContactForm } from '../../../controller/api';
-import { deleteOrder, updateOrder } from '../../../sanity/utils/order-utils';
+import { deleteOrder, updateNotifications, updateOrder } from '../../../sanity/utils/order-utils';
 import { STATUS_OPTIONS } from '../../utils/FormsUtil';
-import { fetchAdmins } from '../../../sanity/utils/notification-utils';
-import { makeOptionFromSanity } from '../../utils/DashboardUtil';
 
 const classes = {
   closeButtonSX: {
@@ -351,297 +348,59 @@ export function SaveAction({ params, selectedRowID, convertedData }) {
 
 export function SupportAction({ params, convertedData, isAdmin }) {
   //const isNonMobile = useMediaQuery('(min-width:600px)');
-
-  // const [selectedPets, setSelectedPets] = React.useState([]);
-  // const [petInputValue, setPetInputValue] = React.useState('');
+  console.log('isAdmin', isAdmin);
   const [openSupportDrawer, setOpenSupportDrawer] = React.useState(false);
-  const [adminss, setAdminss] = React.useState();
 
   const rowData = convertedData.find((x) => x._id === params.row._id);
 
-  React.useEffect(() => {
-    if (!isAdmin) {
-      const adminUsers = async () => {
-        const data = await fetchAdmins();
-        if (data !== undefined) {
-          //console.log('adminspp', data);
-          setAdminss(data);
-        }
-      };
-
-      adminUsers();
-    }
-  }, [isAdmin]);
-
-  //console.log('admins', adminss);
-  //console.log('adminsss', makeOptionFromSanity(adminss));
-
   const initialValues = {
-    id: uuidv4(),
-    createdAt: new Date(),
+    _createdAt: new Date(),
     flag: { value: '', title: '' },
     context: '',
     note: '',
     noteToAdmin: [],
-    noteByCreated: '',
   };
 
-  const [supportMesage, setSupportMessage] = React.useState([]);
+  //console.log(rowData);
 
-  const formRef = React.useRef();
+  const onSave = async (values, resetForm) => {
+    const { notifications } = rowData;
 
-  const handleSubmit = () => {
-    if (formRef.current) {
-      formRef.current.handleSubmit();
+    const editedData = [...notifications, { ...values, flag: values.flag.value }];
+
+    await updateNotifications(rowData._id, editedData)
+      .then(() => {
+        toast(<div>Siparis basariyla güncellendi</div>, {
+          type: 'success',
+        });
+      })
+      .catch((error) => {
+        toast(`Güncelleme isleminiz eksik veya gecersizdir. Sorun: ${error.message}`, {
+          type: 'error',
+        });
+      });
+
+    resetForm();
+  };
+
+  const setChipColor = (criteria) => {
+    switch (criteria) {
+      case 'warning':
+        return '#ff9800';
+      case 'danger':
+        return '#f44336';
+      case 'success':
+        return '#4caf50';
+
+      default:
+        return '#42a5f5';
     }
   };
 
-  //const initialValues = rowData.notifications;
-
-  //console.log('supportMesage', rowData.notifications);
-  //   const validationSchema = yup.object().shape({
-  //     // productNumber: yup.string().required('Lütfen ürün sayisini girin'),
-  //     products: yup.array().of(
-  //       yup.object().shape({
-  //         productName: yup.string().required('Lütfen ürün adini girin'),
-  //         productFile: yup
-  //           .mixed()
-  //           .required('Lütfen ürün resmini yükleyin')
-  //           .test('fileFormat', 'image sadece', (value) => {
-  //             // console.log(value);
-  //             return value && ['image'].includes(value._type);
-  //           }),
-  //         // productFile: yup.string().required('Lütfen ürün resmini yükleyin'),
-  //         productWidth: yup
-  //           .string()
-  //           .required('Lütfen ürün en ölcüsünü girin')
-  //           .matches(/^[0-9]+$/, 'Sadece numara girin')
-  //           .min(2, 'En az 2 haneli olmalidir')
-  //           .max(3, 'En fazla 3 haneli olmalidir'),
-  //         productHeight: yup
-  //           .string()
-  //           .required('Lütfen ürün boy ölcüsünü girin')
-  //           .matches(/^[0-9]+$/, 'Sadece numara girin')
-  //           .min(2, 'En az 2 haneli olmalidir')
-  //           .max(3, 'En fazla 3 haneli olmalidir'),
-  //         productPiece: yup
-  //           .string()
-  //           .required('Lütfen ürün adedini girin')
-  //           .matches(/^[0-9]+$/, 'Sadece numara girin')
-  //           .min(1, 'En az 1 haneli olmalidir')
-  //           .max(3, 'En fazla 3 haneli olmalidir'),
-  //       }),
-  //     ),
-  //     gifts: yup.array().of(
-  //       yup.object().shape({
-  //         giftName: yup.string().required('Lütfen hediye adini girin'),
-  //         giftFile: yup.string().required('Lütfen hediye resmini yükleyin'),
-  //         giftWidth: yup
-  //           .string()
-  //           .required('Lütfen hediye en ölcüsünü girin')
-  //           .matches(/^[0-9]+$/, 'Sadece numara girin')
-  //           .min(2, 'En az 2 haneli olmalidir')
-  //           .max(4, 'En fazla 4 haneli olmalidir'),
-  //         giftHeight: yup
-  //           .string()
-  //           .required('Lütfen hediye boy ölcüsünü girin')
-  //           .matches(/^[0-9]+$/, 'Sadece numara girin')
-  //           .min(2, 'En az 2 haneli olmalidir')
-  //           .max(4, 'En fazla 4 haneli olmalidir'),
-  //         giftPiece: yup
-  //           .string()
-  //           .required('Lütfen hediye adedini girin')
-  //           .matches(/^[0-9]+$/, 'Sadece numara girin')
-  //           .min(1, 'En az 1 haneli olmalidir')
-  //           .max(3, 'En fazla 3 haneli olmalidir'),
-  //       }),
-  //     ),
-  //   });
-
-  //   function onChangeProducts(e, field, values, setValues) {
-  //     const products = [...values.products];
-
-  //     // const Values = values.map((x) => Object.keys(x).filter((y) => y !== 'cargoLabel'));
-  //     const {
-  //       _id,
-  //       _createdAt,
-  //       avatar,
-  //       cost,
-  //       createdBy,
-  //       description,
-  //       gifts,
-  //       isEdiMode,
-  //       packagingCost,
-  //       price,
-  //       shippingCost,
-  //       status,
-  //       store,
-  //     } = values;
-
-  //     setValues({
-  //       _id,
-  //       _createdAt,
-  //       avatar,
-  //       cost,
-  //       createdBy,
-  //       description,
-  //       gifts,
-  //       isEdiMode,
-  //       packagingCost,
-  //       price,
-  //       shippingCost,
-  //       status,
-  //       store,
-  //       products,
-  //     });
-
-  //     // field.onChange(e);
-  //   }
-
-  //   function onChangeGifts(e, field, values, setValues) {
-  //     const gifts = [...values.gifts];
-
-  //     const {
-  //       _id,
-  //       _createdAt,
-  //       avatar,
-  //       cost,
-  //       createdBy,
-  //       description,
-  //       products,
-  //       isEdiMode,
-  //       packagingCost,
-  //       price,
-  //       shippingCost,
-  //       status,
-  //       store,
-  //     } = values;
-
-  //     setValues({
-  //       _id,
-  //       _createdAt,
-  //       avatar,
-  //       cost,
-  //       createdBy,
-  //       description,
-  //       products,
-  //       isEdiMode,
-  //       packagingCost,
-  //       price,
-  //       shippingCost,
-  //       status,
-  //       store,
-  //       products,
-  //     });
-
-  //     field.onChange(e);
-  //   }
-
-  //   function onChangeCargoLabel(e, field, values, setValues) {
-  //     const cargoLabel = e.currentTarget.files[0];
-  //     // console.log('cargoLabel', cargoLabel);
-
-  //     setValues({ ...values, cargoLabel });
-
-  //     field.onChange(e);
-
-  //     // console.log('valuesDATA', values);
-  //   }
-
-  //   const onChangeOpenDrawer = () => {
-  //     setOpenDrawer(!openDrawer);
-  //   };
-
-  //   const onSubmit = async (values) => {
-  //     const productsWithAssets = values.products?.map(async (product) => {
-  //       if (product.productFile?.asset._ref === undefined) {
-  //         const asset = await productRegisterToAssets(product);
-  //         const file = {
-  //           _type: 'image',
-  //           asset: {
-  //             _type: 'reference',
-  //             _ref: asset._id,
-  //           },
-  //         };
-
-  //         return {
-  //           ...product,
-  //           productFile: await Promise.resolve(file).then((result) => (product.productFile = result)),
-  //         };
-  //       } else {
-  //         return {
-  //           ...product,
-  //         };
-  //       }
-  //     });
-
-  //     const giftsWithAssets = values.gifts?.map(async (gift) => {
-  //       if (gift.giftFile?.asset._ref === undefined) {
-  //         const asset = await giftRegisterToAssets(gift);
-  //         const file = {
-  //           _type: 'image',
-  //           asset: {
-  //             _type: 'reference',
-  //             _ref: asset._id,
-  //           },
-  //         };
-
-  //         return {
-  //           ...gift,
-  //           giftFile: await Promise.resolve(file).then((result) => (gift.giftFile = result)),
-  //         };
-  //       } else {
-  //         return {
-  //           ...gift,
-  //         };
-  //       }
-  //     });
-
-  //     const cargoLabelWithAsset = async () => {
-  //       if (values.cargoLabel?.asset._ref === undefined) {
-  //         const asset = await imageRegisterToAssets(values.cargoLabel);
-
-  //         const file = {
-  //           _type: 'image',
-  //           asset: {
-  //             _type: 'reference',
-  //             _ref: asset._id,
-  //           },
-  //         };
-
-  //         return {
-  //           cargoLabel: await Promise.resolve(file).then((result) => (cargoLabel = result)),
-  //         };
-  //       } else {
-  //         return cargoLabel;
-  //       }
-  //     };
-
-  //     const products = await Promise.all(productsWithAssets).then((res) => (values.products = res));
-
-  //     const gifts = await Promise.all(giftsWithAssets).then((res) => (values.gifts = res));
-
-  //     const cargoLabel = await cargoLabelWithAsset();
-
-  //     const editedData = {
-  //       products,
-  //       gifts,
-  //       cargoLabel,
-  //     };
-
-  //     await updateProductsAndGifts(values._id, editedData)
-  //       .then(() => {
-  //         toast(<div>Siparis basariyla güncellendi</div>, {
-  //           type: 'success',
-  //         });
-  //       })
-  //       .catch((error) => {
-  //         toast(`Güncelleme isleminiz eksik veya gecersizdir. Sorun: ${error.message}`, {
-  //           type: 'error',
-  //         });
-  //       });
-  //   };
-
+  // React.useEffect(() => {
+  //   if (!isAdmin) {
+  //     const adminUsers = async () => {
+  //       const data = await fetchAdmins();
   return (
     <>
       <Tooltip title={'Admin destek hatti'}>
@@ -655,29 +414,68 @@ export function SupportAction({ params, convertedData, isAdmin }) {
       </Tooltip>
       <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
         <Drawer
-          key={rowData?._id}
+          //key={initialValues?._id}
           sx={{ '& .MuiDrawer-paper': { width: '475px', justifyContent: 'space-between' } }}
           anchor={'right'}
           open={openSupportDrawer}
           onClose={() => setOpenSupportDrawer(false)}
         >
-          <Box sx={{ padding: 2, overflow: 'scroll' }}>
+          <Box
+            sx={{
+              padding: 2,
+              // overflow: initialValues.length > 0 ? 'scroll' : '-moz-hidden-unscrollable',
+              // overflow: initialValues.notifications !== null ? 'scroll' : 'hidden',
+              overflow: 'scroll',
+            }}
+          >
             {rowData.notifications?.map((x, i) => (
               <Box
                 key={i}
                 sx={{
-                  marginBottom: 2,
-                  // backgroundColor: 'InactiveCaptionText',
-                  backgroundColor: '#dddd',
-                  // color: 'white',
-                  borderRadius: 4,
-                  padding: 2,
-                  flex: 'column',
+                  display: 'block',
                   //justifyContent: 'space-between',
+                  marginBottom: 2,
+                  marginLeft: 4,
+                  backgroundColor: '#dddd',
+                  borderRadius: 4,
+                  borderBottomRightRadius: 0,
+                  padding: 2,
                 }}
               >
-                <Chip label={x.context} color={'info'} /> {x.note}
-                {/* {x.flag.title} */} ( {format(new Date(x._createdAt), 'dd-MM-yyyy, HH:mm')} )
+                {/* <Chip
+                  label={x.context}
+                  sx={{ fontWeight: 600, backgroundColor: setChipColor(x.flag), marginBottom: 1 }}
+                /> */}
+                <div
+                  style={{
+                    fontWeight: 600,
+                    backgroundColor: setChipColor(x.flag),
+                    marginBottom: 4,
+                    marginTop: -20,
+                    padding: 4,
+                    borderRadius: 2,
+                    width: 'fit-content',
+                    minWidth: 55,
+                    color: 'white',
+                  }}
+                >
+                  {x.context}
+                </div>
+                <Box sx={{}} display={'block'}>
+                  <Typography
+                    sx={{
+                      fontSize: 12,
+                      color: 'grey',
+                      //color: #daf6ff,
+                      //fontFamily: 'Share Tech Mono',
+                      //transform: 'translate(-50%, -50%)',
+                      //textShadow: '0 0 20px rgba(10, 175, 230, 1),  0 0 20px rgba(10, 175, 230, 0)',
+                    }}
+                  >
+                    {format(new Date(x._createdAt), 'dd/MM/yyyy, HH:mm')}
+                  </Typography>
+                  <Typography>{x.note}</Typography>
+                </Box>
               </Box>
             ))}
           </Box>
@@ -687,57 +485,57 @@ export function SupportAction({ params, convertedData, isAdmin }) {
             sx={{ position: 'sticky', borderTop: '1px solid #dddd', margin: 2 }}
           >
             <Formik
-              innerRef={formRef}
-              onSubmit={(values, actions) => {
-                setSupportMessage([...supportMesage, { ...values, createdAt: new Date() }]);
-                actions.resetForm();
-                //await new Promise((resolve) => setSupportMessage([...supportMesage, resolve]));
-              }}
+              onSubmit={(values, { resetForm }) => onSave(values, resetForm)}
+              //innerRef={formRef}
+              //onChange={onChange}
+              // onSubmit={(values, actions) => {
+              //   setSupportMessage([...supportMesage, { ...values, createdAt: new Date() }]);
+              //   actions.resetForm();
+              //   //await new Promise((resolve) => setSupportMessage([...supportMesage, resolve]));
+              // }}
               initialValues={initialValues}
+              //onSubmit={(values) => onSave(values)}
               // validationSchema={validationSchema}
               //validateOnChange={false}
             >
               {({
-                values,
+                //values,
                 // errors,
                 // touched,
                 // setValues,
                 setFieldValue,
-                handleSubmit /* handleChange */,
               }) => (
-                <Form onSubmit={handleSubmit}>
+                <Form>
                   <Box sx={{ marginTop: 6, padding: 2 }} display={'block'}>
                     <Stack direction={'row'}>
                       <Field
                         name={`flag`}
-                        component={Autocomplete}
+                        component={MAutocomplete}
                         options={[
-                          { value: 'important', title: '🟥' },
-                          { value: 'warning', title: '🟨' },
-                          { value: 'info', title: '🟦' },
-                          { value: 'success', title: '🟩' },
+                          { value: 'danger', title: '🟥 Kritik' },
+                          { value: 'warning', title: '🟧 Uyari' },
+                          { value: 'info', title: '🟦 Bilgilendirme' },
+                          { value: 'success', title: '🟩 Basarili' },
                         ]}
                         getOptionLabel={(o) => o.title}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
+                        onChange={(e, value) => {
+                          setFieldValue('flag', value ? value : { value: '', title: '' });
+                        }}
                         fullWidth
                         renderInput={(params) => (
                           <MuiTextField
                             {...params}
                             name={`flag`}
-                            //   error={Boolean(
-                            //     values.products?.[i]?.productMainType?.value === undefined ||
-                            //       values.products?.[i]?.productMainType?.value === '',
-                            //   )}
                             label="Destek kriteri"
                             variant="outlined"
-                            //   size="small"
                           />
                         )}
                       />
                     </Stack>
-                    <Field
+                    {/* <Field
                       name={`noteToAdmin`}
-                      component={Autocomplete}
+                      component={MAutocomplete}
                       options={makeOptionFromSanity(adminss)}
                       getOptionLabel={(o) => o.title}
                       //isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -751,11 +549,12 @@ export function SupportAction({ params, convertedData, isAdmin }) {
                       // filterOptions={(f) => f}
                       filterOptions={(options) =>
                         options.filter((o) => {
+                          o;
                           //console.log('res', o);
                           //console.log('values.noteToAdmin', values.noteToAdmin);
-                          values.noteToAdmin.length > 0
-                            ? !values.noteToAdmin.includes(o)
-                            : undefined;
+                          // values.noteToAdmin?.length > 0
+                          //   ? !values.noteToAdmin.includes(o)
+                          //   : undefined;
                         })
                       }
                       multiple
@@ -790,50 +589,44 @@ export function SupportAction({ params, convertedData, isAdmin }) {
                           //   size="small"
                         />
                       )}
-                    />
+                    /> */}
                     <Stack direction={'column'}>
                       <Field
                         fullWidth
-                        component={TextField}
+                        component={MTextField}
                         type="text"
                         id={`context`}
                         name={`context`}
                         label="Konu"
-                        // error={Boolean(errors.products?.[i]?.productWidth)}
-                        // helperText={errors.products?.[i]?.productWidth}
-                        //   size="small"
+                        onChange={(e) => {
+                          setFieldValue('context', e.target.value);
+                        }}
                       />
                       <Field
                         fullWidth
-                        component={TextField}
+                        component={MTextField}
                         type="text"
                         id={`note`}
                         name={`note`}
                         label="Not"
                         multiline
                         rows={4}
-                        // error={Boolean(errors.products?.[i]?.productWidth)}
-                        // helperText={errors.products?.[i]?.productWidth}
-                        //   size="small"
+                        onChange={(e) => {
+                          setFieldValue('note', e.target.value);
+                        }}
                       />
                     </Stack>
+                  </Box>
+                  <Box display={'flex'} justifyContent={'center'}>
+                    {' '}
+                    <Button variant="contained" sx={classes.updateButtonSX} type="submit">
+                      <Send fontSize="small" />
+                      Gönder
+                    </Button>
                   </Box>
                 </Form>
               )}
             </Formik>
-            <Box display={'flex'} justifyContent={'center'}>
-              {' '}
-              <Button
-                variant="contained"
-                //disabled={Object.keys(errors)?.length > 0}
-                sx={classes.updateButtonSX}
-                type="submit"
-                onClick={handleSubmit}
-              >
-                <Send fontSize="small" />
-                Gönder
-              </Button>
-            </Box>
           </Box>
         </Drawer>
       </Box>

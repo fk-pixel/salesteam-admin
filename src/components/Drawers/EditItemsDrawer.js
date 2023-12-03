@@ -255,7 +255,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
           _type: 'image',
           asset: {
             _type: 'reference',
-            _ref: asset._id,
+            _ref: asset?._id,
           },
         };
 

@@ -47,7 +47,7 @@ export function getDataWithAvatar(data) {
 
       const shortcut = firstLetter + secondLetter;
 
-      newData.push({ ...i, avatar: shortcut, store: i.createdBy.store, isEditMode: false });
+      newData.push({ ...i, avatar: shortcut, store: i.createdBy?.store, isEditMode: false });
     }
     return newData;
   }

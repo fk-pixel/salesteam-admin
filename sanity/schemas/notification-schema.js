@@ -3,6 +3,7 @@ const notification = {
   title: 'Notification',
   type: 'object',
   fields: [
+    { name: '_createdAt', title: 'CreatedAt', type: 'string' },
     { name: 'context', title: 'Context', type: 'string' },
     { name: 'note', title: 'Note', type: 'string' },
     {
@@ -27,10 +28,10 @@ const notification = {
       type: 'string',
       options: {
         list: [
-          { value: 'red', title: 'Kritik' },
-          { value: 'yellow', title: 'Uyari' },
-          { value: 'blue', title: 'Bilgilendirme' },
-          { value: 'green', title: 'Basarili' },
+          { value: 'danger', title: 'Kritik' },
+          { value: 'warning', title: 'Uyari' },
+          { value: 'info', title: 'Bilgilendirme' },
+          { value: 'success', title: 'Basarili' },
         ],
       },
     },
