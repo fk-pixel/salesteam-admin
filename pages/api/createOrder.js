@@ -14,6 +14,7 @@ export default async function createOrder(req, res) {
     cargoLabel,
     status,
     createdBy,
+    notifications,
   } = JSON.parse(req.body);
 
   try {
@@ -53,6 +54,17 @@ export default async function createOrder(req, res) {
       cargoLabel,
       status,
       createdBy,
+      notifications: [],
+      // notifications.map((notification, index) => {
+      //   return {
+      //     _key: `notification-${index}`,
+      //     _createdAt: notification._createdAt,
+      //     flag: notification.flag,
+      //     context: notification.context,
+      //     note: notification.note,
+      //     noteToAdmin: notification.noteToAdmin,
+      //   };
+      // }),
     });
   } catch (error) {
     return res.status(500).json({ message: `Siparis olusturulamadi`, error });

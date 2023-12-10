@@ -57,7 +57,7 @@ export default function Dashboard() {
       _createdAt,
       context,
       note,
-      noteToAdmin,
+      noteToAdmin[] -> {_id, username, email, store},
       flag
     }
   }`;
@@ -97,7 +97,7 @@ export default function Dashboard() {
       _createdAt,
       context,
       note,
-      noteToAdmin,
+      noteToAdmin[] -> {_id, username, email, store},
       flag
     }
   }`;

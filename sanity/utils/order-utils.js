@@ -139,6 +139,7 @@ export async function updateNotifications(id, data) {
         flag: notification.flag,
         context: notification.context,
         note: notification.note,
+        noteToAdmin: notification.noteToAdmin,
       })),
     })
     .commit()

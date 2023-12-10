@@ -1,5 +1,7 @@
 import { Delete, ForwardToInbox, Info, Save, Send } from '@mui/icons-material';
 import {
+  Avatar,
+  AvatarGroup,
   Box,
   Button,
   Dialog,
@@ -26,6 +28,9 @@ import { format } from 'date-fns';
 import { sendContactForm } from '../../../controller/api';
 import { deleteOrder, updateNotifications, updateOrder } from '../../../sanity/utils/order-utils';
 import { STATUS_OPTIONS } from '../../utils/FormsUtil';
+import { getAdminNameWithAvatar, makeOptionFromSanity } from '../../utils/DashboardUtil';
+import { fetchAdmins } from '../../../sanity/utils/notification-utils';
+import { client } from '../../../sanity/utils/client';
 
 const classes = {
   closeButtonSX: {
@@ -346,10 +351,11 @@ export function SaveAction({ params, selectedRowID, convertedData }) {
   );
 }
 
-export function SupportAction({ params, convertedData, isAdmin }) {
+export function SupportAction({ params, convertedData }) {
   //const isNonMobile = useMediaQuery('(min-width:600px)');
-  console.log('isAdmin', isAdmin);
+
   const [openSupportDrawer, setOpenSupportDrawer] = React.useState(false);
+  const [admins, setAdmins] = React.useState([]);
 
   const rowData = convertedData.find((x) => x._id === params.row._id);
 
@@ -361,12 +367,28 @@ export function SupportAction({ params, convertedData, isAdmin }) {
     noteToAdmin: [],
   };
 
-  //console.log(rowData);
-
   const onSave = async (values, resetForm) => {
     const { notifications } = rowData;
 
-    const editedData = [...notifications, { ...values, flag: values.flag.value }];
+    const setNotifications =
+      notifications === null
+        ? []
+        : notifications.map((notification) => ({
+            ...notification,
+            noteToAdmin: notification?.noteToAdmin?.map((admin) => ({
+              _type: 'reference',
+              _ref: admin._id,
+            })),
+          }));
+
+    const editedData = [
+      ...setNotifications,
+      {
+        ...values,
+        flag: values.flag.value,
+        noteToAdmin: values.noteToAdmin.map((x) => ({ _type: 'reference', _ref: x.value })),
+      },
+    ];
 
     await updateNotifications(rowData._id, editedData)
       .then(() => {
@@ -397,10 +419,19 @@ export function SupportAction({ params, convertedData, isAdmin }) {
     }
   };
 
-  // React.useEffect(() => {
-  //   if (!isAdmin) {
-  //     const adminUsers = async () => {
-  //       const data = await fetchAdmins();
+  React.useEffect(() => {
+    const adminUsers = async () => {
+      const data = await fetchAdmins();
+      if (data !== undefined) {
+        setAdmins(data);
+      }
+    };
+
+    adminUsers();
+  }, []);
+
+  const adminOptions = makeOptionFromSanity(admins);
+
   return (
     <>
       <Tooltip title={'Admin destek hatti'}>
@@ -414,7 +445,6 @@ export function SupportAction({ params, convertedData, isAdmin }) {
       </Tooltip>
       <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
         <Drawer
-          //key={initialValues?._id}
           sx={{ '& .MuiDrawer-paper': { width: '475px', justifyContent: 'space-between' } }}
           anchor={'right'}
           open={openSupportDrawer}
@@ -423,8 +453,7 @@ export function SupportAction({ params, convertedData, isAdmin }) {
           <Box
             sx={{
               padding: 2,
-              // overflow: initialValues.length > 0 ? 'scroll' : '-moz-hidden-unscrollable',
-              // overflow: initialValues.notifications !== null ? 'scroll' : 'hidden',
+              minHeight: '65dvh',
               overflow: 'scroll',
             }}
           >
@@ -461,19 +490,41 @@ export function SupportAction({ params, convertedData, isAdmin }) {
                 >
                   {x.context}
                 </div>
-                <Box sx={{}} display={'block'}>
-                  <Typography
-                    sx={{
-                      fontSize: 12,
-                      color: 'grey',
-                      //color: #daf6ff,
-                      //fontFamily: 'Share Tech Mono',
-                      //transform: 'translate(-50%, -50%)',
-                      //textShadow: '0 0 20px rgba(10, 175, 230, 1),  0 0 20px rgba(10, 175, 230, 0)',
-                    }}
-                  >
-                    {format(new Date(x._createdAt), 'dd/MM/yyyy, HH:mm')}
-                  </Typography>
+                <Box sx={{ display: 'block' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography
+                      sx={{
+                        fontSize: 12,
+                        color: 'grey',
+                      }}
+                    >
+                      {format(new Date(x._createdAt), 'dd/MM/yyyy, HH:mm')}
+                    </Typography>
+                    <AvatarGroup max={5} sx={{ marginTop: -3 }}>
+                      {x.noteToAdmin?.map((admin, index) => {
+                        return (
+                          <Tooltip key={index} title={`${admin?.username} | ${admin?.email} `}>
+                            <Avatar
+                              key={index}
+                              sx={{
+                                bgcolor: 'warning.main',
+                                cursor: 'pointer',
+                                ':hover:not(:last-of-type)': {
+                                  transform: 'translate(5px)',
+                                  transition: 'transform 0.3s ease',
+                                },
+                                '& .MuiAvatar-root': {
+                                  border: '1px solid #c7c7c7',
+                                },
+                              }}
+                            >
+                              {getAdminNameWithAvatar(admin?.username)}
+                            </Avatar>
+                          </Tooltip>
+                        );
+                      })}
+                    </AvatarGroup>
+                  </Box>
                   <Typography>{x.note}</Typography>
                 </Box>
               </Box>
@@ -533,47 +584,16 @@ export function SupportAction({ params, convertedData, isAdmin }) {
                         )}
                       />
                     </Stack>
-                    {/* <Field
+                    <Field
                       name={`noteToAdmin`}
                       component={MAutocomplete}
-                      options={makeOptionFromSanity(adminss)}
+                      options={adminOptions}
                       getOptionLabel={(o) => o.title}
-                      //isOptionEqualToValue={(option, value) => option.id === value.id}
                       fullWidth
-                      renderOptions={(props, o) => (
-                        <li {...props} key={o._id}>
-                          {o.title}
-                        </li>
-                      )}
                       filterSelectedOptions
-                      // filterOptions={(f) => f}
-                      filterOptions={(options) =>
-                        options.filter((o) => {
-                          o;
-                          //console.log('res', o);
-                          //console.log('values.noteToAdmin', values.noteToAdmin);
-                          // values.noteToAdmin?.length > 0
-                          //   ? !values.noteToAdmin.includes(o)
-                          //   : undefined;
-                        })
-                      }
                       multiple
                       disableClearable
-                      onChange={(e, v) =>
-                        setFieldValue(
-                          'noteToAdmin',
-                          //v !== null ? [...values.noteToAdmin, v] : [{ value: '', title: '' }],
-                          v,
-                        )
-                      }
-                      // onChange={(event, newPet) => {
-                      //   setSelectedPets(newPet);
-                      // }}
-                      // inputValue={petInputValue}
-                      // onInputChange={(event, newPetInputValue) => {
-                      //   setPetInputValue(newPetInputValue);
-                      // }}
-                      //onInputChange={(e, v) => setFieldValue('noteToAdmin', v)}
+                      onChange={(e, v) => setFieldValue('noteToAdmin', v)}
                       renderInput={(params) => (
                         <MuiTextField
                           {...params}
@@ -585,11 +605,9 @@ export function SupportAction({ params, convertedData, isAdmin }) {
                           //onChange={({ target }) => setFieldValue('noteToAdmin', target.value)}
                           label="Admin Destek"
                           variant="outlined"
-                          //margin="dense"
-                          //   size="small"
                         />
                       )}
-                    /> */}
+                    />
                     <Stack direction={'column'}>
                       <Field
                         fullWidth

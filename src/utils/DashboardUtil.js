@@ -55,6 +55,13 @@ export function getDataWithAvatar(data) {
   return;
 }
 
+export function getAdminNameWithAvatar(data) {
+  const firstLetter = data?.split(' ')[0][0];
+  const secondLetter = data?.split(' ')[1] !== undefined ? data.split(' ')[1][0] : '';
+
+  return firstLetter + secondLetter;
+}
+
 export function getSeperator(i, length) {
   const lastItem = length - 1;
   return i !== lastItem ? ' | ' : undefined;
