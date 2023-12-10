@@ -198,10 +198,6 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
     // console.log('valuesDATA', values);
   }
 
-  // const onChangeOpenDrawer = () => {
-  //   setOpenDrawer(!openDrawer);
-  // };
-
   const onSubmit = async (values) => {
     const productsWithAssets = values.products?.map(async (product) => {
       if (product.productFile?.asset?._ref === undefined) {
@@ -283,6 +279,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
         toast(<div>Siparis basariyla güncellendi</div>, {
           type: 'success',
         });
+        handleClose();
       })
       .catch((error) => {
         toast(`Güncelleme isleminiz eksik veya gecersizdir. Sorun: ${error.message}`, {
