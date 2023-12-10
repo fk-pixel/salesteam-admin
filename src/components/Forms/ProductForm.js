@@ -69,6 +69,8 @@ export function ProductComponent({
     }
   }, [values.products]);
 
+  console.log('prdc', values.products.length);
+
   return (
     <>
       <Stack

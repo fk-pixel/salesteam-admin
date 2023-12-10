@@ -288,23 +288,46 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
       });
   };
 
+  const isOverMaxLimitForScroll =
+    initialValues !== undefined
+      ? // eslint-disable-next-line no-unsafe-optional-chaining
+        [...initialValues?.products, ...initialValues?.gifts].length > 4
+      : false;
+
   return (
     <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
       <Drawer
         key={rowData?._id}
-        sx={{ '& .MuiDrawer-paper': { width: '475px', justifyContent: 'space-between' } }}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: '475px',
+            justifyContent: 'space-between',
+            overflow: isNonMobile ? (isOverMaxLimitForScroll ? 'scroll' : 'hidden') : 'auto',
+          },
+        }}
         anchor={'right'}
         open={openDrawer}
         onClose={handleClose}
       >
-        <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
+        <Box
+          // sx={{
+          //   overflow: initialValues?.products?.length > 4 ? 'scroll' : 'hidden',
+          // }}
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'space-between'}
+        >
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
             validateOnChange={false}
           >
             {({ values, errors, touched, setValues, setFieldValue }) => (
-              <Form>
+              <Form
+              // style={{
+              //   overflow: values.products.length > 4 ? 'scroll' : '-moz-hidden-unscrollable',
+              // }}
+              >
                 {/* <pre>{JSON.stringify(errors)}</pre> */}
                 <AppBar
                   position="sticky"
@@ -353,7 +376,13 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
                   </Toolbar>
                 </AppBar>
 
-                <Container sx={{ height: '100%', minHeight: '1144px', marginTop: 0 }}>
+                <Container
+                  sx={{
+                    height: '100%',
+                    minHeight: '1144px',
+                    marginTop: 0,
+                  }}
+                >
                   <ProductComponent
                     key={'products'}
                     errors={errors}
