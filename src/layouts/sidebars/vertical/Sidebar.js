@@ -2,7 +2,7 @@ import { Button, Nav, NavItem } from 'reactstrap';
 import Logo from '../../logo/Logo';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Divider, useMediaQuery } from '@mui/material';
+import { Divider } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 
 const navigation = [
@@ -24,9 +24,6 @@ const navigation = [
 ];
 
 const Sidebar = ({ showMobilemenu }) => {
-  // const isNonLarge = useMediaQuery('(max-width:991px)');
-  // const isMobile = useMediaQuery('(max-width:600px)');
-
   let router = useRouter();
 
   const location = router.pathname;
@@ -64,24 +61,6 @@ const Sidebar = ({ showMobilemenu }) => {
               </Link>
             </NavItem>
           ))}
-          {/* <Button
-            color="secondary"
-            tag="a"
-            target="_blank"
-            className="mt-3"
-            href="https://www.wrappixel.com/templates/monster-next-js-free-admin-template/"
-          >
-            Download Free
-          </Button>
-          <Button
-            color="danger"
-            tag="a"
-            target="_blank"
-            className="mt-3"
-            href="https://wrappixel.com/templates/monster-react-admin/?ref=33"
-          >
-            Upgrade To Pro
-          </Button> */}
         </Nav>
       </div>
     </div>

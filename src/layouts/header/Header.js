@@ -11,12 +11,9 @@ import {
   Dropdown,
   Button,
 } from 'reactstrap';
-// import LogoWhite from '../../assets/images/logos/monsterlogowhite.svg';
 import user4 from '../../assets/images/users/user4.jpg';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
-
-// import Image from '../../components/Image/Image';
 
 const Header = ({ showMobmenu }) => {
   const router = useRouter();
@@ -117,9 +114,9 @@ const Header = ({ showMobmenu }) => {
           <DropdownMenu>
             {/* <DropdownItem header>Bilgilendirme</DropdownItem> */}
             <DropdownItem>Profilim</DropdownItem>
-            <DropdownItem>Profilie Düzenle</DropdownItem>
+            <DropdownItem>Profili Düzenle</DropdownItem>
             <DropdownItem divider />
-            <DropdownItem>Mesajlarim</DropdownItem>
+            <DropdownItem onClick={() => router.push('/messages')}>Mesajlarim</DropdownItem>
             <DropdownItem>Yüklemelerim</DropdownItem>
             <DropdownItem onClick={() => handleLogout()}>Oturumu kapat</DropdownItem>
           </DropdownMenu>
