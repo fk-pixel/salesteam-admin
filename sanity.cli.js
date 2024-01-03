@@ -3,8 +3,10 @@
  * Go to https://www.sanity.io/docs/cli to learn more.
  **/
 import { defineCliConfig } from 'sanity/cli';
+//import defineConfig from './sanity.config';
 
-const projectId = 'veclq2f6'; //process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-const dataset = 'production'; //process.env.NEXT_PUBLIC_SANITY_DATASET;
+//const { projectId } = defineConfig();
+const projectId = 'veclq2f6';
+const dataset = 'production';
 
 export default defineCliConfig({ api: { projectId, dataset } });
