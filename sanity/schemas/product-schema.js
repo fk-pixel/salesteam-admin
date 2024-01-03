@@ -1,6 +1,6 @@
 const product = {
   name: 'product',
-  title: 'Products',
+  title: 'Product',
   type: 'object',
   fields: [
     { name: 'productName', title: 'Product Name', type: 'string' },

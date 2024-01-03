@@ -1,6 +1,6 @@
 const gift = {
   name: 'gift',
-  title: 'Gifts',
+  title: 'Gift',
   type: 'object',
   fields: [
     { name: 'giftName', title: 'Gift Name', type: 'string' },

@@ -3,7 +3,8 @@ const notification = {
   title: 'Notification',
   type: 'object',
   fields: [
-    { name: '_createdAt', title: 'CreatedAt', type: 'string' },
+    { name: 'notificationId', title: 'Notification-Id', type: 'string' },
+    { name: 'createdAt', title: 'CreatedAt', type: 'string' },
     { name: 'context', title: 'Context', type: 'string' },
     { name: 'note', title: 'Note', type: 'string' },
     {
@@ -34,6 +35,16 @@ const notification = {
           { value: 'success', title: 'Basarili' },
         ],
       },
+    },
+    {
+      name: 'answers',
+      title: 'Answers',
+      type: 'array',
+      of: [
+        {
+          type: 'answer',
+        },
+      ],
     },
   ],
 };

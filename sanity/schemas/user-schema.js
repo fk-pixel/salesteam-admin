@@ -1,6 +1,6 @@
 const user = {
   name: 'user',
-  title: 'Users',
+  title: 'User',
   type: 'document',
   fields: [
     { name: 'email', title: 'Email', type: 'string' },
