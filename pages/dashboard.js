@@ -54,11 +54,18 @@ export default function Dashboard() {
     status,
     createdBy-> {_id, username, email, store},
     notifications[] {
-      _createdAt,
+      notificationId,
+      createdAt,
       context,
       note,
       noteToAdmin[] -> {_id, username, email, store},
-      flag
+      flag,
+      answers[] {
+        answerId,
+        createdAt,
+        answer,
+        answeredBy-> {_id, username, email, store}
+        }
     }
   }`;
 
@@ -94,11 +101,18 @@ export default function Dashboard() {
     status,
     createdBy-> {_id, username, email, store},
     notifications[] {
-      _createdAt,
+      notificationId,
+      createdAt,
       context,
       note,
       noteToAdmin[] -> {_id, username, email, store},
-      flag
+      flag,
+      answers[] {
+        answerId,
+        createdAt,
+        answer,
+        answeredBy-> {_id, username, email, store}
+        }
     }
   }`;
 

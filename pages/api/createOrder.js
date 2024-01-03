@@ -14,7 +14,6 @@ export default async function createOrder(req, res) {
     cargoLabel,
     status,
     createdBy,
-    notifications,
   } = JSON.parse(req.body);
 
   try {

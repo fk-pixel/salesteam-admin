@@ -1,3 +1,4 @@
+import React from 'react';
 import { Delete, ForwardToInbox, Info, Save, Send } from '@mui/icons-material';
 import {
   Avatar,
@@ -17,7 +18,6 @@ import {
   Tooltip,
 } from '@mui/material';
 import { GridActionsCellItem } from '@mui/x-data-grid';
-import React from 'react';
 import { Field, Form, Formik } from 'formik';
 import { Autocomplete as MAutocomplete, TextField as MTextField } from 'formik-mui';
 import _ from 'lodash';
@@ -26,11 +26,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
 
 import { sendContactForm } from '../../../controller/api';
-import { deleteOrder, updateNotifications, updateOrder } from '../../../sanity/utils/order-utils';
+import { deleteOrder, createNotifications, updateOrder } from '../../../sanity/utils/order-utils';
 import { STATUS_OPTIONS } from '../../utils/FormsUtil';
 import { getAdminNameWithAvatar, makeOptionFromSanity } from '../../utils/DashboardUtil';
 import { fetchAdmins } from '../../../sanity/utils/notification-utils';
-import { client } from '../../../sanity/utils/client';
 
 const classes = {
   closeButtonSX: {
@@ -359,13 +358,14 @@ export function SupportAction({ params, convertedData }) {
 
   const rowData = convertedData.find((x) => x._id === params.row._id);
 
-  const initialValues = {
-    _createdAt: new Date(),
+  const [initialValues] = React.useState({
+    createdAt: new Date(),
     flag: { value: '', title: '' },
     context: '',
     note: '',
     noteToAdmin: [],
-  };
+    answers: [],
+  });
 
   const onSave = async (values, resetForm) => {
     const { notifications } = rowData;
@@ -390,7 +390,7 @@ export function SupportAction({ params, convertedData }) {
       },
     ];
 
-    await updateNotifications(rowData._id, editedData)
+    await createNotifications(rowData._id, editedData)
       .then(() => {
         toast(<div>Siparis basariyla güncellendi</div>, {
           type: 'success',
@@ -498,7 +498,7 @@ export function SupportAction({ params, convertedData }) {
                         color: 'grey',
                       }}
                     >
-                      {format(new Date(x._createdAt), 'dd/MM/yyyy, HH:mm')}
+                      {format(new Date(x?.createdAt), 'dd/MM/yyyy, HH:mm')}
                     </Typography>
                     <AvatarGroup max={5} sx={{ marginTop: -3 }}>
                       {x.noteToAdmin?.map((admin, index) => {

@@ -1,5 +1,6 @@
 import { groq } from 'next-sanity';
 import { client } from '../utils/client';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function getOrders() {
   return client.fetch(
@@ -129,17 +130,27 @@ export async function updateOrder(id, data) {
     });
 }
 
-export async function updateNotifications(id, data) {
+export async function createNotifications(id, data) {
   return client
     .patch(id)
     .set({
       notifications: data?.map((notification, index) => ({
         _key: `notification-${index}`,
-        _createdAt: notification._createdAt,
+        notificationId: uuidv4(),
+        createdAt: notification.createdAt,
         flag: notification.flag,
         context: notification.context,
         note: notification.note,
-        noteToAdmin: notification.noteToAdmin,
+        noteToAdmin: notification.noteToAdmin?.map((admin, index) => ({
+          _key: `admin-${index}`,
+          ...admin,
+        })),
+        answers: notification.answers,
+        // answers: notification.answers?.map((answer, index) => ({
+        //   _key: `answer-${index}`,
+        //   answerId: uuidv4(),
+        //   ...answer,
+        // })),
       })),
     })
     .commit()
@@ -152,6 +163,32 @@ export async function updateNotifications(id, data) {
     });
 }
 
+export async function updateNotifications(id, data) {
+  return client
+    .patch(id)
+    .set({
+      notifications: data?.map((notification, notificationIndex) => ({
+        _key: `notification-${notificationIndex}`,
+        answers: notification.answers?.map((answer, answerIndex) => ({
+          _key: `answer-${answerIndex}`,
+          ...answer,
+        })),
+        noteToAdmin: notification.noteToAdmin?.map((admin, adminIndex) => ({
+          _key: `admin-${adminIndex}`,
+          ...admin,
+        })),
+        ...notification,
+      })),
+    })
+    .commit()
+    .then((res) => {
+      console.log('Hurray, the order is updated! New document:');
+      console.log(res);
+    })
+    .catch((err) => {
+      console.error('Oh no, the update failed: ', err.message);
+    });
+}
 // export async function uploadImage(id, imageData, imageField) {
 //   return client.assets
 //     .upload('image', createReadStream(imageData), { filename: basename(imageData) })
@@ -252,6 +289,57 @@ export const getOrdersByUser = async (userr) => {
       : [];
 
   return ordersByUser;
+};
+
+export const findOrder = async (orderId) => {
+  const orderById =
+    await client.fetch(`*[_type == "order" &amp;&amp; _id == '${orderId}'] | order(_createdAt desc){          
+        _id,
+        _createdAt,
+        products[] {
+          productFile,
+          productName,
+          productWidth,
+          productHeight,
+          productPiece,
+          productMainType,
+          productSubType,
+          productCargoType,
+        },
+        gifts[] {
+          giftFile,
+          giftName,
+          giftWidth,
+          giftHeight,
+          giftPiece,
+          giftMainType,
+          giftSubType,
+          giftCargoType,
+        },
+        cost,
+        packagingCost,
+        shippingCost,
+        description,
+        cargoLabel,
+        price,
+        status,
+        createdBy-> {_id, username, email, store},
+        notifications[] {
+          notificationId,
+          createdAt,
+          context,
+          note,
+          noteToAdmin[] -> {_id, username, email, store},
+          flag,
+          answers[] {
+          answerId,
+          createdAt,
+          answer,
+          answeredBy-> {_id, username, email, store}
+          }
+        }
+      }`);
+  return orderById;
 };
 
 export async function RolesBasedArrayInput(props) {
