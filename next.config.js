@@ -32,7 +32,7 @@ module.exports = {
   //   return sanityRedirects;
   // },
   reactStrictMode: true,
-  swcMinify: true,
+  swcMinify: false,
   compiler: {
     // Enables the styled-components SWC transform
     styledComponents: true,
