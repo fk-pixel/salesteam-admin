@@ -309,14 +309,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
         open={openDrawer}
         onClose={handleClose}
       >
-        <Box
-          // sx={{
-          //   overflow: initialValues?.products?.length > 4 ? 'scroll' : 'hidden',
-          // }}
-          display={'flex'}
-          flexDirection={'column'}
-          justifyContent={'space-between'}
-        >
+        <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}

@@ -11,6 +11,7 @@ import {
   DialogContentText,
   DialogTitle,
   Drawer,
+  Grid,
   Fab,
   TextField as MuiTextField,
   Stack,
@@ -453,7 +454,7 @@ export function SupportAction({ params, convertedData }) {
           <Box
             sx={{
               padding: 2,
-              minHeight: '65dvh',
+              minHeight: '62dvh',
               overflow: 'scroll',
             }}
           >
@@ -531,59 +532,57 @@ export function SupportAction({ params, convertedData }) {
             ))}
           </Box>
           <Box
-            display={'flex'}
-            flexDirection={'column'}
-            sx={{ position: 'sticky', borderTop: '1px solid #dddd', margin: 2 }}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              borderTop: '1px solid #dddd',
+              paddingLeft: 2,
+              paddingRight: 2,
+              height: '45dvh',
+            }}
           >
             <Formik
               onSubmit={(values, { resetForm }) => onSave(values, resetForm)}
-              //innerRef={formRef}
-              //onChange={onChange}
-              // onSubmit={(values, actions) => {
-              //   setSupportMessage([...supportMesage, { ...values, createdAt: new Date() }]);
-              //   actions.resetForm();
-              //   //await new Promise((resolve) => setSupportMessage([...supportMesage, resolve]));
-              // }}
               initialValues={initialValues}
-              //onSubmit={(values) => onSave(values)}
-              // validationSchema={validationSchema}
-              //validateOnChange={false}
             >
-              {({
-                //values,
-                // errors,
-                // touched,
-                // setValues,
-                setFieldValue,
-              }) => (
+              {({ setFieldValue }) => (
                 <Form>
-                  <Box sx={{ marginTop: 6, padding: 2 }} display={'block'}>
-                    <Stack direction={'row'}>
-                      <Field
-                        name={`flag`}
-                        component={MAutocomplete}
-                        options={[
-                          { value: 'danger', title: '🟥 Kritik' },
-                          { value: 'warning', title: '🟧 Uyari' },
-                          { value: 'info', title: '🟦 Bilgilendirme' },
-                          { value: 'success', title: '🟩 Basarili' },
-                        ]}
-                        getOptionLabel={(o) => o.title}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                        onChange={(e, value) => {
-                          setFieldValue('flag', value ? value : { value: '', title: '' });
-                        }}
-                        fullWidth
-                        renderInput={(params) => (
-                          <MuiTextField
-                            {...params}
-                            name={`flag`}
-                            label="Destek kriteri"
-                            variant="outlined"
-                          />
-                        )}
-                      />
-                    </Stack>
+                  <Stack
+                    direction={'column'}
+                    spacing={1}
+                    sx={{
+                      marginTop: 4,
+                      display: 'block',
+                      position: 'absolute',
+                      minWidth: '93%',
+                      maxWidth: '93%',
+                    }}
+                  >
+                    <Field
+                      name={`flag`}
+                      component={MAutocomplete}
+                      options={[
+                        { value: 'danger', title: '🟥 Kritik' },
+                        { value: 'warning', title: '🟧 Uyari' },
+                        { value: 'info', title: '🟦 Bilgilendirme' },
+                        { value: 'success', title: '🟩 Basarili' },
+                      ]}
+                      getOptionLabel={(o) => o.title}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      onChange={(e, value) => {
+                        setFieldValue('flag', value ? value : { value: '', title: '' });
+                      }}
+                      fullWidth
+                      renderInput={(params) => (
+                        <MuiTextField
+                          {...params}
+                          name={`flag`}
+                          label="Destek kriteri"
+                          variant="outlined"
+                        />
+                      )}
+                    />
                     <Field
                       name={`noteToAdmin`}
                       component={MAutocomplete}
@@ -595,47 +594,42 @@ export function SupportAction({ params, convertedData }) {
                       disableClearable
                       onChange={(e, v) => setFieldValue('noteToAdmin', v)}
                       renderInput={(params) => (
-                        <MuiTextField
-                          {...params}
-                          //name={`noteToAdmin`}
-                          //   error={Boolean(
-                          //     values.products?.[i]?.productMainType?.value === undefined ||
-                          //       values.products?.[i]?.productMainType?.value === '',
-                          //   )}
-                          //onChange={({ target }) => setFieldValue('noteToAdmin', target.value)}
-                          label="Admin Destek"
-                          variant="outlined"
-                        />
+                        <MuiTextField {...params} label="Admin Destek" variant="outlined" />
                       )}
                     />
-                    <Stack direction={'column'}>
-                      <Field
-                        fullWidth
-                        component={MTextField}
-                        type="text"
-                        id={`context`}
-                        name={`context`}
-                        label="Konu"
-                        onChange={(e) => {
-                          setFieldValue('context', e.target.value);
-                        }}
-                      />
-                      <Field
-                        fullWidth
-                        component={MTextField}
-                        type="text"
-                        id={`note`}
-                        name={`note`}
-                        label="Not"
-                        multiline
-                        rows={4}
-                        onChange={(e) => {
-                          setFieldValue('note', e.target.value);
-                        }}
-                      />
-                    </Stack>
-                  </Box>
-                  <Box display={'flex'} justifyContent={'center'}>
+                    <Field
+                      fullWidth
+                      component={MTextField}
+                      type="text"
+                      id={`context`}
+                      name={`context`}
+                      label="Konu"
+                      onChange={(e) => {
+                        setFieldValue('context', e.target.value);
+                      }}
+                    />
+                    <Field
+                      fullWidth
+                      component={MTextField}
+                      type="text"
+                      id={`note`}
+                      name={`note`}
+                      label="Not"
+                      multiline
+                      rows={3}
+                      onChange={(e) => {
+                        setFieldValue('note', e.target.value);
+                      }}
+                    />
+                  </Stack>
+                  <Box
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      position: 'relative',
+                      top: '415px',
+                    }}
+                  >
                     {' '}
                     <Button variant="contained" sx={classes.updateButtonSX} type="submit">
                       <Send fontSize="small" />
