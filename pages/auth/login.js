@@ -75,9 +75,9 @@ export default function LogIn({ users }) {
         sx={{
           backgroundColor: '#fff',
           position: isNonMobile ? 'relative' : 'fixed',
-          padding: isNonMobile ? 12 : 6,
+          padding: isNonMobile ? 3 : 6,
           marginTop: isNonMobile ? 5 : -20,
-          marginBottom: isNonMobile ? '' : 10,
+          marginBottom: isNonMobile ? undefined : 10,
           borderRadius: isNonMobile ? 3 : 0,
           height: isNonMobile ? '' : '-webkit-fill-available',
           minHeight: isNonMobile ? '' : '100vh',
@@ -102,7 +102,7 @@ export default function LogIn({ users }) {
           <Avatar sx={{ m: 2, bgcolor: 'secondary.main', marginTop: 3 }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5" sx={{ position: 'relative', marginBottom: 18 }}>
+          <Typography component="h1" variant="h5" sx={{ position: 'relative', marginBottom: 12 }}>
             Oturum aç
           </Typography>
         </Box>
@@ -151,7 +151,7 @@ export default function LogIn({ users }) {
                 // disabled={errors.length > 0}
                 variant="contained"
                 color="primary"
-                sx={{ marginTop: isNonMobile ? 12 : 18 }}
+                sx={{ marginTop: isNonMobile ? 12 : 18, marginBottom: isNonMobile ? 3 : 6 }}
               >
                 Giriş Yap
               </Button>

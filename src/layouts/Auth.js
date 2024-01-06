@@ -11,11 +11,10 @@ export default function Auth({ children }) {
       <main>
         <section
           style={{
-            paddingTop: '10rem',
-            paddingBottom: '10rem',
+            paddingTop: '7rem',
             width: '100%',
             height: '100%',
-            maxHeight: '100dvh',
+            //maxHeight: '100dvh',
           }}
         >
           <div
