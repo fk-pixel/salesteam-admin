@@ -11,7 +11,6 @@ import {
   DialogContentText,
   DialogTitle,
   Drawer,
-  Grid,
   Fab,
   TextField as MuiTextField,
   Stack,
@@ -387,7 +386,7 @@ export function SupportAction({ params, convertedData }) {
       {
         ...values,
         flag: values.flag.value,
-        noteToAdmin: values.noteToAdmin.map((x) => ({ _type: 'reference', _ref: x.value })),
+        noteToAdmin: values.noteToAdmin.map((admin) => ({ _type: 'reference', _ref: admin.value })),
       },
     ];
 

@@ -1,7 +1,16 @@
 import { faFileEdit, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Print } from '@mui/icons-material';
-import { Avatar, Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  Stack,
+  Tooltip,
+  Typography,
+  LinearProgress,
+} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Image from 'next/image';
 import * as React from 'react';
@@ -60,6 +69,7 @@ export default function DataTable(props) {
   const [selectedRowID, setSelectedRowID] = React.useState();
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [openXLSX, setOpenXLSX] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
   const handleOpenXLSXDialog = () => {
@@ -399,6 +409,10 @@ export default function DataTable(props) {
           columns={columns}
           onRowSelectionModelChange={(newRowSelectionModel) => {
             setRowSelectionModel(newRowSelectionModel);
+          }}
+          loading={loading}
+          slots={{
+            loadingOverlay: LinearProgress,
           }}
           disableRowSelectionOnClick
           rowSelectionModel={rowSelectionModel}

@@ -399,7 +399,7 @@ export default function OrderForm() {
                 validationSchema={validationSchema}
                 validateOnChange={false}
               >
-                {({ values, errors, touched, setValues, setFieldValue }) => (
+                {({ values, errors, touched, setValues, setFieldValue, isSubmitting }) => (
                   <Form>
                     <Stack spacing={3} direction={'row'} style={{ marginTop: 12 }}>
                       <Field name="productNumber" id={'productNumber'}>
@@ -527,7 +527,9 @@ export default function OrderForm() {
                       <Button
                         variant="contained"
                         disabled={
-                          Object.keys(errors)?.length > 0 || _.isEqual(initialValues, values)
+                          Object.keys(errors)?.length > 0 ||
+                          _.isEqual(initialValues, values) ||
+                          isSubmitting
                         }
                         color="primary"
                         type="submit"
