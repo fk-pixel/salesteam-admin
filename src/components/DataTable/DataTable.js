@@ -56,7 +56,7 @@ const classes = {
 };
 
 export default function DataTable(props) {
-  const { data, userData } = props;
+  const { data, userData, dataLoading } = props;
 
   const newData = getDataWithAvatar(data);
 
@@ -69,7 +69,6 @@ export default function DataTable(props) {
   const [selectedRowID, setSelectedRowID] = React.useState();
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [openXLSX, setOpenXLSX] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
   const handleOpenXLSXDialog = () => {
@@ -410,7 +409,7 @@ export default function DataTable(props) {
           onRowSelectionModelChange={(newRowSelectionModel) => {
             setRowSelectionModel(newRowSelectionModel);
           }}
-          loading={loading}
+          loading={dataLoading}
           slots={{
             loadingOverlay: LinearProgress,
           }}

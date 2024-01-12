@@ -58,8 +58,6 @@ export default function XLSXDialog({ data, openXLSX, handleClose }) {
     handleClose();
   };
 
-  console.log('XLSXState', XLSXState);
-
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Dialog open={openXLSX} onClose={handleClose} id={'createExcel'}>

@@ -8,6 +8,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
+import { toast } from 'react-toastify';
 
 import { usePortalContext } from '../src/common/Portal/portal';
 import FullLayout from '../src/layouts/FullLayout';
@@ -21,6 +22,7 @@ export default function Dashboard() {
   const { User } = usePortalContext();
 
   const [orders, setOrders] = React.useState([]);
+  const [dataLoading, setDataLoading] = React.useState(false);
 
   const userQuery = `*[_type == "order" && createdBy._ref == '${User._id}'] | order(_createdAt desc){          
     _id,
@@ -118,27 +120,49 @@ export default function Dashboard() {
 
   React.useEffect(() => {
     if (User.role === 'user') {
-      client.fetch(userQuery).then(setOrders);
-      const subscription = client.listen(userQuery, {}, { visibility: 'query' }).subscribe(() => {
+      try {
+        setDataLoading(true);
         client.fetch(userQuery).then(setOrders);
-      });
-
-      return () => {
-        subscription.unsubscribe();
-      };
+        const subscription = client.listen(userQuery, {}, { visibility: 'query' }).subscribe(() => {
+          client.fetch(userQuery).then(setOrders);
+        });
+        if (orders.length > 0) {
+          setDataLoading(false);
+        }
+        return () => {
+          subscription.unsubscribe();
+        };
+      } catch (error) {
+        toast(`${error.message}`, {
+          type: 'error',
+        });
+        setDataLoading(false);
+      }
     }
 
     if (User.role === 'admin' || User.role === 'superAdmin') {
-      client.fetch(adminQuery).then(setOrders);
-      const subscription = client.listen(adminQuery, {}, { visibility: 'query' }).subscribe(() => {
+      try {
+        setDataLoading(true);
         client.fetch(adminQuery).then(setOrders);
-      });
-
-      return () => {
-        subscription.unsubscribe();
-      };
+        const subscription = client
+          .listen(adminQuery, {}, { visibility: 'query' })
+          .subscribe(() => {
+            client.fetch(adminQuery).then(setOrders);
+          });
+        if (orders.length > 0) {
+          setDataLoading(false);
+        }
+        return () => {
+          subscription.unsubscribe();
+        };
+      } catch (error) {
+        toast(`${error.message}`, {
+          type: 'error',
+        });
+        setDataLoading(false);
+      }
     }
-  }, [User.role, adminQuery, userQuery]);
+  }, [User.role, adminQuery, userQuery, orders.length]);
 
   const productSalesInfo =
     orders?.length > 0
@@ -420,7 +444,7 @@ export default function Dashboard() {
                 </Typography>
               </Box>
               <Box sx={{ marginTop: 2 }}>
-                <DataTable data={orders} userData={User} />
+                <DataTable data={orders} userData={User} dataLoading={dataLoading} />
               </Box>
             </CardContent>
           </Card>
