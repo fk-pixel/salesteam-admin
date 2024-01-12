@@ -367,6 +367,8 @@ export function SupportAction({ params, convertedData }) {
     answers: [],
   });
 
+  const hasNotifications = rowData.notifications?.length > 0;
+
   const onSave = async (values, resetForm) => {
     const { notifications } = rowData;
 
@@ -438,7 +440,13 @@ export function SupportAction({ params, convertedData }) {
         <span>
           <GridActionsCellItem
             key={'support'}
-            icon={<Info sx={classes.tableButtonSX} onClick={() => setOpenSupportDrawer(true)} />}
+            icon={
+              <Info
+                sx={classes.tableButtonSX}
+                onClick={() => setOpenSupportDrawer(true)}
+                color={hasNotifications ? 'info' : 'inherit'}
+              />
+            }
             label="Support"
           />
         </span>
@@ -486,6 +494,7 @@ export function SupportAction({ params, convertedData }) {
                     width: 'fit-content',
                     minWidth: 55,
                     color: 'white',
+                    textAlign: 'center',
                   }}
                 >
                   {x.context}
@@ -545,7 +554,7 @@ export function SupportAction({ params, convertedData }) {
               onSubmit={(values, { resetForm }) => onSave(values, resetForm)}
               initialValues={initialValues}
             >
-              {({ setFieldValue }) => (
+              {({ setFieldValue, isSubmitting }) => (
                 <Form>
                   <Stack
                     direction={'column'}
@@ -630,7 +639,12 @@ export function SupportAction({ params, convertedData }) {
                     }}
                   >
                     {' '}
-                    <Button variant="contained" sx={classes.updateButtonSX} type="submit">
+                    <Button
+                      variant="contained"
+                      sx={classes.updateButtonSX}
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
                       <Send fontSize="small" />
                       Gönder
                     </Button>
