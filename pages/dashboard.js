@@ -202,8 +202,8 @@ export default function Dashboard() {
 
   return (
     <>
-      <Grid container direction="row" spacing={isNonMobile ? 2 : 0} sx={{ marginBottom: 0 }}>
-        <Grid item xs={12} sm={6} md={3} sx={{ marginBottom: isNonMobile ? 0 : 3 }}>
+      <Grid container direction="row" spacing={1} sx={{ marginBottom: 0 }}>
+        <Grid item xs={12} sm={6} md={3} sx={{ marginBottom: 3 }}>
           <Card>
             <CardContent>
               <Box display={'flex'} height={'100%'} sx={{ justifyContent: 'space-between' }}>
@@ -409,7 +409,7 @@ export default function Dashboard() {
         </Grid>
       </Grid>
 
-      <Grid container direction={'column'} sx={{ marginTop: isNonMobile ? 6 : 0 }}>
+      <Grid container direction={'column'} sx={{ marginTop: 1 }}>
         <Box width={'100%'}>
           <Card>
             <CardContent>

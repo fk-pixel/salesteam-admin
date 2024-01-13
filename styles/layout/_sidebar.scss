@@ -17,8 +17,8 @@
     z-index: 1;
     //margin-left: -$sidebarWidth;
     transition: 0.2s ease-in;
-    &.showSidebar {
-      margin-left: -$sidebarWidth;
-    }
+    // &.showSidebar {
+    //   margin-left: -$sidebarWidth;
+    // }
   }
 }

@@ -2,32 +2,45 @@ import React from 'react';
 import { Container } from 'reactstrap';
 import Header from './header/Header';
 import Sidebar from './sidebars/vertical/Sidebar';
+import { useTheme, useMediaQuery } from '@mui/material';
 
 const FullLayout = ({ children }) => {
-  const [open, setOpen] = React.useState(false);
+  const [showSidebar, setShowSidebar] = React.useState(false);
 
-  const showMobilemenu = () => {
-    setOpen(!open);
-  };
+  const theme = useTheme();
+  const tablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const pc = !tablet && !mobile ? true : false;
+
+  React.useEffect(() => {
+    if (pc) {
+      setShowSidebar(true);
+    } else {
+      setShowSidebar(false);
+    }
+  }, [pc]);
 
   return (
     <main>
       <div className="pageWrapper d-md-block d-lg-flex">
         {/******** Sidebar **********/}
-        <aside
-          className={`sidebarArea shadow bg-white ${!open ? '' : 'showSidebar'}`}
-          style={{ zIndex: 10 }}
-        >
-          <Sidebar showMobilemenu={() => showMobilemenu()} />
-        </aside>
+        {showSidebar && (
+          <aside
+            className={`sidebarArea shadow bg-white showSidebar`}
+            style={{ zIndex: 1, position: 'absolute', height: '-webkit-fill-available' }}
+          >
+            <Sidebar setShowSidebar={setShowSidebar} />
+          </aside>
+        )}
         {/********Content Area**********/}
 
         <div className="contentArea">
           {/********header**********/}
-          <Header showMobmenu={() => showMobilemenu()} />
+          <Header showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
 
           {/********Middle Content**********/}
-          <Container className="p-4 wrapper" fluid>
+          <Container fluid className="p-4 wrapper">
             <div>{children}</div>
           </Container>
         </div>

@@ -15,7 +15,7 @@ import user4 from '../../assets/images/users/user4.jpg';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 
-const Header = ({ showMobmenu }) => {
+const Header = ({ open, showSidebar, setShowSidebar }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
@@ -39,18 +39,27 @@ const Header = ({ showMobmenu }) => {
 
   return (
     <Navbar color="dark" dark expand="md">
-      <div className="d-flex align-items-center">
-        {/* <NavbarBrand href="/" className="d-lg-none">
+      {/* {showSidebar === false && ( */}
+      {!showSidebar && (
+        <div className="d-flex align-items-center">
+          {/* <NavbarBrand href="/" className="d-lg-none">
           <Image src={LogoWhite} alt="logo" />
         </NavbarBrand> */}
-        <Button color="primary" className="d-lg-none" onClick={showMobmenu}>
-          <i className="bi bi-list"></i>
-        </Button>
-      </div>
+          <Button
+            color="primary"
+            // className="d-lg-none"
+            onClick={() => setShowSidebar(true)}
+            style={{ visibility: showSidebar === false }}
+          >
+            <i className="bi bi-list"></i>
+          </Button>
+        </div>
+      )}
 
       <div className="hstack gap-2">
         <Button color="primary" size="sm" className="d-sm-block d-md-none" onClick={handletoggle}>
-          {isOpen ? <></> : <i className="bi bi-three-dots-vertical"></i>}
+          {/* {isOpen ? <></> : <i className="bi bi-three-dots-vertical"></i>} */}
+          {open ? <></> : <i className="bi bi-three-dots-vertical"></i>}
         </Button>
       </div>
 

@@ -112,7 +112,7 @@ export default function DataTable(props) {
       {
         field: 'products',
         headerName: 'Ürünler',
-        width: 330,
+        width: 200,
         editable: false,
         renderCell: (params) => (
           <Tooltip
@@ -147,7 +147,7 @@ export default function DataTable(props) {
       {
         field: 'gifts',
         headerName: 'Hediyeler',
-        width: 330,
+        width: 200,
         editable: false,
         renderCell: (params) => (
           <Tooltip
@@ -181,7 +181,7 @@ export default function DataTable(props) {
         field: 'cargoLabel',
         headerName: 'Kargo Etiketi',
         type: 'actions',
-        width: 90,
+        width: 80,
         editable: false,
         align: 'center',
         renderCell: (params) => {
@@ -203,21 +203,21 @@ export default function DataTable(props) {
       {
         field: 'cost',
         headerName: 'Maliyet',
-        width: 100,
+        width: 70,
         type: 'number',
         editable: isAdmin,
       },
       {
         field: 'packagingCost',
         headerName: 'Paket Maliyeti',
-        width: 100,
+        width: 70,
         type: 'number',
         editable: isAdmin,
       },
       {
         field: 'shippingCost',
         headerName: 'Kargo Maliyeti',
-        width: 100,
+        width: 70,
         type: 'number',
         editable: isAdmin,
       },
@@ -225,13 +225,13 @@ export default function DataTable(props) {
         field: 'price',
         headerName: 'Satis Tutari',
         type: 'number',
-        width: 100,
+        width: 70,
         editable: isAdmin,
       },
       {
         field: 'description',
         headerName: 'Aciklama',
-        width: 200,
+        width: 150,
         editable: isAdmin,
       },
       {
