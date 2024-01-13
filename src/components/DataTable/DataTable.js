@@ -10,6 +10,7 @@ import {
   Tooltip,
   Typography,
   LinearProgress,
+  useMediaQuery,
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Image from 'next/image';
@@ -56,6 +57,9 @@ const classes = {
 };
 
 export default function DataTable(props) {
+  const largeScreen = useMediaQuery('(min-width:1900px)');
+  const xlargeScreen = useMediaQuery('(min-width:2100px)');
+
   const { data, userData, dataLoading } = props;
 
   const newData = getDataWithAvatar(data);
@@ -106,13 +110,13 @@ export default function DataTable(props) {
       {
         field: 'store',
         headerName: 'Magaza',
-        width: 70,
+        width: largeScreen ? 90 : 70,
         editable: false,
       },
       {
         field: 'products',
         headerName: 'Ürünler',
-        width: 200,
+        width: xlargeScreen ? 275 : largeScreen ? 250 : 200,
         editable: false,
         renderCell: (params) => (
           <Tooltip
@@ -147,7 +151,7 @@ export default function DataTable(props) {
       {
         field: 'gifts',
         headerName: 'Hediyeler',
-        width: 200,
+        width: xlargeScreen ? 275 : largeScreen ? 250 : 200,
         editable: false,
         renderCell: (params) => (
           <Tooltip
@@ -203,21 +207,21 @@ export default function DataTable(props) {
       {
         field: 'cost',
         headerName: 'Maliyet',
-        width: 70,
+        width: xlargeScreen ? 90 : 70,
         type: 'number',
         editable: isAdmin,
       },
       {
         field: 'packagingCost',
         headerName: 'Paket Maliyeti',
-        width: 70,
+        width: xlargeScreen ? 90 : 70,
         type: 'number',
         editable: isAdmin,
       },
       {
         field: 'shippingCost',
         headerName: 'Kargo Maliyeti',
-        width: 70,
+        width: xlargeScreen ? 90 : 70,
         type: 'number',
         editable: isAdmin,
       },
@@ -225,19 +229,19 @@ export default function DataTable(props) {
         field: 'price',
         headerName: 'Satis Tutari',
         type: 'number',
-        width: 70,
+        width: xlargeScreen ? 90 : 70,
         editable: isAdmin,
       },
       {
         field: 'description',
         headerName: 'Aciklama',
-        width: 150,
+        width: largeScreen ? 200 : 150,
         editable: isAdmin,
       },
       {
         field: 'status',
         headerName: 'Statü',
-        width: 150,
+        width: xlargeScreen ? 220 : largeScreen ? 200 : 150,
         editable: isAdmin,
         renderEditCell: (params) => {
           return (
@@ -274,7 +278,7 @@ export default function DataTable(props) {
         ],
       },
     ],
-    [isAdmin, convertedData, selectedRowID],
+    [largeScreen, isAdmin, xlargeScreen, convertedData, selectedRowID],
   );
 
   const handlePrint = useReactToPrint({
