@@ -309,6 +309,7 @@ export function DeleteAction({ params }) {
 export function SaveAction({ params, selectedRowID, convertedData }) {
   const originalData = convertedData.find((x) => x._id === selectedRowID);
   const isEqualRowData = _.isEqual(params.row, originalData);
+  const [isSubmitting, setIsSubmiting] = React.useState(false);
 
   const onSave = async (row) => {
     const editedData = {
@@ -320,11 +321,14 @@ export function SaveAction({ params, selectedRowID, convertedData }) {
       price: row.price,
     };
 
+    setIsSubmiting(false);
+
     await updateOrder(row._id, editedData)
       .then(() => {
         toast(<div>Siparis basariyla güncellendi</div>, {
           type: 'success',
         });
+        setIsSubmiting(true);
       })
       .catch((error) => {
         toast(`Güncelleme isleminiz eksik veya gecersizdir. Sorun: ${error.message}`, {
@@ -340,7 +344,7 @@ export function SaveAction({ params, selectedRowID, convertedData }) {
           key={'save'}
           color="primary"
           size="small"
-          disabled={params.id !== selectedRowID || isEqualRowData}
+          disabled={params.id !== selectedRowID || isEqualRowData || isSubmitting}
           onClick={() => onSave(params.row)}
         >
           <Save />

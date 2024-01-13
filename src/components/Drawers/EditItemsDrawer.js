@@ -315,7 +315,7 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
             validationSchema={validationSchema}
             validateOnChange={false}
           >
-            {({ values, errors, touched, setValues, setFieldValue }) => (
+            {({ values, errors, touched, setValues, setFieldValue, isSubmitting }) => (
               <Form
               // style={{
               //   overflow: values.products.length > 4 ? 'scroll' : '-moz-hidden-unscrollable',
@@ -429,7 +429,11 @@ export function EditItemsDrawer({ convertedData, rowSelectionModel, openDrawer, 
                 >
                   <Button
                     variant="contained"
-                    disabled={Object.keys(errors)?.length > 0 || _.isEqual(values, initialValues)}
+                    disabled={
+                      Object.keys(errors)?.length > 0 ||
+                      _.isEqual(values, initialValues) ||
+                      isSubmitting
+                    }
                     sx={classes.updateButtonSX}
                     type="submit"
                     onClick={() => onSubmit(values)}

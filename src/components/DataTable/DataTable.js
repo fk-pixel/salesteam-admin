@@ -400,26 +400,28 @@ export default function DataTable(props) {
         ) : (
           <></>
         )}
-        <DataGrid
-          key={'dataGrid'}
-          showCellVerticalBorder
-          getRowId={(row) => row._id}
-          rows={convertedData ?? []}
-          columns={columns}
-          onRowSelectionModelChange={(newRowSelectionModel) => {
-            setRowSelectionModel(newRowSelectionModel);
-          }}
-          loading={dataLoading}
-          slots={{
-            loadingOverlay: LinearProgress,
-          }}
-          disableRowSelectionOnClick
-          rowSelectionModel={rowSelectionModel}
-          rowsPerPageOptions={[25]}
-          checkboxSelection={isAdmin}
-          rowHeight={75}
-          onRowClick={(params) => setSelectedRowID(params.id)}
-        />
+        <div style={{ width: '100%' }}>
+          <DataGrid
+            key={'dataGrid'}
+            showCellVerticalBorder
+            getRowId={(row) => row._id}
+            rows={convertedData ?? []}
+            columns={columns}
+            onRowSelectionModelChange={(newRowSelectionModel) => {
+              setRowSelectionModel(newRowSelectionModel);
+            }}
+            loading={dataLoading}
+            slots={{
+              loadingOverlay: LinearProgress,
+            }}
+            disableRowSelectionOnClick
+            rowSelectionModel={rowSelectionModel}
+            rowsPerPageOptions={[25]}
+            checkboxSelection={isAdmin}
+            rowHeight={75}
+            onRowClick={(params) => setSelectedRowID(params.id)}
+          />
+        </div>
       </Box>
     </div>
   );
