@@ -158,7 +158,7 @@ export default function Messages() {
   // selectedMessage ise mesaj görüldü olarak data base de saklansin. Sayet bir admin select yapmadigi mesajlari sayi olarak görmek isterse bu menu de chip olarak gösterilsin
   //const getNotificationsByAdmin
 
-  const messages = orders.flatMap((x) => {
+  const messages = orders?.flatMap((x) => {
     if (x.notifications !== null) {
       return x.notifications.map((y) => ({ ...y, orderId: x._id, createdBy: x.createdBy }));
     }
@@ -175,7 +175,8 @@ export default function Messages() {
       _.isEqual(x, note) ? { ...x, viewedNotification: true, selectedMessage: true } : x,
     );
     setNotifications(matchedNote);
-    setSelectedMessage(note);
+    const findSelectedNote = notifications?.find((x) => x.orderId === note.orderId);
+    setSelectedMessage(findSelectedNote);
   }
 
   const orderBySelectedIdQuery = `*[_type == "order" && _id == '${selectedMessage?.orderId}'] | order(_createdAt desc){          
@@ -264,7 +265,10 @@ export default function Messages() {
               _ref: admin._id,
             })),
             answers: [
-              ...x.answers.map((a) => ({ ...a, answeredBy: { _type: 'reference', _ref: a.id } })),
+              ...x.answers.map((answer) => ({
+                ...answer,
+                answeredBy: { _type: 'reference', _ref: answer?.answeredBy?._id },
+              })),
               {
                 ...values,
                 answeredBy: {
@@ -303,8 +307,6 @@ export default function Messages() {
 
     resetForm();
   };
-
-  React.useEffect(() => {}, [selectedMessage]);
 
   if (initialNotes === undefined || initialNotes.length < 1) {
     return <> 📢 Mesaj kutunuz bos</>;
@@ -436,7 +438,7 @@ export default function Messages() {
                       </Box>
                       <Box>
                         <Typography variant="caption" color={'grey'} fontWeight={600}>
-                          {format(new Date(notification.createdAt), 'dd/MM/yy')}
+                          {format(new Date(notification?.createdAt), 'dd/MM/yy')}
                         </Typography>
                       </Box>
                     </Box>
@@ -482,19 +484,21 @@ export default function Messages() {
         </Box>
         {/* message by admin*/}
         <Box sx={{ height: '62%', padding: 2, marginBottom: 1 }}>
-          {selectedMessage?.answers?.length > 0 ? (
-            selectedMessage?.answers?.map((x) => (
+          {order?.notifications[0].answers?.length > 0 ? (
+            order?.notifications[0].answers?.map((x) => (
               <>
                 <Box sx={{ display: 'flex', paddingBottom: 3 }}>
                   <Box>
-                    <Avatar>{x.answeredBy.username}</Avatar>
+                    <Avatar>{x.answeredBy?.username}</Avatar>
                   </Box>
                   <Box sx={{ display: 'block', marginLeft: 2 }}>
                     <Box sx={{ display: 'flex' }}>
                       <Typography sx={{ fontWeight: 600, marginRight: 2 }}>
                         {x.answeredBy?.username}
                       </Typography>
-                      <Typography color={'gray'}>{x.createdAt}</Typography>
+                      <Typography color={'gray'}>
+                        {format(new Date(x.createdAt), 'dd/MM/yyy, HH:mm')}
+                      </Typography>
                     </Box>
                     <Box>
                       <Typography>{x.answer}</Typography>

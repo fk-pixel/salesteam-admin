@@ -11,14 +11,27 @@ import {
   Dropdown,
   Button,
 } from 'reactstrap';
+//import { Stack, Dialog, DialogContent } from '@mui/material';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+
 import user4 from '../../assets/images/users/user4.jpg';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
+//import { useStore } from '../../store';
+// import { makeDateRange } from '../../utils/DataUtil';
 
 const Header = ({ open, showSidebar, setShowSidebar }) => {
   const router = useRouter();
+
+  //const { showDateSelector, user, salesInfos, setDateRange } = useStore();
+
   const [isOpen, setIsOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
+  // const [start, setStart] = React.useState();
+  // const [end, setEnd] = React.useState();
+  // const [openDate, setOpenDate] = React.useState(false);
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
 
@@ -26,8 +39,11 @@ const Header = ({ open, showSidebar, setShowSidebar }) => {
     setIsOpen(!isOpen);
   };
 
+  // const username = JSON.parse(localStorage.getItem('username'));
+
   const handleLogout = () => {
     localStorage.removeItem('userData');
+    localStorage.removeItem('store');
     router.push('/auth/login').then((res) => {
       if (res) {
         toast(<div>Oturum basariyla sonlandirildi</div>, {
@@ -37,17 +53,53 @@ const Header = ({ open, showSidebar, setShowSidebar }) => {
     });
   };
 
+  // const handleClose = () => {
+  //   setOpenDate(false);
+  // };
+
+  // if (openDate) {
+  //   return (
+  //     <>
+  //       <LocalizationProvider dateAdapter={AdapterDateFns}>
+  //         <Dialog open={openDate} onClose={handleClose} id={'openDateRanger'}>
+  //           <DialogContent>
+  //             <Stack direction={'row'} spacing={3} sx={{ marginBottom: 6 }}>
+  //               <DatePicker
+  //                 id={'start'}
+  //                 name="start"
+  //                 format="dd/MM/yyyy"
+  //                 value={start}
+  //                 label="Başlangıç tarihi"
+  //                 onChange={(val) => setStart(val)}
+  //                 KeyboardButtonProps={{
+  //                   'aria-label': 'change date',
+  //                 }}
+  //               />
+  //               <DatePicker
+  //                 id={'end'}
+  //                 name="end"
+  //                 format="dd/MM/yyyy"
+  //                 value={end}
+  //                 label="Bitiş tarihi"
+  //                 onChange={(val) => setEnd(val)}
+  //                 KeyboardButtonProps={{
+  //                   'aria-label': 'change date',
+  //                 }}
+  //               />
+  //             </Stack>
+  //           </DialogContent>
+  //         </Dialog>
+  //       </LocalizationProvider>
+  //     </>
+  //   );
+  // }
+
   return (
     <Navbar color="dark" dark expand="md">
-      {/* {showSidebar === false && ( */}
       {!showSidebar && (
         <div className="d-flex align-items-center">
-          {/* <NavbarBrand href="/" className="d-lg-none">
-          <Image src={LogoWhite} alt="logo" />
-        </NavbarBrand> */}
           <Button
             color="primary"
-            // className="d-lg-none"
             onClick={() => setShowSidebar(true)}
             style={{ visibility: showSidebar === false }}
           >
@@ -58,7 +110,6 @@ const Header = ({ open, showSidebar, setShowSidebar }) => {
 
       <div className="hstack gap-2">
         <Button color="primary" size="sm" className="d-sm-block d-md-none" onClick={handletoggle}>
-          {/* {isOpen ? <></> : <i className="bi bi-three-dots-vertical"></i>} */}
           {open ? <></> : <i className="bi bi-three-dots-vertical"></i>}
         </Button>
       </div>
