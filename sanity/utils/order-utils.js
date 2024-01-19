@@ -145,12 +145,7 @@ export async function createNotifications(id, data) {
           _key: `admin-${index}`,
           ...admin,
         })),
-        answers: notification.answers,
-        // answers: notification.answers?.map((answer, index) => ({
-        //   _key: `answer-${index}`,
-        //   answerId: uuidv4(),
-        //   ...answer,
-        // })),
+        answers: [],
       })),
     })
     .commit()
@@ -169,15 +164,19 @@ export async function updateNotifications(id, data) {
     .set({
       notifications: data?.map((notification, notificationIndex) => ({
         _key: `notification-${notificationIndex}`,
-        answers: notification.answers?.map((answer, answerIndex) => ({
-          _key: `answer-${answerIndex}`,
-          ...answer,
-        })),
+        notificationId: notification.notificationId,
+        createdAt: notification.createdAt,
+        flag: notification.flag,
+        context: notification.context,
+        note: notification.note,
         noteToAdmin: notification.noteToAdmin?.map((admin, adminIndex) => ({
           _key: `admin-${adminIndex}`,
           ...admin,
         })),
-        ...notification,
+        answers: notification.answers?.map((answer, answerIndex) => ({
+          _key: `answer-${answerIndex}`,
+          ...answer,
+        })),
       })),
     })
     .commit()
@@ -189,6 +188,7 @@ export async function updateNotifications(id, data) {
       console.error('Oh no, the update failed: ', err.message);
     });
 }
+
 // export async function uploadImage(id, imageData, imageField) {
 //   return client.assets
 //     .upload('image', createReadStream(imageData), { filename: basename(imageData) })

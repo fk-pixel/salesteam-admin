@@ -15,16 +15,19 @@ import FullLayout from '../src/layouts/FullLayout';
 import DataTable from '../src/components/DataTable/DataTable';
 import { client } from '../sanity/utils/client';
 import { Update } from '@mui/icons-material';
+//import { useStore } from '../src/store';
 
 export default function Dashboard() {
   const isNonMobile = useMediaQuery('(min-width:600px)');
+
+  //const { user, orders, getOrders, loading, error } = useStore();
 
   const { User } = usePortalContext();
 
   const [orders, setOrders] = React.useState([]);
   const [dataLoading, setDataLoading] = React.useState(false);
 
-  const userQuery = `*[_type == "order" && createdBy._ref == '${User._id}'] | order(_createdAt desc){          
+  const userQuery = `*[_type == "order" && createdBy._ref == '${User._id}'] | order(_createdAt desc){
     _id,
     _createdAt,
     products[] {
@@ -71,7 +74,7 @@ export default function Dashboard() {
     }
   }`;
 
-  const adminQuery = `*[_type == "order"] | order(_createdAt desc){          
+  const adminQuery = `*[_type == "order"] | order(_createdAt desc){
     _id,
     _createdAt,
     products[] {
@@ -163,6 +166,14 @@ export default function Dashboard() {
       }
     }
   }, [User.role, adminQuery, userQuery, orders.length]);
+
+  // React.useEffect(() => {
+  //   if (orders.length < 1) {
+  //     getOrders();
+  //   }
+  // }, [getOrders, orders.length]);
+
+  // if (error) <>{error}</>;
 
   const productSalesInfo =
     orders?.length > 0

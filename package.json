@@ -43,6 +43,7 @@
     "formik-mui": "^5.0.0-alpha.0",
     "formik-mui-x-date-pickers": "^0.0.1",
     "googleapis": "^128.0.0",
+    "immer": "^9.0.19",
     "jsonwebtoken": "^9.0.1",
     "lodash": "4.17.21",
     "material-ui-dropzone": "3.5.0",
@@ -68,7 +69,8 @@
     "uuid": "9.0.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz",
     "xlsx-js-style": "^1.2.0",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "clean-publish": "^4.2.0",

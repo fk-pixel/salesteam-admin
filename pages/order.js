@@ -29,10 +29,11 @@ import {
   productRegisterToAssets,
 } from '../src/utils/FormsUtil.js';
 import _ from 'lodash';
+//import { useStore } from '../src/store.js';
 
 export default function OrderForm() {
   const router = useRouter();
-
+  //const { user } = useStore();
   const { User } = usePortalContext();
 
   const isNonMobile = useMediaQuery('(min-width:600px)');

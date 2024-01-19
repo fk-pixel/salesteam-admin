@@ -14,10 +14,12 @@ import { Field, Form, Formik } from 'formik';
 import { usePortalContext } from '../src/common/Portal/portal';
 import { updateNotifications } from '../sanity/utils/order-utils';
 import FullLayout from '../src/layouts/FullLayout';
+//import { useStore } from '../src/store';
 
 export default function Messages() {
   const { User } = usePortalContext();
 
+  //const { user } = useStore();
   const theme = useTheme();
   const tablet = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
 
@@ -27,10 +29,10 @@ export default function Messages() {
   const [notifications, setNotifications] = React.useState();
   const [answer] = React.useState({
     answerId: uuidv4(),
-    // answeredBy: {
-    //   _type: 'reference',
-    //   _ref: User._id,
-    // },
+    answeredBy: {
+      _type: 'reference',
+      _ref: User?._id,
+    },
     answer: '',
     createdAt: new Date(),
   });
@@ -155,7 +157,7 @@ export default function Messages() {
 
   // selectedMessage ise mesaj görüldü olarak data base de saklansin. Sayet bir admin select yapmadigi mesajlari sayi olarak görmek isterse bu menu de chip olarak gösterilsin
   //const getNotificationsByAdmin
-  //console.log(User);
+
   const messages = orders.flatMap((x) => {
     if (x.notifications !== null) {
       return x.notifications.map((y) => ({ ...y, orderId: x._id, createdBy: x.createdBy }));
@@ -165,13 +167,8 @@ export default function Messages() {
   const initialNotes = [];
 
   messages?.map((x) =>
-    x?.noteToAdmin?.map((y) => (y._id === User._id ? initialNotes.push(x) : undefined)),
+    x?.noteToAdmin?.map((y) => (y?._id === User._id ? initialNotes.push(x) : undefined)),
   );
-
-  console.log('initialNotes', initialNotes);
-  console.log('notifications', notifications);
-  console.log('selectedMessage', selectedMessage);
-  console.log('order', order);
 
   function handleSelect(note) {
     const matchedNote = initialNotes.map((x) =>
@@ -252,70 +249,45 @@ export default function Messages() {
   }
 
   const onSave = async (values, resetForm) => {
-    // const editedData = [
-    //   order.notifications.map((notification) =>
-    //     notification.notificationId === selectedMessage.notificationId
-    //       ? {
-    //           ...notification,
-    //           noteToAdmin: notification?.noteToAdmin?.map((admin) => ({
-    //             _type: 'reference',
-    //             _ref: admin._id,
-    //           })),
-    //           answers:
-    //             notification.answers === null
-    //               ? [
-    //                   {
-    //                     answeredBy: {
-    //                       _ref: User._id,
-    //                       _type: 'reference',
-    //                     },
-    //                     ...values,
-    //                   },
-    //                 ]
-    //               : notification.answers.length === 0
-    //               ? [
-    //                   (notification.answers[0] = {
-    //                     answeredBy: {
-    //                       _ref: User._id,
-    //                       _type: 'reference',
-    //                     },
-    //                     ...values,
-    //                   }),
-    //                 ]
-    //               : notification.answers.push({
-    //                   answeredBy: {
-    //                     _ref: User._id,
-    //                     _type: 'reference',
-    //                   },
-    //                   ...values,
-    //                 }),
-    //           //.map((currentAnswer) => [currentAnswer, ...values]),
-    //         }
-    //       : notification,
-    //   ),
-    // ];
-    const editedData = [
-      order.notifications.map((notification) =>
-        notification.notificationId === selectedMessage.notificationId
-          ? {
-              ...notification,
-              // noteToAdmin: notification?.noteToAdmin?.map((admin) => ({
-              //   _type: 'reference',
-              //   _ref: admin._id,
-              // })),
-              answers: notification.answers.push({
+    const editedNotification = order.notifications.find(
+      (notification) => notification.notificationId === selectedMessage.notificationId,
+    );
+
+    const { notifications } = order;
+
+    const editedData = notifications.map((x) =>
+      _.isEqual(x, editedNotification)
+        ? {
+            ...x,
+            noteToAdmin: x?.noteToAdmin?.map((admin) => ({
+              _type: 'reference',
+              _ref: admin._id,
+            })),
+            answers: [
+              ...x.answers.map((a) => ({ ...a, answeredBy: { _type: 'reference', _ref: a.id } })),
+              {
                 ...values,
                 answeredBy: {
-                  _ref: User._id,
                   _type: 'reference',
+                  _ref: User._id,
                 },
-              }),
-            }
-          : notification,
-      ),
-    ];
-
-    console.log('editedData', editedData);
+              },
+            ],
+          }
+        : {
+            ...x,
+            noteToAdmin: x?.noteToAdmin?.map((admin) => ({
+              _type: 'reference',
+              _ref: admin._id,
+            })),
+            answers: [
+              ...x.answers.map((answer) => ({
+                ...answer,
+                answeredBy: { _type: 'reference', _ref: answer.id },
+              })),
+            ],
+          },
+    );
 
     await updateNotifications(order._id, editedData)
       .then(() => {
@@ -578,27 +550,29 @@ export default function Messages() {
               >
                 {({ setFieldValue }) => (
                   <Form>
-                    <Field
-                      fullWidth
-                      component={MTextField}
-                      type="text"
-                      id={`answer`}
-                      name={`answer`}
-                      //label="Not"
-                      multiline
-                      rows={4}
-                      variant="filled"
-                      sx={{ overflow: 'auto' }}
-                      maxRows={4}
-                      placeholder={'Bir cevap girin...'}
-                      onChange={(e) => {
-                        setFieldValue('answer', e.target.value);
-                      }}
-                    />
-                    <Box sx={{ alignSelf: 'center', paddingLeft: 1 }}>
-                      <Button type={'submit'}>
-                        <Send />
-                      </Button>
+                    <Box sx={{ display: 'flex' }}>
+                      <Field
+                        fullWidth
+                        component={MTextField}
+                        type="text"
+                        id={`answer`}
+                        name={`answer`}
+                        //label="Not"
+                        multiline
+                        rows={4}
+                        variant="filled"
+                        sx={{ overflow: 'auto' }}
+                        maxRows={4}
+                        placeholder={'Bir cevap girin...'}
+                        onChange={(e) => {
+                          setFieldValue('answer', e.target.value);
+                        }}
+                      />
+                      <Box sx={{ alignSelf: 'center', paddingLeft: 1 }}>
+                        <Button type={'submit'}>
+                          <Send />
+                        </Button>
+                      </Box>
                     </Box>
                   </Form>
                 )}
