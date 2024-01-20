@@ -404,7 +404,7 @@ export function SupportAction({ params, convertedData }) {
 
     await createNotifications(rowData._id, editedData)
       .then(() => {
-        toast(<div>Siparis basariyla güncellendi</div>, {
+        toast(<div>Destek hattina mesajiniz iletildi</div>, {
           type: 'success',
         });
       })
