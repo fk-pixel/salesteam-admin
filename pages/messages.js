@@ -552,7 +552,7 @@ export default function Messages() {
                 onSubmit={(values, { resetForm }) => onSave(values, resetForm)}
                 initialValues={answer}
               >
-                {({ setFieldValue }) => (
+                {({ setFieldValue, isSubmitting }) => (
                   <Form>
                     <Box sx={{ display: 'flex' }}>
                       <Field
@@ -573,7 +573,7 @@ export default function Messages() {
                         }}
                       />
                       <Box sx={{ alignSelf: 'center', paddingLeft: 1 }}>
-                        <Button type={'submit'}>
+                        <Button disabled={isSubmitting} type={'submit'}>
                           <Send />
                         </Button>
                       </Box>
