@@ -268,6 +268,7 @@ export default function Messages() {
               ...x.answers.map((answer) => ({
                 ...answer,
                 answeredBy: { _type: 'reference', _ref: answer?.answeredBy?._id },
+                notificationId: x.notificationId,
               })),
               {
                 ...values,
@@ -275,6 +276,7 @@ export default function Messages() {
                   _type: 'reference',
                   _ref: User._id,
                 },
+                notificationId: x.notificationId,
               },
             ],
           }

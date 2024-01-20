@@ -4,6 +4,7 @@ const answer = {
   type: 'object',
   fields: [
     { name: 'answerId', title: 'Answer-Id', type: 'string' },
+    { name: 'notificationId', title: 'Notification-Id', type: 'string' },
     { name: 'createdAt', title: 'CreatedAt', type: 'string' },
     { name: 'answer', title: 'Answer', type: 'string' },
     {
