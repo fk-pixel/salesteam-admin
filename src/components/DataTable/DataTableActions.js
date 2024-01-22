@@ -391,6 +391,13 @@ export function SupportAction({ params, convertedData }) {
               _type: 'reference',
               _ref: admin._id,
             })),
+            answers: notification?.answers?.map((answer) => ({
+              ...answer,
+              answeredBy: {
+                _type: 'reference',
+                _ref: answer.answeredBy._id,
+              },
+            })),
           }));
 
     const editedData = [
@@ -399,6 +406,7 @@ export function SupportAction({ params, convertedData }) {
         ...values,
         flag: values.flag.value,
         noteToAdmin: values.noteToAdmin.map((admin) => ({ _type: 'reference', _ref: admin.value })),
+        answers: [],
       },
     ];
 
@@ -476,55 +484,90 @@ export function SupportAction({ params, convertedData }) {
             }}
           >
             {rowData.notifications?.map((x, i) => (
-              <Box
-                key={i}
-                sx={{
-                  display: 'block',
-                  //justifyContent: 'space-between',
-                  marginBottom: 2,
-                  marginLeft: 4,
-                  backgroundColor: '#dddd',
-                  borderRadius: 4,
-                  borderBottomRightRadius: 0,
-                  padding: 2,
-                }}
-              >
-                {/* <Chip
+              <>
+                <Box sx={{ display: 'block' }}>
+                  <Box
+                    key={i}
+                    sx={{
+                      display: 'block',
+                      //justifyContent: 'space-between',
+                      marginBottom: 2,
+                      marginLeft: 4,
+                      backgroundColor: '#dddd',
+                      borderRadius: 4,
+                      borderBottomRightRadius: 0,
+                      padding: 2,
+                    }}
+                  >
+                    {/* <Chip
                   label={x.context}
                   sx={{ fontWeight: 600, backgroundColor: setChipColor(x.flag), marginBottom: 1 }}
                 /> */}
-                <div
-                  style={{
-                    fontWeight: 600,
-                    backgroundColor: setChipColor(x.flag),
-                    marginBottom: 4,
-                    marginTop: -20,
-                    padding: 4,
-                    borderRadius: 2,
-                    width: 'fit-content',
-                    minWidth: 55,
-                    color: 'white',
-                    textAlign: 'center',
-                  }}
-                >
-                  {x.context}
-                </div>
-                <Box sx={{ display: 'block' }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography
-                      sx={{
-                        fontSize: 12,
-                        color: 'grey',
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        backgroundColor: setChipColor(x.flag),
+                        marginBottom: 4,
+                        marginTop: -20,
+                        padding: 4,
+                        borderRadius: 2,
+                        width: 'fit-content',
+                        minWidth: 55,
+                        color: 'white',
+                        textAlign: 'center',
                       }}
                     >
-                      {format(new Date(x?.createdAt), 'dd/MM/yyyy, HH:mm')}
-                    </Typography>
-                    <AvatarGroup max={5} sx={{ marginTop: -3 }}>
-                      {x.noteToAdmin?.map((admin, index) => {
-                        return (
-                          <Tooltip key={index} title={`${admin?.username} | ${admin?.email} `}>
+                      {x.context}
+                    </div>
+                    <Box sx={{ display: 'block' }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography
+                          sx={{
+                            fontSize: 12,
+                            color: 'grey',
+                          }}
+                        >
+                          {format(new Date(x?.createdAt), 'dd/MM/yyyy, HH:mm')}
+                        </Typography>
+                        <AvatarGroup max={5} sx={{ marginTop: -3 }}>
+                          {x.noteToAdmin?.map((admin, index) => {
+                            return (
+                              <Tooltip key={index} title={`${admin?.username} | ${admin?.email} `}>
+                                <Avatar
+                                  key={index}
+                                  sx={{
+                                    bgcolor: 'warning.main',
+                                    cursor: 'pointer',
+                                    ':hover:not(:last-of-type)': {
+                                      transform: 'translate(5px)',
+                                      transition: 'transform 0.3s ease',
+                                    },
+                                    '& .MuiAvatar-root': {
+                                      border: '1px solid #c7c7c7',
+                                    },
+                                  }}
+                                >
+                                  {getAdminNameWithAvatar(admin?.username)}
+                                </Avatar>
+                              </Tooltip>
+                            );
+                          })}
+                        </AvatarGroup>
+                      </Box>
+                      <Typography>{x.note}</Typography>
+                    </Box>
+                  </Box>
+                  {x.answers?.map((answer) => (
+                    <>
+                      <Box sx={{ display: 'flex' }}>
+                        <AvatarGroup
+                          max={5}
+                          sx={{ paddingRight: 1, paddingTop: 1, alignSelf: 'end' }}
+                        >
+                          <Tooltip
+                            title={`${answer?.answeredBy?.username} | ${answer?.answeredBy?.email} `}
+                          >
                             <Avatar
-                              key={index}
                               sx={{
                                 bgcolor: 'warning.main',
                                 cursor: 'pointer',
@@ -537,18 +580,45 @@ export function SupportAction({ params, convertedData }) {
                                 },
                               }}
                             >
-                              {getAdminNameWithAvatar(admin?.username)}
+                              {getAdminNameWithAvatar(answer?.answeredBy?.username)}
                             </Avatar>
                           </Tooltip>
-                        );
-                      })}
-                    </AvatarGroup>
-                  </Box>
-                  <Typography>{x.note}</Typography>
+                        </AvatarGroup>
+
+                        <Box
+                          sx={{
+                            backgroundColor: '#007aff',
+                            borderRadius: 4,
+                            borderBottomLeftRadius: 0,
+                            padding: 2,
+                            marginBottom: 3.5,
+                            marginRight: 4,
+                            width: '-webkit-fill-available',
+                          }}
+                        >
+                          <Box sx={{ display: 'block' }}>
+                            <Typography color={'white'}>{answer?.answer}</Typography>
+                            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                              <Typography
+                                sx={{
+                                  fontSize: 12,
+                                  color: 'white',
+                                  justifyContent: 'flex-end',
+                                }}
+                              >
+                                {format(new Date(answer?.createdAt), 'dd.MM.yyyy, HH:mm')}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Box>
+                      </Box>
+                    </>
+                  ))}
                 </Box>
-              </Box>
+              </>
             ))}
-            {answers?.map((x) => (
+
+            {/* {answers?.map((x) => (
               <>
                 <Box sx={{ display: 'flex' }}>
                   <AvatarGroup max={5} sx={{ paddingRight: 1, paddingTop: 1, alignSelf: 'end' }}>
@@ -599,7 +669,7 @@ export function SupportAction({ params, convertedData }) {
                   </Box>
                 </Box>
               </>
-            ))}
+            ))} */}
           </Box>
           <Box
             sx={{

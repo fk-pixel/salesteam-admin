@@ -145,7 +145,10 @@ export async function createNotifications(id, data) {
           _key: `admin-${index}`,
           ...admin,
         })),
-        answers: [],
+        answers: notification.answers?.map((answer, index) => ({
+          _key: `answer-${index}`,
+          ...answer,
+        })),
       })),
     })
     .commit()

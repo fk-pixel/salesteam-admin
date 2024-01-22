@@ -155,27 +155,36 @@ export default function Messages() {
     }
   }, [User.role, adminQuery, userQuery]);
 
-  // selectedMessage ise mesaj görüldü olarak data base de saklansin. Sayet bir admin select yapmadigi mesajlari sayi olarak görmek isterse bu menu de chip olarak gösterilsin
-  //const getNotificationsByAdmin
+  let initialNotes = [];
 
-  const messages = orders?.flatMap((x) => {
-    if (x.notifications !== null) {
-      return x.notifications.map((y) => ({ ...y, orderId: x._id, createdBy: x.createdBy }));
-    }
-  });
-
-  const initialNotes = [];
+  const messages = orders
+    ?.flatMap((x) => {
+      if (x.notifications !== null) {
+        return x.notifications.map((y) => ({
+          ...y,
+          orderId: x._id,
+          createdBy: x.createdBy,
+          answers: y.answers === null ? [] : y.answers,
+        }));
+      }
+    })
+    .filter((m) => m !== undefined)
+    .filter((f) =>
+      f.noteToAdmin.map((n, i) => (n?._id === User._id ? initialNotes.push(f[i]) : undefined)),
+    );
 
   messages?.map((x) =>
     x?.noteToAdmin?.map((y) => (y?._id === User._id ? initialNotes.push(x) : undefined)),
   );
+
+  initialNotes = initialNotes.filter((x) => x !== undefined);
 
   function handleSelect(note) {
     const matchedNote = initialNotes.map((x) =>
       _.isEqual(x, note) ? { ...x, viewedNotification: true, selectedMessage: true } : x,
     );
     setNotifications(matchedNote);
-    const findSelectedNote = notifications?.find((x) => x.orderId === note.orderId);
+    const findSelectedNote = notifications?.find((x) => x.notificationId === note.notificationId);
     setSelectedMessage(findSelectedNote);
   }
 
@@ -264,21 +273,24 @@ export default function Messages() {
               _type: 'reference',
               _ref: admin._id,
             })),
-            answers: [
-              ...x.answers.map((answer) => ({
-                ...answer,
-                answeredBy: { _type: 'reference', _ref: answer?.answeredBy?._id },
-                notificationId: x.notificationId,
-              })),
-              {
-                ...values,
-                answeredBy: {
-                  _type: 'reference',
-                  _ref: User._id,
-                },
-                notificationId: x.notificationId,
-              },
-            ],
+            answers:
+              x.answers === null
+                ? []
+                : [
+                    ...x.answers.map((answer) => ({
+                      ...answer,
+                      answeredBy: { _type: 'reference', _ref: answer?.answeredBy?._id },
+                      notificationId: x.notificationId,
+                    })),
+                    {
+                      ...values,
+                      answeredBy: {
+                        _type: 'reference',
+                        _ref: User._id,
+                      },
+                      notificationId: x.notificationId,
+                    },
+                  ],
           }
         : {
             ...x,
@@ -310,6 +322,10 @@ export default function Messages() {
     resetForm();
   };
 
+  const filteredMessage = order?.notifications.filter(
+    (n) => n.notificationId === selectedMessage.notificationId,
+  )[0];
+
   if (initialNotes === undefined || initialNotes.length < 1) {
     return <> 📢 Mesaj kutunuz bos</>;
   }
@@ -317,7 +333,7 @@ export default function Messages() {
   return (
     <Box sx={{ width: '100%', height: '90dvh', display: 'flex' }}>
       {/* messages */}
-      <Box sx={{ width: '35dvw', borderRight: '1px solid lightgrey' }}>
+      <Box sx={{ width: '35dvw', borderRight: '1px solid lightgrey', overflowY: 'scroll' }}>
         {/* messages header */}
         <Box sx={{ paddingBottom: 1, borderBottom: '1px solid lightgrey' }}>
           <Typography variant="h6">Mesajlarim</Typography>
@@ -486,8 +502,8 @@ export default function Messages() {
         </Box>
         {/* message by admin*/}
         <Box sx={{ height: '62%', padding: 2, marginBottom: 1 }}>
-          {order?.notifications[0].answers?.length > 0 ? (
-            order?.notifications[0].answers?.map((x) => (
+          {filteredMessage?.answers?.length > 0 ? (
+            filteredMessage.answers?.map((x) => (
               <>
                 <Box sx={{ display: 'flex', paddingBottom: 3 }}>
                   <Box>
@@ -510,7 +526,7 @@ export default function Messages() {
               </>
             ))
           ) : (
-            <> 📢 Bu bildirime ait bir cevap bulunamadi</>
+            <>{selectedMessage && <> 📢 Bu bildirime ait bir cevap bulunamadi</>}</>
           )}
         </Box>
 
@@ -563,7 +579,6 @@ export default function Messages() {
                         type="text"
                         id={`answer`}
                         name={`answer`}
-                        //label="Not"
                         multiline
                         rows={4}
                         variant="filled"
