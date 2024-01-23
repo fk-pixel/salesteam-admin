@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import { TextField as MTextField } from 'formik-mui';
 import { format } from 'date-fns';
+import { tr } from 'date-fns/esm/locale';
 import { Box, Avatar, Typography, Button } from '@mui/material';
 import { AnnouncementRounded, Send, SupervisedUserCircle, TurnedIn } from '@mui/icons-material';
 import { client } from '../sanity/utils/client';
@@ -14,6 +15,7 @@ import { Field, Form, Formik } from 'formik';
 import { usePortalContext } from '../src/common/Portal/portal';
 import { updateNotifications } from '../sanity/utils/order-utils';
 import FullLayout from '../src/layouts/FullLayout';
+import { getAdminNameWithAvatar } from '../src/utils/DashboardUtil';
 //import { useStore } from '../src/store';
 
 export default function Messages() {
@@ -171,7 +173,8 @@ export default function Messages() {
     .filter((m) => m !== undefined)
     .filter((f) =>
       f.noteToAdmin.map((n, i) => (n?._id === User._id ? initialNotes.push(f[i]) : undefined)),
-    );
+    )
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   messages?.map((x) =>
     x?.noteToAdmin?.map((y) => (y?._id === User._id ? initialNotes.push(x) : undefined)),
@@ -393,7 +396,9 @@ export default function Messages() {
                       </Box>
                       <Box>
                         <Typography variant="caption" color={'grey'} fontWeight={600}>
-                          {format(new Date(initialNote.createdAt), 'dd/MM/yy')}
+                          {format(new Date(initialNote.createdAt), 'dd.LLLL yyyy, HH:mm', {
+                            locale: tr,
+                          })}
                         </Typography>
                       </Box>
                     </Box>
@@ -456,7 +461,9 @@ export default function Messages() {
                       </Box>
                       <Box>
                         <Typography variant="caption" color={'grey'} fontWeight={600}>
-                          {format(new Date(notification?.createdAt), 'dd/MM/yy')}
+                          {format(new Date(notification?.createdAt), 'dd.LLLL yyyy, HH:mm', {
+                            locale: tr,
+                          })}
                         </Typography>
                       </Box>
                     </Box>
@@ -507,7 +514,7 @@ export default function Messages() {
               <>
                 <Box sx={{ display: 'flex', paddingBottom: 3 }}>
                   <Box>
-                    <Avatar>{x.answeredBy?.username}</Avatar>
+                    <Avatar>{getAdminNameWithAvatar(x.answeredBy?.username)}</Avatar>
                   </Box>
                   <Box sx={{ display: 'block', marginLeft: 2 }}>
                     <Box sx={{ display: 'flex' }}>
@@ -531,76 +538,74 @@ export default function Messages() {
         </Box>
 
         {/* message by user */}
-        <Box
-          sx={{
-            height: '30%',
-            backgroundColor: 'ButtonHighlight',
-            borderRadius: 4,
-            padding: 4,
-            margin: 2,
-          }}
-        >
-          {selectedMessage && (
-            <>
-              <Box
-                sx={
-                  {
-                    /* maxHeight: '5dvh' */
-                  }
+        {selectedMessage && (
+          <Box
+            sx={{
+              height: '30%',
+              backgroundColor: 'ButtonHighlight',
+              borderRadius: 4,
+              padding: 4,
+              margin: 2,
+            }}
+          >
+            <Box
+              sx={
+                {
+                  /* maxHeight: '5dvh' */
                 }
-              >
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Box sx={{ display: 'flex' }}>
-                    <AnnouncementRounded></AnnouncementRounded>
-                    <Typography marginLeft={1} fontSize={18} fontWeight={600}>
-                      {selectedMessage?.createdBy.username}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography color={'grey'}>
-                      <strong>Siparis No:</strong> {selectedMessage?.orderId}
-                    </Typography>
-                  </Box>
+              }
+            >
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex' }}>
+                  <AnnouncementRounded></AnnouncementRounded>
+                  <Typography marginLeft={1} fontSize={18} fontWeight={600}>
+                    {selectedMessage?.createdBy.username}
+                  </Typography>
                 </Box>
-                <Box
-                  sx={{ overflow: 'auto', height: '8dvh', marginTop: 1 }}
-                >{`“${selectedMessage?.note}„`}</Box>
+                <Box>
+                  <Typography color={'grey'}>
+                    <strong>Siparis No:</strong> {selectedMessage?.orderId}
+                  </Typography>
+                </Box>
               </Box>
-              <Formik
-                onSubmit={(values, { resetForm }) => onSave(values, resetForm)}
-                initialValues={answer}
-              >
-                {({ setFieldValue, isSubmitting }) => (
-                  <Form>
-                    <Box sx={{ display: 'flex' }}>
-                      <Field
-                        fullWidth
-                        component={MTextField}
-                        type="text"
-                        id={`answer`}
-                        name={`answer`}
-                        multiline
-                        rows={4}
-                        variant="filled"
-                        sx={{ overflow: 'auto' }}
-                        maxRows={4}
-                        placeholder={'Bir cevap girin...'}
-                        onChange={(e) => {
-                          setFieldValue('answer', e.target.value);
-                        }}
-                      />
-                      <Box sx={{ alignSelf: 'center', paddingLeft: 1 }}>
-                        <Button disabled={isSubmitting} type={'submit'}>
-                          <Send />
-                        </Button>
-                      </Box>
+              <Box
+                sx={{ overflow: 'auto', height: '8dvh', marginTop: 1 }}
+              >{`“${selectedMessage?.note}„`}</Box>
+            </Box>
+            <Formik
+              onSubmit={(values, { resetForm }) => onSave(values, resetForm)}
+              initialValues={answer}
+            >
+              {({ setFieldValue, isSubmitting }) => (
+                <Form>
+                  <Box sx={{ display: 'flex' }}>
+                    <Field
+                      fullWidth
+                      component={MTextField}
+                      type="text"
+                      id={`answer`}
+                      name={`answer`}
+                      multiline
+                      rows={4}
+                      variant="filled"
+                      sx={{ overflow: 'auto' }}
+                      maxRows={4}
+                      placeholder={'Bir cevap girin...'}
+                      onChange={(e) => {
+                        setFieldValue('answer', e.target.value);
+                      }}
+                    />
+                    <Box sx={{ alignSelf: 'center', paddingLeft: 1 }}>
+                      <Button disabled={isSubmitting} type={'submit'}>
+                        <Send />
+                      </Button>
                     </Box>
-                  </Form>
-                )}
-              </Formik>
-            </>
-          )}
-        </Box>
+                  </Box>
+                </Form>
+              )}
+            </Formik>
+          </Box>
+        )}
       </Box>
     </Box>
   );

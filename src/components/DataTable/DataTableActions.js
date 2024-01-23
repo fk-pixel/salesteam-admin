@@ -391,13 +391,16 @@ export function SupportAction({ params, convertedData }) {
               _type: 'reference',
               _ref: admin._id,
             })),
-            answers: notification?.answers?.map((answer) => ({
-              ...answer,
-              answeredBy: {
-                _type: 'reference',
-                _ref: answer.answeredBy._id,
-              },
-            })),
+            answers:
+              notification?.answers === null
+                ? []
+                : notification?.answers?.map((answer) => ({
+                    ...answer,
+                    answeredBy: {
+                      _type: 'reference',
+                      _ref: answer.answeredBy._id,
+                    },
+                  })),
           }));
 
     const editedData = [
