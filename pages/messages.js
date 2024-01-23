@@ -340,7 +340,7 @@ export default function Messages() {
         {/* messages header */}
         <Box
           sx={{
-            paddingBottom: 1,
+            paddingBottom: '10px',
             borderBottom: '1px solid lightgrey',
             position: 'fixed',
             minWidth: '31%',
