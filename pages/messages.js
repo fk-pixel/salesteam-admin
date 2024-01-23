@@ -344,7 +344,7 @@ export default function Messages() {
             borderBottom: '1px solid lightgrey',
             position: 'fixed',
             minWidth: '31%',
-            backgroundColor: '#f2f7f8', //kirli beyaz
+            backgroundColor: '#ffffff', //'#f2f7f8', //kirli beyaz
           }}
         >
           <Typography variant="h6" sx={{ lineHeight: 1.5 }}>
