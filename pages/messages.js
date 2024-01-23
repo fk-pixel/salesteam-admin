@@ -312,7 +312,7 @@ export default function Messages() {
 
     await updateNotifications(order._id, editedData)
       .then(() => {
-        toast(<div>Siparis basariyla güncellendi</div>, {
+        toast(<div>Mesajiniz iletildi</div>, {
           type: 'success',
         });
       })
@@ -338,8 +338,18 @@ export default function Messages() {
       {/* messages */}
       <Box sx={{ width: '35dvw', borderRight: '1px solid lightgrey', overflowY: 'scroll' }}>
         {/* messages header */}
-        <Box sx={{ paddingBottom: 1, borderBottom: '1px solid lightgrey' }}>
-          <Typography variant="h6">Mesajlarim</Typography>
+        <Box
+          sx={{
+            paddingBottom: 1,
+            borderBottom: '1px solid lightgrey',
+            position: 'fixed',
+            minWidth: '31%',
+            backgroundColor: '#f2f7f8', //kirli beyaz
+          }}
+        >
+          <Typography variant="h6" sx={{ lineHeight: 1.5 }}>
+            Mesajlarim
+          </Typography>
         </Box>
         {/* messages card */}
         {notifications === undefined
@@ -355,6 +365,7 @@ export default function Messages() {
                     borderLeft: initialNote.selectedMessage ? '6px solid #91BAD6' : 'initial',
                     display: 'flex',
                     borderBottom: '1px solid lightgrey',
+                    marginTop: i === 0 ? 5 : undefined,
                   }}
                   onClick={() => handleSelect(initialNote)}
                 >
@@ -420,6 +431,7 @@ export default function Messages() {
                     borderLeft: notification.selectedMessage ? '6px solid #91BAD6' : 'initial',
                     display: 'flex',
                     borderBottom: '1px solid lightgrey',
+                    marginTop: i === 0 ? 5 : undefined,
                   }}
                   onClick={() => handleSelect(notification)}
                 >
