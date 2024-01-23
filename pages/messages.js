@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import { TextField as MTextField } from 'formik-mui';
 import { format } from 'date-fns';
-import { tr } from 'date-fns/esm/locale';
+import tr from 'date-fns/locale/index.js';
 import { Box, Avatar, Typography, Button } from '@mui/material';
 import { AnnouncementRounded, Send, SupervisedUserCircle, TurnedIn } from '@mui/icons-material';
 import { client } from '../sanity/utils/client';
@@ -545,7 +545,7 @@ export default function Messages() {
               </>
             ))
           ) : (
-            <>{selectedMessage && <> 📢 Bu bildirime ait bir cevap bulunamadi</>}</>
+            <>📢 Bu bildirime ait bir cevap bulunamadi</>
           )}
         </Box>
 
