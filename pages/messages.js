@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import { TextField as MTextField } from 'formik-mui';
 import { format } from 'date-fns';
-import tr from 'date-fns/locale/index.js';
+import tr from 'date-fns/locale/tr';
 import { Box, Avatar, Typography, Button } from '@mui/material';
 import { AnnouncementRounded, Send, SupervisedUserCircle, TurnedIn } from '@mui/icons-material';
 import { client } from '../sanity/utils/client';
