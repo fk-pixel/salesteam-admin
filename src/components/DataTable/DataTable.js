@@ -287,6 +287,8 @@ export default function DataTable(props) {
     // pageStyle: 'print',
   });
 
+  // const { rowHeight, headerHeight } = DEFAULT_GRID_OPTIONS;
+
   const printableOrder = convertedData?.filter((x) => rowSelectionModel?.includes(x._id));
 
   return (
@@ -404,7 +406,7 @@ export default function DataTable(props) {
         ) : (
           <></>
         )}
-        <div style={{ width: '100%' }}>
+        <div style={{ height: 830, width: '100%', overflow: 'auto' }}>
           <DataGrid
             key={'dataGrid'}
             showCellVerticalBorder
