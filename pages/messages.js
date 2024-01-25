@@ -16,6 +16,7 @@ import { usePortalContext } from '../src/common/Portal/portal';
 import { updateNotifications } from '../sanity/utils/order-utils';
 import FullLayout from '../src/layouts/FullLayout';
 import { getAdminNameWithAvatar } from '../src/utils/DashboardUtil';
+import Searchbar from '../src/components/Searchbar/Searchbar';
 //import { useStore } from '../src/store';
 
 export default function Messages() {
@@ -495,29 +496,35 @@ export default function Messages() {
             paddingLeft: 2,
             borderBottom: '1px solid lightgrey',
             display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
-          {selectedMessage?.flag ? (
-            <Box sx={{}}>
-              <TurnedIn
-                sx={{
-                  color:
-                    selectedMessage?.flag === 'warning'
-                      ? 'orange'
-                      : selectedMessage?.flag === 'danger'
-                      ? 'red'
-                      : selectedMessage?.flag === 'success'
-                      ? 'green'
-                      : 'indigo',
-                }}
-              ></TurnedIn>
-            </Box>
-          ) : (
-            <Box sx={{ paddingBottom: 1 }}>📑 Secili mesaj yok</Box>
-          )}
-          <Typography variant="h6" paddingLeft={2}>
-            {selectedMessage?.context}
-          </Typography>
+          <Box sx={{ display: 'flex' }}>
+            {selectedMessage?.flag ? (
+              <Box sx={{}}>
+                <TurnedIn
+                  sx={{
+                    color:
+                      selectedMessage?.flag === 'warning'
+                        ? 'orange'
+                        : selectedMessage?.flag === 'danger'
+                        ? 'red'
+                        : selectedMessage?.flag === 'success'
+                        ? 'green'
+                        : 'indigo',
+                  }}
+                ></TurnedIn>
+              </Box>
+            ) : (
+              <Box sx={{ paddingBottom: 1 }}>📑 Secili mesaj yok</Box>
+            )}
+            <Typography variant="h6" paddingLeft={2}>
+              {selectedMessage?.context}
+            </Typography>
+          </Box>
+          <Box>
+            <Searchbar />
+          </Box>
         </Box>
         {/* message by admin*/}
         <Box sx={{ height: '62%', padding: 2, marginBottom: 1 }}>
