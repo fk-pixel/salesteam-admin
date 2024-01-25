@@ -67,7 +67,7 @@ export default function OrderDetail({ data, onChange }) {
         </>
       ))}
       <Divider />
-      <Box sx={{ marginTop: 2 }}>
+      <Box sx={{ marginTop: 2, marginBottom: 2 }}>
         <Typography variant="subtitle1" color={'grey'} fontWeight={600}>
           Hediyeler
         </Typography>
