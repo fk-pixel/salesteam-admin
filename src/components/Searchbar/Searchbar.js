@@ -77,13 +77,13 @@ export default function Searchbar() {
     setKeyword(value);
   };
 
-  console.log('orders', orders);
-
   return (
     <>
       <Box sx={{ display: 'block' }}>
         <Box sx={{ display: 'flex' }}>
-          {!openSearchbar && <Search onClick={() => setOpenSearch(!openSearchbar)} />}
+          {!openSearchbar && (
+            <Search sx={{ cursor: 'pointer' }} onClick={() => setOpenSearch(!openSearchbar)} />
+          )}
           {openSearchbar && (
             <>
               <input
@@ -91,6 +91,7 @@ export default function Searchbar() {
                 style={{
                   borderRadius: 6,
                   borderColor: 'cornflowerblue',
+                  padding: 2,
                   // 'input:focus': {
                   //   borderColor: '#f44336',
                   //   backgroundColor: 'lightblue',
@@ -103,9 +104,8 @@ export default function Searchbar() {
                 value={keyword}
                 onChange={(e) => handleChange(e.target.value)}
               />
-
               <Close
-                sx={{ alignSelf: 'center' }}
+                sx={{ alignSelf: 'center', fontSize: '18px', cursor: 'pointer' }}
                 onClick={() => {
                   setKeyword('');
                   setOpenSearch(!openSearchbar);

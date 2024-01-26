@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { TextField as MTextField } from 'formik-mui';
 import { format } from 'date-fns';
 import tr from 'date-fns/locale/tr';
-import { Box, Avatar, Typography, Button } from '@mui/material';
+import { Box, Avatar, Typography, Button, CircularProgress } from '@mui/material';
 import { AnnouncementRounded, Send, SupervisedUserCircle, TurnedIn } from '@mui/icons-material';
 import { client } from '../sanity/utils/client';
 import _ from 'lodash';
@@ -488,7 +488,7 @@ export default function Messages() {
             ))}
       </Box>
       {/* messageDetail */}
-      <Box sx={{ width: '65dvw', height: '93dvh' }}>
+      <Box sx={{ width: '65vw', height: '93vh' }}>
         {/* message header */}
         <Box
           sx={{
@@ -527,7 +527,7 @@ export default function Messages() {
           </Box>
         </Box>
         {/* message by admin*/}
-        <Box sx={{ height: '62%', padding: 2, marginBottom: 1 }}>
+        <Box sx={{ height: '62%', overflowY: 'scroll', padding: 2, marginBottom: 1 }}>
           {filteredMessage?.answers?.length > 0 ? (
             filteredMessage.answers?.map((x) => (
               <>
@@ -551,8 +551,10 @@ export default function Messages() {
                 </Box>
               </>
             ))
-          ) : (
+          ) : filteredMessage?.answers?.length === 0 ? (
             <>📢 Bu bildirime ait bir cevap bulunamadi</>
+          ) : (
+            <CircularProgress />
           )}
         </Box>
 
