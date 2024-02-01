@@ -309,6 +309,7 @@ export default function Messages() {
                     })),
                     {
                       ...values,
+                      createdAt: new Date(),
                       answeredBy: {
                         _type: 'reference',
                         _ref: User._id,
@@ -326,7 +327,7 @@ export default function Messages() {
             answers: [
               ...x.answers.map((answer) => ({
                 ...answer,
-                answeredBy: { _type: 'reference', _ref: answer.id },
+                answeredBy: { _type: 'reference', _ref: answer?.answeredBy?._id },
               })),
             ],
           },
@@ -376,7 +377,7 @@ export default function Messages() {
           }}
         >
           <Typography variant="h6" sx={{ lineHeight: 1.5 }}>
-            Mesajlarim
+            Mesajlarim ({initialNotes?.length ?? notifications?.length})
           </Typography>
         </Box>
         {/* messages card */}

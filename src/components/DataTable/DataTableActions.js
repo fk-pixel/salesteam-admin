@@ -385,20 +385,20 @@ export function SupportAction({ params, convertedData }) {
     const setNotifications =
       notifications === null
         ? []
-        : notifications.map((notification) => ({
-            ...notification,
-            noteToAdmin: notification?.noteToAdmin?.map((admin) => ({
+        : notifications.map((x) => ({
+            ...x,
+            noteToAdmin: x?.noteToAdmin?.map((admin) => ({
               _type: 'reference',
               _ref: admin._id,
             })),
             answers:
-              notification?.answers === null
+              x.answers === null
                 ? []
-                : notification?.answers?.map((answer) => ({
+                : x.answers?.map((answer) => ({
                     ...answer,
                     answeredBy: {
                       _type: 'reference',
-                      _ref: answer.answeredBy._id,
+                      _ref: answer?.answeredBy?._id,
                     },
                   })),
           }));

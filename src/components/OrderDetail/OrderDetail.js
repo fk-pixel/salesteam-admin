@@ -133,8 +133,8 @@ export default function OrderDetail({ data, onChange }) {
           padding: 2,
           justifyContent: 'flex-end',
           display: 'flex',
-          backgroundColor: 'darkgrey', //'#0086d5', //'#f7f7f7',
-          color: 'white',
+          backgroundColor: '#353A40', //'darkgrey', //'#0086d5', //'#f7f7f7',
+          color: 'lightgrey',
           zIndex: 1,
           position: 'sticky',
           alignSelf: 'flex-end',
@@ -143,10 +143,8 @@ export default function OrderDetail({ data, onChange }) {
           marginBottom: 0,
         }}
       >
-        <Typography sx={{ marginRight: 2, fontWeight: 600, fontSize: '18px' }}>
-          Sipariş Tutarı:{' '}
-        </Typography>
-        <Typography sx={{ fontWeight: 600, fontSize: '18px' }}>{data.price ?? '-'}</Typography>
+        <Typography sx={{ marginRight: 2, fontSize: '18px' }}>Sipariş Tutarı: </Typography>
+        <Typography sx={{ fontSize: '18px' }}>{data.price ?? '-'}</Typography>
       </Box>
     </>
   );

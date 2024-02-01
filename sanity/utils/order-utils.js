@@ -153,11 +153,11 @@ export async function createNotifications(id, data) {
     })
     .commit()
     .then((res) => {
-      console.log('Hurray, the order is updated! New document:');
+      console.log('Hurray, the notification is created! New document:');
       console.log(res);
     })
     .catch((err) => {
-      console.error('Oh no, the update failed: ', err.message);
+      console.error('Oh no, the create failed: ', err.message);
     });
 }
 
@@ -184,7 +184,7 @@ export async function updateNotifications(id, data) {
     })
     .commit()
     .then((res) => {
-      console.log('Hurray, the order is updated! New document:');
+      console.log('Hurray, the notification is updated! New document:');
       console.log(res);
     })
     .catch((err) => {
