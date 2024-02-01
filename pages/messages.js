@@ -556,7 +556,14 @@ export default function Messages() {
           </Box>
         </Box>
         {/* message by admin*/}
-        <Box sx={{ height: '55%', overflowY: 'scroll', padding: 2, marginBottom: 1 }}>
+        <Box
+          sx={{
+            height: '55%',
+            overflowY: filteredMessage?.answers?.length > 0 ? 'scroll' : 'initial',
+            padding: 2,
+            marginBottom: 1,
+          }}
+        >
           {filteredMessage?.answers?.length > 0 ? (
             filteredMessage.answers?.map((x) => (
               <>

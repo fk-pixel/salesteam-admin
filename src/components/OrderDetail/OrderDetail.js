@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
-import { Box, Button, Divider, Typography } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
+import { Button } from 'reactstrap';
 import { urlFor } from '../../../sanity/utils/client';
 
 export default function OrderDetail({ data, onChange }) {
@@ -27,17 +28,11 @@ export default function OrderDetail({ data, onChange }) {
           >
             Ürünler
           </Typography>
-          <Button
-            sx={{
-              fontSize: '18px',
-              backgroundColor: '#0086d5',
-              color: 'white',
-              ':hover': { backgroundColor: '#0086d5', color: 'white' },
-            }}
-            onClick={() => onChange(undefined)}
-          >
-            ←
-          </Button>
+          <div className="d-flex align-items-center p-1">
+            <Button color="primary" onClick={() => onChange(undefined)}>
+              <i className="bi bi-arrow-left"></i>
+            </Button>
+          </div>
         </Box>
         {data.products?.map((product, index) => (
           <>
