@@ -1,5 +1,6 @@
 // utils/createEmotionCache.ts
 import createCache from '@emotion/cache';
+import React from 'react';
 
 const isBrowser = typeof document !== 'undefined';
 
@@ -17,3 +18,29 @@ export default function createEmotionCache() {
 
   return createCache({ key: 'mui-style', insertionPoint });
 }
+
+export const usePrevious = (value) => {
+  const ref = React.useRef();
+  React.useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
+
+export const usePreviousPersistent = (value) => {
+  const [state, setState] = React.useState({
+    value: value,
+    prev: null,
+  });
+
+  const current = state.value;
+
+  if (value !== current) {
+    setState({
+      value: value,
+      prev: current,
+    });
+  }
+
+  return state.prev;
+};

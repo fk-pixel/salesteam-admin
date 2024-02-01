@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, Avatar, Typography } from '@mui/material';
+import { Box, Avatar, Typography, TextField, InputAdornment } from '@mui/material';
 import { client } from '../../../sanity/utils/client';
+import ContentPasteGoIcon from '@mui/icons-material/ContentPasteGo';
 import { format } from 'date-fns';
 
 import { Close, Search } from '@mui/icons-material';
@@ -55,7 +56,7 @@ const adminQuery = `*[_type == "order"] | order(_createdAt desc){
     }
   }`;
 
-export default function Searchbar() {
+export default function Searchbar({ orderId, setOrderId }) {
   const [openSearchbar, setOpenSearch] = React.useState(false);
   const [keyword, setKeyword] = React.useState('');
   const [orders, setOrders] = React.useState([]);
@@ -86,22 +87,21 @@ export default function Searchbar() {
           )}
           {openSearchbar && (
             <>
-              <input
-                className={':hover{text-decoration:none'}
-                style={{
-                  borderRadius: 6,
-                  borderColor: 'cornflowerblue',
-                  padding: 2,
-                  // 'input:focus': {
-                  //   borderColor: '#f44336',
-                  //   backgroundColor: 'lightblue',
-                  //   color: '#f44336',
-                  // },
-                  boxShadow:
-                    'inset 0 0 0 3px #fff, 0 0 0 4px #fff, 3px -3px 30px #rgb(255, 255, 255) 0px 0px 0px 3px inset, rgb(255, 255, 255) 0px 0px 0px 4px, #rgb(126 139 130) 3px -3px 30px, white -3px 3px 30px, -3px 3px 30px white',
-                }}
+              <TextField
+                variant="standard"
                 placeholder="Siparislerde arayin..."
                 value={keyword}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <ContentPasteGoIcon
+                        sx={{ ':hover': { cursor: _.isEmpty(orderId) ? 'default' : 'pointer' } }}
+                        color={_.isEmpty(orderId) ? 'disabled' : 'info'}
+                        onClick={() => setKeyword(orderId)}
+                      />
+                    </InputAdornment>
+                  ),
+                }}
                 onChange={(e) => handleChange(e.target.value)}
               />
               <Close
@@ -109,6 +109,7 @@ export default function Searchbar() {
                 onClick={() => {
                   setKeyword('');
                   setOpenSearch(!openSearchbar);
+                  setOrderId('');
                 }}
               />
             </>

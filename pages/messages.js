@@ -4,19 +4,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { TextField as MTextField } from 'formik-mui';
 import { format } from 'date-fns';
 import tr from 'date-fns/locale/tr';
-import { Box, Avatar, Typography, Button, CircularProgress } from '@mui/material';
+import { Box, Tooltip, Avatar, Typography, Button, CircularProgress } from '@mui/material';
 import { AnnouncementRounded, Send, SupervisedUserCircle, TurnedIn } from '@mui/icons-material';
 import { client } from '../sanity/utils/client';
 import _ from 'lodash';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Field, Form, Formik } from 'formik';
+import Picker from '@emoji-mart/react';
 
 import { usePortalContext } from '../src/common/Portal/portal';
 import { updateNotifications } from '../sanity/utils/order-utils';
 import FullLayout from '../src/layouts/FullLayout';
 import { getAdminNameWithAvatar } from '../src/utils/DashboardUtil';
 import Searchbar from '../src/components/Searchbar/Searchbar';
+import { usePreviousPersistent } from '../src/utils/AppUtil';
 //import { useStore } from '../src/store';
 
 export default function Messages() {
@@ -39,6 +41,10 @@ export default function Messages() {
     answer: '',
     createdAt: new Date(),
   });
+  const [openEmojiToolbar, setOpenEmojiToolbar] = React.useState();
+  const [orderId, setOrderId] = React.useState('');
+
+  const prevSelectedMessage = usePreviousPersistent(selectedMessage);
 
   const userQuery = `*[_type == "order" && createdBy._ref == '${User._id}'] | order(_createdAt desc){          
     _id,
@@ -190,6 +196,15 @@ export default function Messages() {
     setNotifications(matchedNote);
     const findSelectedNote = notifications?.find((x) => x.notificationId === note.notificationId);
     setSelectedMessage(findSelectedNote);
+    // setAnswer({
+    //   answerId: uuidv4(),
+    //   answeredBy: {
+    //     _type: 'reference',
+    //     _ref: User?._id,
+    //   },
+    //   answer: '',
+    //   createdAt: new Date(),
+    // });
   }
 
   const orderBySelectedIdQuery = `*[_type == "order" && _id == '${selectedMessage?.orderId}'] | order(_createdAt desc){          
@@ -253,6 +268,12 @@ export default function Messages() {
       };
     }
   }, [orderBySelectedIdQuery, selectedMessage]);
+
+  React.useEffect(() => {
+    if (_.isEqual(selectedMessage, prevSelectedMessage) === false) {
+      setOrderId();
+    }
+  }, [selectedMessage, prevSelectedMessage]);
 
   function getNoteByLimit(note) {
     const limitByScreen = tablet ? 40 : 90;
@@ -327,8 +348,14 @@ export default function Messages() {
   };
 
   const filteredMessage = order?.notifications.filter(
-    (n) => n.notificationId === selectedMessage.notificationId,
+    (n) => n.notificationId === selectedMessage?.notificationId,
   )[0];
+
+  function copyOrderId() {
+    setOrderId(selectedMessage.orderId);
+  }
+
+  //console.log('selectedEmoji', selectedEmoji);
 
   if (initialNotes === undefined || initialNotes.length < 1) {
     return <> 📢 Mesaj kutunuz bos</>;
@@ -368,7 +395,9 @@ export default function Messages() {
                     borderBottom: '1px solid lightgrey',
                     marginTop: i === 0 ? 5 : undefined,
                   }}
-                  onClick={() => handleSelect(initialNote)}
+                  onClick={() => {
+                    handleSelect(initialNote);
+                  }}
                 >
                   {/* flag block */}
                   <Box sx={{ marginRight: 2 }}>
@@ -523,11 +552,11 @@ export default function Messages() {
             </Typography>
           </Box>
           <Box>
-            <Searchbar />
+            <Searchbar orderId={orderId} setOrderId={setOrderId} />
           </Box>
         </Box>
         {/* message by admin*/}
-        <Box sx={{ height: '62%', overflowY: 'scroll', padding: 2, marginBottom: 1 }}>
+        <Box sx={{ height: '55%', overflowY: 'scroll', padding: 2, marginBottom: 1 }}>
           {filteredMessage?.answers?.length > 0 ? (
             filteredMessage.answers?.map((x) => (
               <>
@@ -553,6 +582,8 @@ export default function Messages() {
             ))
           ) : filteredMessage?.answers?.length === 0 ? (
             <>📢 Bu bildirime ait bir cevap bulunamadi</>
+          ) : filteredMessage === undefined ? (
+            <></>
           ) : (
             <CircularProgress />
           )}
@@ -562,37 +593,42 @@ export default function Messages() {
         {selectedMessage && (
           <Box
             sx={{
-              height: '30%',
+              height: '35%',
               backgroundColor: 'ButtonHighlight',
               borderRadius: 4,
               padding: 4,
               margin: 2,
             }}
           >
-            <Box
-              sx={
-                {
-                  /* maxHeight: '5dvh' */
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Box sx={{ display: 'flex' }}>
+                <AnnouncementRounded></AnnouncementRounded>
+                <Typography marginLeft={1} fontSize={18} fontWeight={600}>
+                  {selectedMessage?.createdBy.username}
+                </Typography>
+              </Box>
+              <Tooltip
+                title={
+                  _.isEmpty(orderId)
+                    ? 'Siparis numarasini kopyala'
+                    : 'Siparis numarasi kopyalandi ✔'
                 }
-              }
-            >
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Box sx={{ display: 'flex' }}>
-                  <AnnouncementRounded></AnnouncementRounded>
-                  <Typography marginLeft={1} fontSize={18} fontWeight={600}>
-                    {selectedMessage?.createdBy.username}
-                  </Typography>
-                </Box>
-                <Box>
+              >
+                <Box
+                  sx={{ ':hover': { cursor: _.isEmpty(orderId) ? 'pointer' : 'default' } }}
+                  onClick={() => copyOrderId()}
+                >
                   <Typography color={'grey'}>
                     <strong>Siparis No:</strong> {selectedMessage?.orderId}
                   </Typography>
                 </Box>
-              </Box>
-              <Box
-                sx={{ overflow: 'auto', height: '8dvh', marginTop: 1 }}
-              >{`“${selectedMessage?.note}„`}</Box>
+              </Tooltip>
             </Box>
+            <Box sx={{ overflow: 'auto', height: '8dvh', marginTop: 1, marginBottom: 1 }}>
+              {`“${selectedMessage?.note}„`}
+            </Box>
+            {/* <Answwer {...{ order, selectedMessage, User, answer }} /> */}
+            {/* </Box> */}
             <Formik
               onSubmit={(values, { resetForm }) => onSave(values, resetForm)}
               initialValues={answer}
@@ -610,21 +646,45 @@ export default function Messages() {
                       rows={4}
                       variant="filled"
                       sx={{ overflow: 'auto' }}
-                      maxRows={4}
                       placeholder={'Bir cevap girin...'}
                       onChange={(e) => {
                         setFieldValue('answer', e.target.value);
                       }}
                     />
-                    <Box sx={{ alignSelf: 'center', paddingLeft: 1 }}>
-                      <Button disabled={isSubmitting} type={'submit'}>
-                        <Send />
-                      </Button>
-                    </Box>
                   </Box>
+
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Box
+                      onClick={() => {
+                        setOpenEmojiToolbar(!openEmojiToolbar);
+                      }}
+                      sx={{ alignSelf: 'center', cursor: 'pointer' }}
+                    >
+                      😃
+                    </Box>
+                    <Button disabled={isSubmitting} type={'submit'}>
+                      <Send />
+                    </Button>
+                  </Box>
+                  {openEmojiToolbar && (
+                    <Box sx={{ position: 'absolute', marginTop: '-371px', zIndex: 1, right: 0 }}>
+                      <Picker
+                        onEmojiSelect={(data) => {
+                          const message = document.getElementById('answer').value;
+                          const selectionStart = document.getElementById('answer').selectionStart;
+                          const modifiedAnswer =
+                            message?.slice(0, selectionStart) +
+                            data.native +
+                            message?.slice(selectionStart);
+                          setFieldValue('answer', modifiedAnswer);
+                          setOpenEmojiToolbar(false);
+                        }}
+                      />
+                    </Box>
+                  )}
                 </Form>
               )}
-            </Formik>
+            </Formik>{' '}
           </Box>
         )}
       </Box>
@@ -633,3 +693,138 @@ export default function Messages() {
 }
 
 Messages.layout = FullLayout;
+
+// function Answwer({ order, selectedMessage, User, answer }) {
+//   const onSave = async (values, resetForm) => {
+//     const editedNotification = order.notifications.find(
+//       (notification) => notification.notificationId === selectedMessage.notificationId,
+//     );
+
+//     const { notifications } = order;
+
+//     const editedData = notifications.map((x) =>
+//       _.isEqual(x, editedNotification)
+//         ? {
+//             ...x,
+//             noteToAdmin: x?.noteToAdmin?.map((admin) => ({
+//               _type: 'reference',
+//               _ref: admin._id,
+//             })),
+//             answers:
+//               x.answers === null
+//                 ? []
+//                 : [
+//                     ...x.answers.map((answer) => ({
+//                       ...answer,
+//                       answeredBy: { _type: 'reference', _ref: answer?.answeredBy?._id },
+//                       notificationId: x.notificationId,
+//                     })),
+//                     {
+//                       ...values,
+//                       answeredBy: {
+//                         _type: 'reference',
+//                         _ref: User._id,
+//                       },
+//                       notificationId: x.notificationId,
+//                     },
+//                   ],
+//           }
+//         : {
+//             ...x,
+//             noteToAdmin: x?.noteToAdmin?.map((admin) => ({
+//               _type: 'reference',
+//               _ref: admin._id,
+//             })),
+//             answers: [
+//               ...x.answers.map((answer) => ({
+//                 ...answer,
+//                 answeredBy: { _type: 'reference', _ref: answer.id },
+//               })),
+//             ],
+//           },
+//     );
+
+//     await updateNotifications(order._id, editedData)
+//       .then(() => {
+//         toast(<div>Mesajiniz iletildi</div>, {
+//           type: 'success',
+//         });
+//       })
+//       .catch((error) => {
+//         toast(`Güncelleme isleminiz eksik veya gecersizdir. Sorun: ${error.message}`, {
+//           type: 'error',
+//         });
+//       });
+
+//     resetForm();
+//   };
+//   return (
+//     <Formik onSubmit={(values, { resetForm }) => onSave(values, resetForm)} initialValues={answer}>
+//       {({ setFieldValue, values, resetForm, isSubmitting }) => (
+//         <Form>
+//           <Box sx={{ display: 'flex' }}>
+//             <Field
+//               fullWidth
+//               component={MTextField}
+//               type="text"
+//               id={`answer`}
+//               name={`answer`}
+//               // value={() => {
+//               //   if (_.isEqual(selectedMessage, t) === false) {
+//               //     return '';
+//               //   }
+//               // }}
+//               multiline
+//               rows={4}
+//               variant="filled"
+//               sx={{ overflow: 'auto' }}
+//               placeholder={'Bir cevap girin...'}
+//               onChange={(e) => {
+//                 // handleSelect(_, setFieldValue);
+//                 // prevMessageRef.current = selectedMessage;
+//                 // if (_.isEqual(selectedMessage, t) === false) {
+//                 //   setFieldValue('answer', '');
+//                 // } else {
+//                 //   setFieldValue('answer', e.target.value);
+//                 // }
+//                 setFieldValue('answer', e.target.value);
+
+//                 //if (selectedMessage) setFieldValue('answer', e.target.value);
+
+//                 // if (
+//                 //   _.isEmpty(
+//                 //     selectedEmoji?.emoji === false,
+//                 //     // && values.length - 1 === _.indexOf(values, values[selectedEmoji.emoji]),
+//                 //   )
+//                 // ) {
+//                 //   setFieldValue('answer', `${values?.answer + selectedEmoji?.emoji}`);
+//                 // } else {
+//                 //   setFieldValue('answer', `${values?.answer}`);
+//                 // }
+//               }}
+//             />
+//             <Box sx={{ alignSelf: 'center', paddingLeft: 1 }}>
+//               {/* <div>
+//             <Picker />
+//           </div> */}
+//             </Box>
+//           </Box>
+
+//           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+//             <Box
+//               onClick={() => {
+//                 setOpenEmojiToolbar(!openEmojiToolbar);
+//               }}
+//               sx={{ alignSelf: 'center', cursor: 'pointer' }}
+//             >
+//               😃
+//             </Box>
+//             <Button disabled={isSubmitting} type={'submit'}>
+//               <Send />
+//             </Button>
+//           </Box>
+//         </Form>
+//       )}
+//     </Formik>
+//   );
+// }
