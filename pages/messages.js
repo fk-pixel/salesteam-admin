@@ -373,7 +373,7 @@ export default function Messages() {
             borderBottom: '1px solid lightgrey',
             position: 'fixed',
             minWidth: '31%',
-            backgroundColor: '#ffffff', //'#f2f7f8', //kirli beyaz
+            backgroundColor: '#F2F8F8', //'#f2f7f8', //kirli beyaz
           }}
         >
           <Typography variant="h6" sx={{ lineHeight: 1.5 }}>
@@ -632,7 +632,7 @@ export default function Messages() {
                 </Box>
               </Tooltip>
             </Box>
-            <Box sx={{ overflow: 'auto', height: '8dvh', marginTop: 1, marginBottom: 1 }}>
+            <Box sx={{ overflow: 'auto', height: '10dvh', marginTop: 1, marginBottom: 3 }}>
               {`“${selectedMessage?.note}„`}
             </Box>
             {/* <Answwer {...{ order, selectedMessage, User, answer }} /> */}

@@ -11,6 +11,7 @@ import {
   DialogContentText,
   DialogTitle,
   Drawer,
+  Divider,
   Fab,
   TextField as MuiTextField,
   Stack,
@@ -361,13 +362,14 @@ export function SupportAction({ params, convertedData }) {
   const [admins, setAdmins] = React.useState([]);
 
   const rowData = convertedData.find((x) => x._id === params.row._id);
-  const answers = rowData.notifications?.flatMap((notification) =>
-    notification.answers?.map((answer) => ({
-      ...answer,
-      createdAt: format(new Date(answer.createdAt), 'dd.MM.yyyy, HH:mm'),
-    })),
-  );
-  // .toSorted();
+
+  // const answers = rowData.notifications?.flatMap((notification) =>
+  //   notification.answers?.map((answer) => ({
+  //     ...answer,
+  //     createdAt: format(new Date(answer.createdAt), 'dd.MM.yyyy, HH:mm'),
+  //   })),
+  // );
+
   const [initialValues] = React.useState({
     createdAt: new Date(),
     flag: { value: '', title: '' },
@@ -474,7 +476,7 @@ export function SupportAction({ params, convertedData }) {
       </Tooltip>
       <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
         <Drawer
-          sx={{ '& .MuiDrawer-paper': { width: '475px', justifyContent: 'space-between' } }}
+          sx={{ '& .MuiDrawer-paper': { width: '525px', justifyContent: 'space-between' } }}
           anchor={'right'}
           open={openSupportDrawer}
           onClose={() => setOpenSupportDrawer(false)}
@@ -482,8 +484,8 @@ export function SupportAction({ params, convertedData }) {
           <Box
             sx={{
               padding: 2,
-              minHeight: '62dvh',
-              overflow: 'scroll',
+              height: '75dvh',
+              overflowY: 'scroll',
             }}
           >
             {rowData.notifications?.map((x, i) => (
@@ -617,62 +619,10 @@ export function SupportAction({ params, convertedData }) {
                       </Box>
                     </>
                   ))}
+                  <Divider sx={{ marginTop: 2, marginBottom: 5 }} />
                 </Box>
               </>
             ))}
-
-            {/* {answers?.map((x) => (
-              <>
-                <Box sx={{ display: 'flex' }}>
-                  <AvatarGroup max={5} sx={{ paddingRight: 1, paddingTop: 1, alignSelf: 'end' }}>
-                    <Tooltip title={`${x?.answeredBy?.username} | ${x?.answeredBy?.email} `}>
-                      <Avatar
-                        sx={{
-                          bgcolor: 'warning.main',
-                          cursor: 'pointer',
-                          ':hover:not(:last-of-type)': {
-                            transform: 'translate(5px)',
-                            transition: 'transform 0.3s ease',
-                          },
-                          '& .MuiAvatar-root': {
-                            border: '1px solid #c7c7c7',
-                          },
-                        }}
-                      >
-                        {getAdminNameWithAvatar(x?.answeredBy?.username)}
-                      </Avatar>
-                    </Tooltip>
-                  </AvatarGroup>
-
-                  <Box
-                    sx={{
-                      backgroundColor: '#007aff',
-                      borderRadius: 4,
-                      borderBottomLeftRadius: 0,
-                      padding: 2,
-                      marginBottom: 3.5,
-                      marginRight: 4,
-                      width: '-webkit-fill-available',
-                    }}
-                  >
-                    <Box sx={{ display: 'block' }}>
-                      <Typography color={'white'}>{x?.answer}</Typography>
-                      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Typography
-                          sx={{
-                            fontSize: 12,
-                            color: 'white',
-                            justifyContent: 'flex-end',
-                          }}
-                        >
-                          {x?.createdAt}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </>
-            ))} */}
           </Box>
           <Box
             sx={{
