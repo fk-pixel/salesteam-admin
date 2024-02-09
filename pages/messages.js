@@ -67,7 +67,7 @@ export default function Messages() {
   const [orderId, setOrderId] = React.useState('');
   const [openMessageSetting, setOpenMessageSetting] = React.useState(false);
   const [messageSetting, setMessageSetting] = React.useState({
-    sortBy: { id: 'createdDate', value: 'Oluşturulduğu Tarih (daha sonra)' },
+    sortBy: { label: 'Oluşturulduğu Tarih (daha sonra)', value: 'createdDate' },
     checkedFlags: [],
     checkedCreators: [],
   });
@@ -192,6 +192,7 @@ export default function Messages() {
     }
   }, [User.role, adminQuery, userQuery]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   let initialNotes = [];
 
   const messages = orders
@@ -217,23 +218,49 @@ export default function Messages() {
 
   initialNotes = initialNotes.filter((x) => x !== undefined);
 
+  const initialNotesRef = React.useRef(initialNotes.filter((x) => x !== undefined));
+
   function handleSelect(note) {
-    const matchedNote = initialNotes.map((x) =>
-      _.isEqual(x, note) ? { ...x, viewedNotification: true, selectedMessage: true } : x,
-    );
-    setNotifications(matchedNote);
     const findSelectedNote = notifications?.find((x) => x.notificationId === note.notificationId);
     setSelectedMessage(findSelectedNote);
-    // setAnswer({
-    //   answerId: uuidv4(),
-    //   answeredBy: {
-    //     _type: 'reference',
-    //     _ref: User?._id,
-    //   },
-    //   answer: '',
-    //   createdAt: new Date(),
-    // });
   }
+
+  React.useEffect(() => {
+    const { checkedFlags, checkedCreators } = getCheckedFlags(initialNotes);
+
+    if (checkedFlags && checkedCreators) {
+      setMessageSetting((prev) => ({ ...prev, checkedCreators, checkedFlags }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    const makeFilter = () => {
+      return initialNotes
+        .filter((o) => {
+          return messageSetting.checkedFlags
+            .map((x) => {
+              if (x.checked) {
+                return x.value;
+              }
+            })
+            .includes(o.flag);
+        })
+        .filter((o) => {
+          return messageSetting.checkedCreators
+            .map((x) => {
+              if (x.checked) {
+                return x.label;
+              }
+            })
+            .includes(o.createdBy.username);
+        });
+    };
+    if (messageSetting.checkedCreators && messageSetting.checkedFlags) {
+      initialNotesRef.current = makeFilter();
+      setNotifications(initialNotesRef.current);
+    }
+  }, [initialNotes, messageSetting.checkedCreators, messageSetting.checkedFlags]);
 
   const orderBySelectedIdQuery = `*[_type == "order" && _id == '${selectedMessage?.orderId}'] | order(_createdAt desc){          
     _id,
@@ -281,15 +308,6 @@ export default function Messages() {
       }
     }
   }`;
-
-  React.useEffect(() => {
-    const { checkedFlags, checkedCreators } = getCheckedFlags(initialNotes);
-
-    if (checkedFlags && checkedCreators) {
-      setMessageSetting((prev) => ({ ...prev, checkedCreators, checkedFlags }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   React.useEffect(() => {
     if (selectedMessage?.orderId) {
@@ -441,13 +459,14 @@ export default function Messages() {
             >
               <Autocomplete
                 sx={{ width: 380, paddingTop: 3 }}
-                getOptionLabel={(o) => o.value}
+                getOptionLabel={(o) => o.label}
                 value={messageSetting.sortBy}
+                isOptionEqualToValue={(option, value) => option.label === value.label}
                 options={[
-                  { id: 'criter', value: 'Kriter (a-z)' },
-                  { id: 'context', value: 'Icerik (a-z)' },
-                  { id: 'sender', value: 'Gönderen (a-z)' },
-                  { id: 'createdDate', value: 'Oluşturulduğu Tarih (daha sonra)' },
+                  { value: 'criter', label: 'Kriter (a-z)' },
+                  { value: 'context', label: 'Icerik (a-z)' },
+                  { value: 'sender', label: 'Gönderen (a-z)' },
+                  { value: 'createdDate', label: 'Oluşturulduğu Tarih (daha sonra)' },
                   //{ id: 'updatedDate', value: 'Güncellendigi Tarih (a-z)' },
                 ]}
                 onChange={(e, val) => setMessageSetting((prev) => ({ ...prev, sortBy: val }))}
@@ -564,8 +583,10 @@ export default function Messages() {
                     height: '10dvh',
                     width: '100%',
                     padding: 1,
-                    backgroundColor: notification.selectedMessage ? '#D5E4F9' : '', //'#82bc0040',
-                    borderLeft: notification.selectedMessage ? '6px solid #91BAD6' : 'initial',
+                    backgroundColor: _.isEqual(notification, selectedMessage) ? '#D5E4F9' : '', //'#82bc0040',
+                    borderLeft: _.isEqual(notification, selectedMessage)
+                      ? '6px solid #91BAD6'
+                      : 'initial',
                     display: 'flex',
                     borderBottom: '1px solid lightgrey',
                     marginTop: i === 0 ? 5 : undefined,
@@ -840,7 +861,7 @@ function CheckboxGroup({ messageSetting, setMessageSetting, groupName }) {
                         onChange={(e) => handleSelect(e, x, i)}
                       />
                     }
-                    label={x.label + (x?.ids ? ` (${x.ids})` : '')}
+                    label={x.label + ` (${x.ids})`}
                   />
                 </FormGroup>
               </Box>
@@ -894,10 +915,10 @@ const getCheckedFlags = (notifications) => {
   });
 
   const checkedFlags = [
-    { label: 'kritik', ids: dangers.length, checked: true },
-    { label: 'basarili', ids: successes.length, checked: true },
-    { label: 'bilgilendirme', ids: infos.length, checked: true },
-    { label: 'uyari', ids: warnings.length, checked: true },
+    { value: 'danger', label: 'kritik', ids: dangers.length, checked: true },
+    { value: 'success', label: 'basarili', ids: successes.length, checked: true },
+    { value: 'info', label: 'bilgilendirme', ids: infos.length, checked: true },
+    { value: 'warning', label: 'uyari', ids: warnings.length, checked: true },
   ];
 
   // second way to merge by unique array
