@@ -9,14 +9,16 @@ export const sendContactForm = async (data) =>
       'Content-Type': 'application/json',
     },
   }).then((res) => {
-    // if (res.status === 200) {
-    //   toast('Mail basariyla gönderildi', {
-    //     type: 'success',
-    //   }).catch((err) => {
-    //     console.error(err);
-    //   });
-    // }
-    if (!res.ok) throw new Error('Failed to send message');
+    if (res.ok === true) {
+      toast('Mail basariyla gönderildi', {
+        type: 'success',
+      });
+    }
+    if (!res.ok) {
+      toast(res.error, {
+        type: 'error',
+      });
+    }
 
     return res.json();
   });
