@@ -73,59 +73,6 @@ export function MailAction({ params, convertedData }) {
   const sendEmail = async () => {
     await sendContactForm(mailData);
     setOpenMail(false);
-    // e.preventDefault();
-
-    // try {
-    //   const req = await sendContactForm(mailData);
-    //   if (req.status === 250) {
-    //     toast('Email basariyla gönderildi', {
-    //       type: 'success',
-    //     });
-    //     handleClose();
-    //   }
-    // } catch (e) {
-    //   toast(`Kayit isleminiz eksik veya gecersizdir. Sorun: ${e}`, {
-    //     type: 'error',
-    //   });
-    //   handleClose();
-    // }
-
-    // try {
-    //   const req = await fetch('api/contactWithSeller', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(mailData),
-    //   });
-    //   if (req.ok) {
-    //     toast('Email basariyla gönderildi', {
-    //       type: 'success',
-    //     });
-    //     handleClose();
-    //   }
-    // } catch (e) {
-    //   toast(`Kayit isleminiz eksik veya gecersizdir. Sorun: ${e}`, {
-    //     type: 'error',
-    //   });
-    //   handleClose();
-    // }
-
-    // await fetch('/api/contactWithSeller', {
-    //   method: 'POST',
-    //   body: JSON.stringify(mailData),
-    // })
-    //   .then(() => {
-    //     toast('Email basariyla gönderildi', {
-    //       type: 'success',
-    //     });
-    //     handleClose();
-    //   })
-    //   .catch(() => {
-    //     toast(`Kayit isleminiz eksik veya gecersizdir. Lütfen tekrar deneyin`, {
-    //       type: 'error',
-    //     });
-    //   });
   };
 
   return (

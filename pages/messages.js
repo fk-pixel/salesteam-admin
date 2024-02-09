@@ -4,8 +4,28 @@ import { v4 as uuidv4 } from 'uuid';
 import { TextField as MTextField } from 'formik-mui';
 import { format } from 'date-fns';
 import tr from 'date-fns/locale/tr';
-import { Box, Tooltip, Avatar, Typography, Button, CircularProgress } from '@mui/material';
-import { AnnouncementRounded, Send, SupervisedUserCircle, TurnedIn } from '@mui/icons-material';
+import {
+  Box,
+  Autocomplete,
+  Tooltip,
+  Avatar,
+  Typography,
+  Button,
+  CircularProgress,
+  TextField,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+} from '@mui/material';
+import {
+  AnnouncementRounded,
+  Close,
+  EmojiEmotions,
+  Send,
+  SupervisedUserCircle,
+  Tune,
+  TurnedIn,
+} from '@mui/icons-material';
 import { client } from '../sanity/utils/client';
 import _ from 'lodash';
 import { useTheme } from '@mui/material/styles';
@@ -19,12 +39,14 @@ import FullLayout from '../src/layouts/FullLayout';
 import { getAdminNameWithAvatar } from '../src/utils/DashboardUtil';
 import Searchbar from '../src/components/Searchbar/Searchbar';
 import { usePreviousPersistent } from '../src/utils/AppUtil';
+
 //import { useStore } from '../src/store';
 
 export default function Messages() {
   const { User } = usePortalContext();
 
   //const { user } = useStore();
+
   const theme = useTheme();
   const tablet = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
 
@@ -43,6 +65,12 @@ export default function Messages() {
   });
   const [openEmojiToolbar, setOpenEmojiToolbar] = React.useState();
   const [orderId, setOrderId] = React.useState('');
+  const [openMessageSetting, setOpenMessageSetting] = React.useState(false);
+  const [messageSetting, setMessageSetting] = React.useState({
+    sortBy: { id: 'createdDate', value: 'Oluşturulduğu Tarih (daha sonra)' },
+    checkedFlags: [],
+    checkedCreators: [],
+  });
 
   const prevSelectedMessage = usePreviousPersistent(selectedMessage);
 
@@ -255,6 +283,15 @@ export default function Messages() {
   }`;
 
   React.useEffect(() => {
+    const { checkedFlags, checkedCreators } = getCheckedFlags(initialNotes);
+
+    if (checkedFlags && checkedCreators) {
+      setMessageSetting((prev) => ({ ...prev, checkedCreators, checkedFlags }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
     if (selectedMessage?.orderId) {
       client.fetch(orderBySelectedIdQuery).then((res) => setOrder(res[0]));
       const subscription = client
@@ -356,8 +393,6 @@ export default function Messages() {
     setOrderId(selectedMessage.orderId);
   }
 
-  //console.log('selectedEmoji', selectedEmoji);
-
   if (initialNotes === undefined || initialNotes.length < 1) {
     return <> 📢 Mesaj kutunuz bos</>;
   }
@@ -369,17 +404,88 @@ export default function Messages() {
         {/* messages header */}
         <Box
           sx={{
-            paddingBottom: '10px',
+            paddingBottom: '4px',
             borderBottom: '1px solid lightgrey',
             position: 'fixed',
-            minWidth: '31%',
-            backgroundColor: '#F2F8F8', //'#f2f7f8', //kirli beyaz
+            minWidth: '30.9%',
+            display: 'flex',
+            zIndex: 1,
+            justifyContent: 'space-between',
+            backgroundColor: '#fff', //'#f8f8f8', //'#F2F8F8', //'#f2f7f8', //kirli beyaz
           }}
         >
           <Typography variant="h6" sx={{ lineHeight: 1.5 }}>
             Mesajlarim ({initialNotes?.length ?? notifications?.length})
           </Typography>
+          <Button>
+            <Tune color="action" onClick={() => setOpenMessageSetting(!openMessageSetting)} />
+          </Button>
         </Box>
+        {openMessageSetting && (
+          <Box
+            sx={{
+              zIndex: 1,
+              backgroundColor: '#f8f8f8',
+              position: 'fixed',
+              height: '27dvh',
+              width: '30.75dvw',
+              overflowY: 'auto',
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                paddingLeft: 5,
+              }}
+            >
+              <Autocomplete
+                sx={{ width: 380, paddingTop: 3 }}
+                getOptionLabel={(o) => o.value}
+                value={messageSetting.sortBy}
+                options={[
+                  { id: 'criter', value: 'Kriter (a-z)' },
+                  { id: 'context', value: 'Icerik (a-z)' },
+                  { id: 'sender', value: 'Gönderen (a-z)' },
+                  { id: 'createdDate', value: 'Oluşturulduğu Tarih (daha sonra)' },
+                  //{ id: 'updatedDate', value: 'Güncellendigi Tarih (a-z)' },
+                ]}
+                onChange={(e, val) => setMessageSetting((prev) => ({ ...prev, sortBy: val }))}
+                renderInput={(params) => (
+                  <TextField {...params} label="Sirala" variant="standard" />
+                )}
+              />
+              <Close
+                sx={{
+                  fontSize: '18px',
+                  cursor: 'pointer',
+                  color: 'CaptionText',
+                  marginRight: 2,
+                  marginTop: 1,
+                }}
+                onClick={() => setOpenMessageSetting(false)}
+              />
+            </Box>
+            <Box sx={{ display: 'flex', paddingTop: 3, paddingLeft: 5, paddingRight: 5 }}>
+              <Box sx={{ width: '50%' }}>
+                <Typography>Kriterler:</Typography>
+                <CheckboxGroup
+                  messageSetting={messageSetting}
+                  setMessageSetting={setMessageSetting}
+                  groupName={'flags'}
+                />
+              </Box>
+              <Box sx={{ width: '50%' }}>
+                <Typography>Olusturanlar:</Typography>
+                <CheckboxGroup
+                  messageSetting={messageSetting}
+                  setMessageSetting={setMessageSetting}
+                  groupName={'creators'}
+                />
+              </Box>
+            </Box>
+          </Box>
+        )}
         {/* messages card */}
         {notifications === undefined
           ? initialNotes.map((initialNote, i) => (
@@ -666,12 +772,12 @@ export default function Messages() {
                       onClick={() => {
                         setOpenEmojiToolbar(!openEmojiToolbar);
                       }}
-                      sx={{ alignSelf: 'center', cursor: 'pointer' }}
+                      sx={{ alignSelf: 'center', cursor: 'pointer', color: 'grey' }}
                     >
-                      😃
+                      <EmojiEmotions color="action" />
                     </Box>
                     <Button disabled={isSubmitting} type={'submit'}>
-                      <Send />
+                      <Send color="action" />
                     </Button>
                   </Box>
                   {openEmojiToolbar && (
@@ -702,137 +808,107 @@ export default function Messages() {
 
 Messages.layout = FullLayout;
 
-// function Answwer({ order, selectedMessage, User, answer }) {
-//   const onSave = async (values, resetForm) => {
-//     const editedNotification = order.notifications.find(
-//       (notification) => notification.notificationId === selectedMessage.notificationId,
-//     );
+function CheckboxGroup({ messageSetting, setMessageSetting, groupName }) {
+  const handleSelect = (e, x, i) => {
+    if (groupName === 'flags') {
+      messageSetting.checkedFlags[i].checked = e.target.checked;
+      setMessageSetting((prev) => {
+        return { ...prev, messageSetting };
+      });
+    }
 
-//     const { notifications } = order;
+    if (groupName === 'creators') {
+      messageSetting.checkedCreators[i].checked = e.target.checked;
+      setMessageSetting((prev) => {
+        return { ...prev, messageSetting };
+      });
+    }
+  };
 
-//     const editedData = notifications.map((x) =>
-//       _.isEqual(x, editedNotification)
-//         ? {
-//             ...x,
-//             noteToAdmin: x?.noteToAdmin?.map((admin) => ({
-//               _type: 'reference',
-//               _ref: admin._id,
-//             })),
-//             answers:
-//               x.answers === null
-//                 ? []
-//                 : [
-//                     ...x.answers.map((answer) => ({
-//                       ...answer,
-//                       answeredBy: { _type: 'reference', _ref: answer?.answeredBy?._id },
-//                       notificationId: x.notificationId,
-//                     })),
-//                     {
-//                       ...values,
-//                       answeredBy: {
-//                         _type: 'reference',
-//                         _ref: User._id,
-//                       },
-//                       notificationId: x.notificationId,
-//                     },
-//                   ],
-//           }
-//         : {
-//             ...x,
-//             noteToAdmin: x?.noteToAdmin?.map((admin) => ({
-//               _type: 'reference',
-//               _ref: admin._id,
-//             })),
-//             answers: [
-//               ...x.answers.map((answer) => ({
-//                 ...answer,
-//                 answeredBy: { _type: 'reference', _ref: answer.id },
-//               })),
-//             ],
-//           },
-//     );
+  return (
+    <>
+      {groupName === 'flags'
+        ? messageSetting?.checkedFlags?.map((x, i) => (
+            <>
+              <Box sx={{ display: 'block' }}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        key={i}
+                        checked={x.checked}
+                        onChange={(e) => handleSelect(e, x, i)}
+                      />
+                    }
+                    label={x.label + (x?.ids ? ` (${x.ids})` : '')}
+                  />
+                </FormGroup>
+              </Box>
+            </>
+          ))
+        : messageSetting?.checkedCreators?.map((x, i) => (
+            <>
+              <Box sx={{ display: 'block' }}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        key={i}
+                        checked={x.checked}
+                        onChange={(e) => handleSelect(e, x, i)}
+                      />
+                    }
+                    label={x.label}
+                  />
+                </FormGroup>
+              </Box>
+            </>
+          ))}
+    </>
+  );
+}
 
-//     await updateNotifications(order._id, editedData)
-//       .then(() => {
-//         toast(<div>Mesajiniz iletildi</div>, {
-//           type: 'success',
-//         });
-//       })
-//       .catch((error) => {
-//         toast(`Güncelleme isleminiz eksik veya gecersizdir. Sorun: ${error.message}`, {
-//           type: 'error',
-//         });
-//       });
+const getCheckedFlags = (notifications) => {
+  const dangers = [];
+  const warnings = [];
+  const infos = [];
+  const successes = [];
+  const users = [];
 
-//     resetForm();
-//   };
-//   return (
-//     <Formik onSubmit={(values, { resetForm }) => onSave(values, resetForm)} initialValues={answer}>
-//       {({ setFieldValue, values, resetForm, isSubmitting }) => (
-//         <Form>
-//           <Box sx={{ display: 'flex' }}>
-//             <Field
-//               fullWidth
-//               component={MTextField}
-//               type="text"
-//               id={`answer`}
-//               name={`answer`}
-//               // value={() => {
-//               //   if (_.isEqual(selectedMessage, t) === false) {
-//               //     return '';
-//               //   }
-//               // }}
-//               multiline
-//               rows={4}
-//               variant="filled"
-//               sx={{ overflow: 'auto' }}
-//               placeholder={'Bir cevap girin...'}
-//               onChange={(e) => {
-//                 // handleSelect(_, setFieldValue);
-//                 // prevMessageRef.current = selectedMessage;
-//                 // if (_.isEqual(selectedMessage, t) === false) {
-//                 //   setFieldValue('answer', '');
-//                 // } else {
-//                 //   setFieldValue('answer', e.target.value);
-//                 // }
-//                 setFieldValue('answer', e.target.value);
+  notifications?.map((x) => {
+    if (x.flag === 'danger') {
+      dangers.push(x);
+    }
+    if (x.flag === 'warning') {
+      warnings.push(x);
+    }
+    if (x.flag === 'info') {
+      infos.push(x);
+    }
+    if (x.flag === 'success') {
+      successes.push(x);
+    }
+    if (users?.find((a) => a.username === x.createdBy.username) === undefined) {
+      users.push({ username: x.createdBy.username, id: x.createdBy._id });
+    }
+  });
 
-//                 //if (selectedMessage) setFieldValue('answer', e.target.value);
+  const checkedFlags = [
+    { label: 'kritik', ids: dangers.length, checked: true },
+    { label: 'basarili', ids: successes.length, checked: true },
+    { label: 'bilgilendirme', ids: infos.length, checked: true },
+    { label: 'uyari', ids: warnings.length, checked: true },
+  ];
 
-//                 // if (
-//                 //   _.isEmpty(
-//                 //     selectedEmoji?.emoji === false,
-//                 //     // && values.length - 1 === _.indexOf(values, values[selectedEmoji.emoji]),
-//                 //   )
-//                 // ) {
-//                 //   setFieldValue('answer', `${values?.answer + selectedEmoji?.emoji}`);
-//                 // } else {
-//                 //   setFieldValue('answer', `${values?.answer}`);
-//                 // }
-//               }}
-//             />
-//             <Box sx={{ alignSelf: 'center', paddingLeft: 1 }}>
-//               {/* <div>
-//             <Picker />
-//           </div> */}
-//             </Box>
-//           </Box>
+  // second way to merge by unique array
+  // const userSet = new Set(users);
+  // const uniqueUsers = [...userSet];
 
-//           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-//             <Box
-//               onClick={() => {
-//                 setOpenEmojiToolbar(!openEmojiToolbar);
-//               }}
-//               sx={{ alignSelf: 'center', cursor: 'pointer' }}
-//             >
-//               😃
-//             </Box>
-//             <Button disabled={isSubmitting} type={'submit'}>
-//               <Send />
-//             </Button>
-//           </Box>
-//         </Form>
-//       )}
-//     </Formik>
-//   );
-// }
+  const checkedCreators = users.map((user) => ({
+    label: user.username,
+    id: user.id,
+    checked: true,
+  }));
+
+  return { checkedFlags, checkedCreators };
+};

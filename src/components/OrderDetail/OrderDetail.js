@@ -23,8 +23,6 @@ export default function OrderDetail({ data, onChange }) {
             fontWeight={600}
             paddingLeft={2}
             paddingTop={1}
-            // marginTop={2}
-            // marginBottom={2}
           >
             Ürünler
           </Typography>

@@ -28,7 +28,7 @@ const FullLayout = ({ children }) => {
         {showSidebar && (
           <aside
             className={`sidebarArea shadow bg-white showSidebar`}
-            style={{ zIndex: 1, position: 'absolute', height: '-webkit-fill-available' }}
+            style={{ zIndex: 2, position: 'absolute', height: '-webkit-fill-available' }}
           >
             <Sidebar setShowSidebar={setShowSidebar} />
           </aside>
