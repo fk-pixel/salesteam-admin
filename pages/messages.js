@@ -236,31 +236,63 @@ export default function Messages() {
 
   React.useEffect(() => {
     const makeFilter = () => {
-      return initialNotes
-        .filter((o) => {
-          return messageSetting.checkedFlags
-            .map((x) => {
-              if (x.checked) {
-                return x.value;
-              }
-            })
-            .includes(o.flag);
-        })
-        .filter((o) => {
-          return messageSetting.checkedCreators
-            .map((x) => {
-              if (x.checked) {
-                return x.label;
-              }
-            })
-            .includes(o.createdBy.username);
-        });
+      return (
+        initialNotes
+          .filter((o) => {
+            return messageSetting.checkedFlags
+              .map((x) => {
+                if (x.checked) {
+                  return x.value;
+                }
+              })
+              .includes(o.flag);
+          })
+          .filter((o) => {
+            return messageSetting.checkedCreators
+              .map((x) => {
+                if (x.checked) {
+                  return x.label;
+                }
+              })
+              .includes(o.createdBy.username);
+          })
+          // sort by ['createdDate' | 'context' | '']
+          .toSorted((a, b) => {
+            if (messageSetting.sortBy.value === 'context') {
+              return a.context.toLowerCase() < b.context.toLowerCase()
+                ? -1
+                : a.context.toLowerCase() > b.context.toLowerCase()
+                ? 1
+                : 0;
+            }
+            if (messageSetting.sortBy.value === 'criter') {
+              return a.flag.toLowerCase() < b.flag.toLowerCase()
+                ? -1
+                : a.flag.toLowerCase() > b.flag.toLowerCase()
+                ? 1
+                : 0;
+            }
+            if (messageSetting.sortBy.value === 'sender') {
+              return a.createdBy.username.toLowerCase() < b.createdBy.username.toLowerCase()
+                ? -1
+                : a.createdBy.username.toLowerCase() > b.createdBy.username.toLowerCase()
+                ? 1
+                : 0;
+            }
+            if (messageSetting.sortBy.value === 'createdDate') {
+              return a.createdAt > b.createdAt ? -1 : a.createdAt < b.createdAt ? 1 : 0;
+            }
+          })
+      );
     };
     if (messageSetting.checkedCreators && messageSetting.checkedFlags) {
       initialNotesRef.current = makeFilter();
       setNotifications(initialNotesRef.current);
     }
-  }, [initialNotes, messageSetting.checkedCreators, messageSetting.checkedFlags]);
+  }, [initialNotes, messageSetting]);
+
+  //console.log('initial', initialNotes);
+  //console.log('messageStting', messageSetting);
 
   const orderBySelectedIdQuery = `*[_type == "order" && _id == '${selectedMessage?.orderId}'] | order(_createdAt desc){          
     _id,
