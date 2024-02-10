@@ -228,7 +228,7 @@ export default function Messages() {
   React.useEffect(() => {
     const { checkedFlags, checkedCreators } = getCheckedFlags(initialNotes);
 
-    if (checkedFlags && checkedCreators) {
+    if (checkedFlags.length > 0 && checkedCreators.length > 0) {
       setMessageSetting((prev) => ({ ...prev, checkedCreators, checkedFlags }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
